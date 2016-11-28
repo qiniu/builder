@@ -1,0 +1,22 @@
+{
+  "publicUrl": "/",
+  "srcDir": "src",
+  "staticDir": "public",
+  "entries": {
+    "index": "src/index.js"
+  },
+  "pages": {
+    "index": {
+      "template": "public/index.html",
+      "entries": "index"
+    }
+  },
+  "transforms": {
+    "js": {
+      "transformer": "babel",
+      "config": {
+        "presets": ["es2015", "react"]
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "name": "fec-builder",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "serve": "webpack-dev-server --hot --inline --port 80 --host 0.0.0.0 --public localhost:0"
+  }
+}

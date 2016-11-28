@@ -1,0 +1,37 @@
+{
+  "TODO:extends": "",
+  "publicUrl": "/",
+  "srcDir": "src",
+  "staticDir": "static",
+  "entries": {
+    "index": "src/index.js"
+  },
+  "pages": {
+    "index": {
+      "template": "public/index.html",
+      "entries": "index"
+    }
+  },
+  "transforms": {
+    "js": {
+      "transformer": "babel",
+      "config": {
+        "presets": ["es2015"]
+      }
+    },
+    "css": "css",
+    "less": "less",
+    "tpl": "raw",
+    "svg": "file",
+    "png": "file",
+    "jpg": "file",
+    "jpeg": "file",
+    "woff": "file",
+    "woff2": "file",
+    "eot": "file",
+    "ttf": "file"
+  },
+  "optimization": {
+    "TODO:extract-common": false
+  }
+}
