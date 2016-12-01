@@ -24,15 +24,18 @@ let config = {
   entry: entries,
 
   resolve: {
-    extensions: ['', '.js'],
-    root: paths.src
+    extensions: ['.js'],
+    modules: [
+      paths.src,
+      'node_modules'
+    ]
   },
 
   externals: {},
 
   module: {
     noParse: [],
-    loaders: []
+    rules: []
   },
   plugins: [],
   postcss: [],

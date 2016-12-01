@@ -14,24 +14,40 @@ const makeLoaderName = name => (
   /\-loader$/.test(name) ? name : `${name}-loader`
 )
 
-const makeLoaderConfig = (extension, transform) => {
-  return {
+const makeLoaderConfig = (extension, transform, options) => {
+  const loaderConfig = {
     test: makeExtensionPattern(extension),
-    loader: makeLoaderName(transform.transformer),
+    use: [
+      {
+        loader: makeLoaderName(transform.transformer),
+        options
+      }
+    ],
     // include: [paths.src],
     // exclude: /(node_modules)/
   }
+
+  // 针对后缀为 js 的 transform，控制范围（不对依赖做转换）
+  if (extension === 'js') {
+    loaderConfig.exclude = /(node_modules)/
+  }
+
+  return loaderConfig
 }
 
 const makeStyleLoaderConfig = (extension, transform) => {
   const loaderConfig = {
     test: makeExtensionPattern(extension),
-    loaders: ['style-loader', 'css-loader', 'postcss-loader']
+    use: [
+      { loader: 'style-loader' },
+      { loader: 'css-loader' },
+      { loader: 'postcss-loader' }
+    ]
   }
 
   if (transform.transformer !== transforms.css) {
-    loaderConfig.loaders.push(
-      makeLoaderName(transform.transformer)
+    loaderConfig.use.push(
+      { loader: makeLoaderName(transform.transformer) }
     )
   }
 
@@ -67,17 +83,32 @@ module.exports = (config, extension, transform) => {
     case transforms.less:
     case transforms.sass:
     case transforms.stylus:
-      config.module.loaders.push(
+      config.module.rules.push(
         makeStyleLoaderConfig(extension, transform)
       )
       break
 
     case transforms.babel:
       config = addDefaultExtension(config, extension)
-      config.module.loaders.push(
-        utils.extend(makeLoaderConfig(extension, transform), {
-          query: transform.config
-        })
+
+      // 找到 ES2015 这个 preset，添加 { "modules": false }
+      // 注意后续可能要修改这边逻辑，考虑会对 import / export 进行转换的不一定只有 ES2015 这个 preset
+      const options = transform.config && utils.extend({}, transform.config)
+      if (options && options.presets) {
+        options.presets = options.presets.map(
+          preset => {
+            if (preset === 'ES2015') {
+              return ['ES2015', { 'modules': false }]
+            }
+            if (preset && preset[0] === 'ES2015') {
+              return ['ES2015', utils.extend({}, preset[1], { 'modules': false })]
+            }
+            return preset
+          }
+        )
+      }
+      config.module.rules.push(
+        makeLoaderConfig(extension, transform, options)
       )
       break
 
@@ -85,23 +116,21 @@ module.exports = (config, extension, transform) => {
     case transforms.jsx:
     case transforms.flow:
       config = addDefaultExtension(config, extension)
-      config.module.loaders.push(
+      config.module.rules.push(
         makeLoaderConfig(extension, transform)
       )
       break
 
     case transforms.file:
-      config.module.loaders.push(
-        utils.extend(makeLoaderConfig(extension, transform), {
-          query: {
-            name: 'static/[name]-[hash].[ext]'
-          }
+      config.module.rules.push(
+        makeLoaderConfig(extension, transform, {
+          name: 'static/[name]-[hash].[ext]'
         })
       )
       break
 
     default:
-      config.module.loaders.push(
+      config.module.rules.push(
         makeLoaderConfig(extension, transform)
       )
   }
