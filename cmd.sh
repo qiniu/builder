@@ -1,21 +1,16 @@
 #!/bin/bash
 
+# 安装输入（被构建）项目的依赖
 cd /fec/input
-
 npm install
-
 cd ..
 
-NODE_ENV=$BUILD_ENV node index.js
+# 开发环境执行 serve
+if [[ "${BUILD_ENV}" == "development" ]]; then
+  NODE_ENV=$BUILD_ENV npm run serve
+fi
 
-# if [[ "${BUILD_ENV}" == "development" ]]; then
-#   NODE_ENV=$BUILD_ENV npm run serve
-# fi
-
-# if [[ "${BUILD_ENV}" == "production" ]]; then
-#   NODE_ENV=$BUILD_ENV npm run build
-# fi
-
-# find ./input/dist
-
-# anywhere -p 80 -d ./dist -s
+# 生产环境执行 build
+if [[ "${BUILD_ENV}" == "production" ]]; then
+  NODE_ENV=$BUILD_ENV npm run build
+fi

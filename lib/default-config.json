@@ -8,7 +8,7 @@
   },
   "pages": {
     "index": {
-      "template": "public/index.html",
+      "template": "static/index.html",
       "entries": "index"
     }
   },
@@ -33,5 +33,13 @@
   },
   "optimization": {
     "TODO:extract-common": false
+  },
+  "deploy": {
+    "target": "qiniu",
+    "config": {
+      "AccessKey": "",
+      "SecretKey": "",
+      "bucket": ""
+    }
   }
 }

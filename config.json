@@ -1,10 +1,5 @@
 {
-  "publicUrl": "/",
-  "srcDir": "src",
   "staticDir": "public",
-  "entries": {
-    "index": "src/index.js"
-  },
   "pages": {
     "index": {
       "template": "public/index.html",
@@ -17,6 +12,13 @@
       "config": {
         "presets": ["es2015", "react"]
       }
+    }
+  },
+  "deploy": {
+    "config": {
+      "accessKey": "5-SzjOzVz5eraEBchhV-fw6sHPZr1XmNcirpUs5i",
+      "secretKey": "GEL5MGFLjMTeJ9jFSAonU9KFBUshslv7ub278mZO",
+      "bucket": "fec-demo"
     }
   }
 }
