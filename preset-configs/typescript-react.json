@@ -1,0 +1,9 @@
+{
+  "entries": {
+    "index": "src/index.ts"
+  },
+  "transforms": {
+    "ts": "tsx",
+    "tsx": "tsx"
+  }
+}

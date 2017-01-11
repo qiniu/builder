@@ -1,0 +1,6 @@
+{
+  "transforms": {
+    "js": "jsx",
+    "jsx": "jsx"
+  }
+}

@@ -1,5 +1,5 @@
 {
-  "TODO:extends": "",
+  "extends": "",
   "publicUrl": "/",
   "srcDir": "src",
   "staticDir": "static",
@@ -9,7 +9,8 @@
   "pages": {
     "index": {
       "template": "static/index.html",
-      "entries": "index"
+      "entries": "index",
+      "path": ""
     }
   },
   "transforms": {
@@ -34,6 +35,7 @@
   "optimization": {
     "TODO:extract-common": false
   },
+  "devProxy": {},
   "deploy": {
     "target": "qiniu",
     "config": {
