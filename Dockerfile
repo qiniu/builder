@@ -1,4 +1,4 @@
-FROM fec-builder-base
+FROM daocloud.io/nighca/fec-builder-base:webpack2-44c6340
 MAINTAINER nighca "nighca@live.cn"
 
 WORKDIR /fec
