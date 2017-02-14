@@ -1,6 +1,7 @@
 {
   "transforms": {
     "js": "jsx",
-    "jsx": "jsx"
+    "jsx": "jsx",
+    "svg@jsx": "svg-sprite"
   }
 }

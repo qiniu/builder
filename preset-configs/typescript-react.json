@@ -4,6 +4,8 @@
   },
   "transforms": {
     "ts": "tsx",
-    "tsx": "tsx"
+    "tsx": "tsx",
+    "svg@ts": "svg-sprite",
+    "svg@tsx": "svg-sprite"
   }
 }
