@@ -4,6 +4,10 @@
 cd /fec/input
 yarn install --pure-lockfile
 
+# work around for postcss
+# TODO: remove me
+echo "/* work around for postcss */ module.exports = {}" > postcss.config.js
+
 cd /fec
 
 # 开发环境执行 serve
