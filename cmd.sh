@@ -2,8 +2,9 @@
 
 # 安装输入（被构建）项目的依赖
 cd /fec/input
-npm install
-cd ..
+yarn install --pure-lockfile
+
+cd /fec
 
 # 开发环境执行 serve
 if [[ "${BUILD_ENV}" == "development" ]]; then
