@@ -2,11 +2,10 @@
 
 # 安装输入（被构建）项目的依赖
 cd ${BUILD_ROOT:="/fec/input"}
-yarn install --pure-lockfile
 
-# work around for postcss
-# TODO: remove me
-echo "/* work around for postcss */ module.exports = {}" > postcss.config.js
+if [[ -f build-prepare.sh ]]; then
+  sh build-prepare.sh
+fi
 
 cd /fec
 
