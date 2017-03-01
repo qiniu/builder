@@ -1,5 +1,5 @@
 {
-  "TODO:extends": "",
+  "extends": "",
   "publicUrl": "/",
   "srcDir": "src",
   "staticDir": "static",
@@ -8,8 +8,9 @@
   },
   "pages": {
     "index": {
-      "template": "public/index.html",
-      "entries": "index"
+      "template": "static/index.html",
+      "entries": "index",
+      "path": ""
     }
   },
   "transforms": {
@@ -22,7 +23,9 @@
     "css": "css",
     "less": "less",
     "tpl": "raw",
-    "svg": "file",
+    "svg@js": "svg-sprite",
+    "svg@css": "file",
+    "svg@less": "file",
     "png": "file",
     "jpg": "file",
     "jpeg": "file",
@@ -33,5 +36,14 @@
   },
   "optimization": {
     "TODO:extract-common": false
+  },
+  "devProxy": {},
+  "deploy": {
+    "target": "qiniu",
+    "config": {
+      "AccessKey": "",
+      "SecretKey": "",
+      "bucket": ""
+    }
   }
 }

@@ -1,0 +1,11 @@
+{
+  "entries": {
+    "index": "src/index.ts"
+  },
+  "transforms": {
+    "ts": "tsx",
+    "tsx": "tsx",
+    "svg@ts": "svg-sprite",
+    "svg@tsx": "svg-sprite"
+  }
+}
