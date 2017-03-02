@@ -5,6 +5,7 @@ cd ${BUILD_ROOT:="/fec/input"}
 
 if [[ -f build-prepare.sh ]]; then
   sh build-prepare.sh
+  echo "[PREPARE] done."
 fi
 
 cd /fec
