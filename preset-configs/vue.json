@@ -1,5 +1,12 @@
 {
   "transforms": {
-    "vue": "vue"
+    "vue": {
+      "transformer": "vue",
+      "config": {
+        "loaders": {
+          "js": "babel-loader?{\"presets\":[[\"ES2015\"]]}"
+        }
+      }
+    }
   }
 }
