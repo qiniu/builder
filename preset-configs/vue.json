@@ -4,7 +4,7 @@
       "transformer": "vue",
       "config": {
         "loaders": {
-          "js": "babel-loader?{\"presets\":[[\"ES2015\"]]}"
+          "js": "babel-loader?{\"presets\":[[\"es2015\"]]}"
         }
       }
     }
