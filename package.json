@@ -29,7 +29,7 @@
     "style-loader": "^0.13.1",
     "svg-sprite-loader": "^0.2.1",
     "ts-loader": "^2.0.0",
-    "typescript": "2.0.10",
+    "typescript": "^2.3.4",
     "vue-loader": "^11.3.4",
     "vue-template-compiler": "^2.2.6",
     "walk": "^2.3.9",
