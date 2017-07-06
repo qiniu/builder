@@ -1,6 +1,9 @@
 {
   "name": "fec-builder",
   "version": "0.0.1",
+  "bin": {
+    "fec-builder": "./bin/fec-builder"
+  },
   "scripts": {
     "build": "node lib/index.js",
     "serve": "webpack-dev-server --hot --inline --port 80 --host 0.0.0.0 --public localhost:0 --config ./lib/webpack-config/index.js",
