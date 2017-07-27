@@ -56,11 +56,11 @@
 
 	```json
 	{
-		"/api": "http://portalv4.dev.qiniu.io"
+		"/api": "http://foobar.com"
 	}
 	```
 
-	表示把形如 `/api/*` 的请求代理到 `http://portalv4.dev.qiniu.io/api/*`
+	表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`
 
 * deploy
 
