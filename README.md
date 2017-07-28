@@ -42,8 +42,8 @@
 
 	2. 一个 object，包含两个字段：`transformer` 与 `config`
 
-		- transformer，即 transformer 名，如 `babel`
-		- transformer 的配置，如
+		- `transformer`: 即 transformer 名，如 `babel`
+		- `config`: 即 transformer 的配置，如
 			```json
 			{
 				"presets": ["es2015"]
