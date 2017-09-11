@@ -12,10 +12,10 @@ cd /fec
 
 # 开发环境执行 serve
 if [[ "${BUILD_ENV}" == "development" ]]; then
-  NODE_ENV=$BUILD_ENV BUILD_ROOT=$BUILD_ROOT npm run serve
+  npm run serve
 fi
 
 # 生产环境执行 build
 if [[ "${BUILD_ENV}" == "production" ]]; then
-  NODE_ENV=$BUILD_ENV BUILD_ROOT=$BUILD_ROOT npm run build
+  npm run build
 fi
