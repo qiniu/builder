@@ -20,7 +20,7 @@ const options = {
   },
   BUILD_ENV: {
     alias: 'e',
-    desc: 'the root path of your project (which contains build-config.json)',
+    desc: 'the environment for build, one of [ development, production ]',
     type: 'string',
     default: 'development'
   },
@@ -95,11 +95,11 @@ function applyArgv(argv) {
   if (argv.verbose) {
     logger.level = 'debug'
   }
-  
+
   if (argv.BUILD_ROOT) {
     paths.setBuildRoot(argv.BUILD_ROOT)
   }
-  
+
   if (argv.ENV_VARIABLES_FILE) {
     paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE)
   }
