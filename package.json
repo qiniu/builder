@@ -4,11 +4,7 @@
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
-  "scripts": {
-    "build": "node bin/fec-builder --build --upload",
-    "serve": "node bin/fec-builder -p 80 --root /fec/input",
-    "dev": "node bin/fec-builder -p 8080 --root /fec/input"
-  },
+  "scripts": {},
   "dependencies": {
     "autoprefixer": "^6.5.3",
     "babel-core": "^6.0.0",
