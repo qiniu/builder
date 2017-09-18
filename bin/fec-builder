@@ -14,56 +14,56 @@ const serve = require('../lib/serve')
 const options = {
   BUILD_ROOT: {
     alias: 'r',
-    desc: 'the root path of your project (which contains build-config.json)',
+    desc: 'Root path of your project (which contains build-config.json)',
     type: 'string',
     default: process.cwd()
   },
   BUILD_ENV: {
     alias: 'e',
-    desc: 'the environment for build, one of [ development, production ]',
+    desc: 'Environment for build, one of [ development, production ]',
     type: 'string',
     default: 'development'
   },
   PORT: {
     alias: 'p',
-    desc: 'dev server port',
+    desc: 'Port for dev server',
     type: 'number',
     default: 80
   },
   ENV_VARIABLES_FILE: {
     alias: 'f',
-    desc: 'target file path for env variables',
+    desc: 'Target file path for env variables',
     type: 'string'
   },
   verbose: {
     type: 'boolean',
-    desc: 'output more info',
+    desc: 'Output more info',
     default: false
   }
 }
 
 const commands = {
   clean: {
-    desc: 'clean result file',
+    desc: 'Clean result file',
     handler: clean
   },
   generate: {
-    desc: 'generate result file',
+    desc: 'Generate result file',
     handler: generate
   },
   upload: {
-    desc: 'upload result file',
+    desc: 'Upload result file',
     handler: upload
   },
   build: {
-    desc: 'clean, generate & upload result file',
+    desc: 'Clean, generate & upload result file',
     handler() {
       return clean().then(generate).then(upload)
     }
   },
   serve: {
     isDefault: true,
-    desc: 'launch the dev server',
+    desc: 'Launch the dev server',
     handler(args) {
       return serve(args.PORT)
     }
@@ -82,7 +82,10 @@ _.forEach(commands, ({ desc, handler, isDefault }, command) => {
   })
 })
 
-// add help
+// enable --version
+yargs.version()
+
+// enable help (-h, --help, help)
 yargs.help('h').alias('h', 'help')
 
 // set locale
