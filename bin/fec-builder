@@ -1,0 +1,115 @@
+#! /usr/bin/env node
+
+let yargs = require('yargs')
+const _ = require('lodash')
+
+const paths = require('../lib/utils/paths')
+const buildEnv = require('../lib/utils/build-env')
+const logger = require('../lib/utils/logger')
+const clean = require('../lib/clean')
+const generate = require('../lib/generate')
+const upload = require('../lib/upload')
+const serve = require('../lib/serve')
+
+const options = {
+  BUILD_ROOT: {
+    alias: 'r',
+    desc: 'the root path of your project (which contains build-config.json)',
+    type: 'string',
+    default: process.cwd()
+  },
+  BUILD_ENV: {
+    alias: 'e',
+    desc: 'the root path of your project (which contains build-config.json)',
+    type: 'string',
+    default: 'development'
+  },
+  PORT: {
+    alias: 'p',
+    desc: 'dev server port',
+    type: 'number',
+    default: 80
+  },
+  ENV_VARIABLES_FILE: {
+    alias: 'f',
+    desc: 'target file path for env variables',
+    type: 'string'
+  },
+  verbose: {
+    type: 'boolean',
+    desc: 'output more info',
+    default: false
+  }
+}
+
+const commands = {
+  clean: {
+    desc: 'clean result file',
+    handler: clean
+  },
+  generate: {
+    desc: 'generate result file',
+    handler: generate
+  },
+  upload: {
+    desc: 'upload result file',
+    handler: upload
+  },
+  build: {
+    desc: 'clean, generate & upload result file',
+    handler() {
+      return clean().then(generate).then(upload)
+    }
+  },
+  serve: {
+    isDefault: true,
+    desc: 'launch the dev server',
+    handler(args) {
+      return serve(args.PORT)
+    }
+  }
+}
+
+// define options
+yargs.options(options)
+
+// define commands
+_.forEach(commands, ({ desc, handler, isDefault }, command) => {
+  command = isDefault ? [command, '*'] : command
+  yargs.command(command, desc, () => {}, args => {
+    applyArgv(args)
+    handler(args).catch(handleError)
+  })
+})
+
+// add help
+yargs.help('h').alias('h', 'help')
+
+// set locale
+yargs.locale('en')
+
+// run
+const argv = yargs.argv
+
+function applyArgv(argv) {
+  if (argv.verbose) {
+    logger.level = 'debug'
+  }
+  
+  if (argv.BUILD_ROOT) {
+    paths.setBuildRoot(argv.BUILD_ROOT)
+  }
+  
+  if (argv.ENV_VARIABLES_FILE) {
+    paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE)
+  }
+
+  if (argv.BUILD_ENV) {
+    buildEnv.set(argv.BUILD_ENV)
+  }
+}
+
+function handleError(e) {
+  logger.fatal(e)
+  process.exit(1)
+}

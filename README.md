@@ -14,6 +14,10 @@
 
 	源码目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 `"src"`。
 
+* distDir
+
+	构建目标目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 `"dist"`。
+
 * entries
 
 	入口文件，要求是一个 object，key 为入口文件名（如 `"index"`），value 为入口文件相对于项目根目录的路径（如 `"src/index.js"`）。
@@ -49,6 +53,10 @@
 				"presets": ["es2015"]
 			}
 			```
+
+* envVariables
+
+	注入到代码中的环境变量
 
 * devProxy
 

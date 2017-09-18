@@ -3,6 +3,7 @@
   "publicUrl": "/",
   "srcDir": "src",
   "staticDir": "static",
+  "distDir": "dist",
   "entries": {
     "index": "src/index.js"
   },
@@ -35,6 +36,7 @@
     "eot": "file",
     "ttf": "file"
   },
+  "envVariables": {},
   "optimization": {
     "TODO:extract-common": false
   },
