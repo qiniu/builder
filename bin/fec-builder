@@ -1,6 +1,6 @@
 #! /usr/bin/env node
 
-let yargs = require('yargs')
+const yargs = require('yargs')
 const _ = require('lodash')
 
 const paths = require('../lib/utils/paths')
