@@ -41,10 +41,6 @@ npm 包与 docker 镜像的对比，优点：
 
 * 没有那么可靠，安装时可能会出错（往往错在 node 构建二进制包的部分），构建行为也不能保证完全一致
 
-### CHANGELOG
-
-https://c.163.com/hub#/m/repository/?repoId=52876
-
 ### build-config.json 的配置
 
 * extends
@@ -152,7 +148,7 @@ https://c.163.com/hub#/m/repository/?repoId=52876
 
 		表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
 
-### Changelog
+### CHANGELOG
 
 v1.4.0 及以后后的 Changelog 见 [Releases 页面](https://github.com/Front-End-Engineering-Cloud/builder/releases)
 
