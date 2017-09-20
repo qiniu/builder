@@ -1,6 +1,51 @@
-# builder
+# fec-builder
 
-### build-config 字段
+通用的前端构建工具，屏蔽业务无关的细节配置，开箱即用
+
+### 为什么
+
+背景：业界前端工程化方案的趋同
+
+* 模块化方案的统一
+* 样式 & 图片等非 Javascript 资源的引入手段有最佳实践
+* 性能优化的最佳实践趋同
+
+上述背景下，前端开发者不应该再需要去关心具体的工程化方案的细节与搭建，工程层面的性能优化措施等。fec-builder 的目标是，通过尽可能少的配置，引入包含业界最佳实践的工程化方案，让开发者得以专注于业务的实现。
+
+长期来看，前端项目不再需要向项目中引入 dev dependencies，也不再需要自己搭建构建、部署 & 持续集成的环境，通过向项目添加一个 `build-config.json` 文件，即可使用通用的服务完成这些过程。
+
+### 使用
+
+npm 包（适合本地开发用）
+
+```shell
+npm i fec-builder -g
+# 项目目录下执行
+fec-builder -p 8080
+```
+
+docker 镜像（适合持续集成环境使用）
+
+```shell
+docker pull hub.c.163.com/nighca/fec-builder:latest
+# 项目目录下执行
+docker run -v ${PWD}:/fec/input -e "BUILD_ENV=production" --rm fec-builder
+```
+
+npm 包与 docker 镜像的对比，优点：
+
+* 不需要安装 docker，通过淘宝镜像源的话装起来应该也比 docker pull image 快
+* 构建行为直接在宿主机运行，性能会比在容器中稍好，首次构建大约会快 20%
+
+缺点：
+
+* 没有那么可靠，安装时可能会出错（往往错在 node 构建二进制包的部分），构建行为也不能保证完全一致
+
+### CHANGELOG
+
+https://c.163.com/hub#/m/repository/?repoId=52876
+
+### build-config.json 的配置
 
 * extends
 
@@ -13,6 +58,10 @@
 * srcDir
 
 	源码目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 `"src"`。
+
+* distDir
+
+	构建目标目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 `"dist"`。
 
 * entries
 
@@ -50,6 +99,30 @@
 			}
 			```
 
+* envVariables
+
+	注入到代码中的环境变量，如配置：
+
+	```json
+	{
+		"envVariables": {
+			"API_PREFIX": "http://foobar.com/api"
+		}
+	}
+	```
+
+	则代码中：
+
+	```js
+	const apiUrl = API_PREFIX + 'test'
+	```
+
+	会被转换为：
+
+	```js
+	const apiUrl = "http://foobar.com/api" + 'test'
+	```
+
 * devProxy
 
 	需要 dev sever 进行代理的请求配置，要求是一个 object，key 为 api 路径前缀，value 为代理目标，如
@@ -78,3 +151,15 @@
 		```
 
 		表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
+
+### 常见问题
+
+###### CPU 占用率异常
+
+如发现 builder 的 npm 包执行出现 cpu 占用极高的情况（不编译时都 90%+），很可能是依赖 fsevents 没有正确安装，可以去 fec-builder 包的安装目录（一般是 `/usr/local/lib/node_modules/fec-builder`）下执行：
+
+```shell
+npm i fsevents@1.0.17
+```
+
+待安装成功后重新运行 fec-builder 即可

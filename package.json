@@ -4,11 +4,7 @@
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
-  "scripts": {
-    "build": "node lib/index.js",
-    "serve": "webpack-dev-server --hot --inline --port 80 --host 0.0.0.0 --public localhost:0 --config ./lib/webpack-config/index.js",
-    "dev": "NODE_ENV=development webpack-dev-server --hot --inline --port 8080 --host 0.0.0.0 --public localhost:0 --config ./lib/webpack-config/index.js"
-  },
+  "scripts": {},
   "dependencies": {
     "autoprefixer": "^6.5.3",
     "babel-core": "^6.0.0",
@@ -30,6 +26,7 @@
     "less": "^2.3.1",
     "less-loader": "^2.2.3",
     "lodash": "^4.17.4",
+    "log4js": "^2.3.3",
     "postcss-loader": "^2.0.6",
     "qiniu": "^6.1.13",
     "raw-loader": "^0.5.1",
@@ -44,6 +41,7 @@
     "vue-template-compiler": "^2.4.2",
     "walk": "^2.3.9",
     "webpack": "^2.6.1",
-    "webpack-dev-server": "^2.4.5"
+    "webpack-dev-server": "^2.4.5",
+    "yargs": "^8.0.2"
   }
 }

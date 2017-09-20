@@ -8,14 +8,14 @@ if [[ -f build-prepare.sh ]]; then
   echo "[PREPARE] done."
 fi
 
-cd /fec
+cd /fec/input
 
 # 开发环境执行 serve
 if [[ "${BUILD_ENV}" == "development" ]]; then
-  NODE_ENV=$BUILD_ENV BUILD_ROOT=$BUILD_ROOT npm run serve
+  node ../bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV serve
 fi
 
 # 生产环境执行 build
 if [[ "${BUILD_ENV}" == "production" ]]; then
-  NODE_ENV=$BUILD_ENV BUILD_ROOT=$BUILD_ROOT npm run build
+  node ../bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV build
 fi

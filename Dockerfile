@@ -20,6 +20,7 @@ RUN yarn install
 EXPOSE 80
 
 # copy other files
+COPY ./bin ./bin
 COPY ./lib ./lib
 COPY ./preset-configs ./preset-configs
 COPY ./cmd.sh ./cmd.sh

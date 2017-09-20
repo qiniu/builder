@@ -1,50 +1,118 @@
-#!/usr/bin/env node
+#! /usr/bin/env node
 
-const path = require('path')
-const child_process = require('child_process')
+const yargs = require('yargs')
+const _ = require('lodash')
 
-const webpackDevServerFile = path.resolve(
-  path.dirname(require.resolve('webpack-dev-server/package.json')),
-  'bin/webpack-dev-server.js'
-)
-
-const configFile = path.resolve(
-  __dirname,
-  '../lib/webpack-config/index.js'
-)
-
-const port = process.argv[2] || '80'
-
-const args = [
-  webpackDevServerFile,
-  '--hot',
-  '--inline',
-  '--port', port,
-  '--host', '0.0.0.0',
-  '--public', '0.0.0.0:' + port,
-  '--config', configFile
-]
+const paths = require('../lib/utils/paths')
+const buildEnv = require('../lib/utils/build-env')
+const logger = require('../lib/utils/logger')
+const clean = require('../lib/clean')
+const generate = require('../lib/generate')
+const upload = require('../lib/upload')
+const serve = require('../lib/serve')
 
 const options = {
-  cwd: process.cwd(),
-  env: {
-    NODE_ENV: 'development',
-    BUILD_ROOT: process.cwd(),
-    FORCE_COLOR: true
+  BUILD_ROOT: {
+    alias: 'r',
+    desc: 'Root path of your project (which contains build-config.json)',
+    type: 'string',
+    default: process.cwd()
   },
-  shell: true,
-  stdio: 'inherit'
+  BUILD_ENV: {
+    alias: 'e',
+    desc: 'Environment for build, one of [ development, production ]',
+    type: 'string',
+    default: 'development'
+  },
+  PORT: {
+    alias: 'p',
+    desc: 'Port for dev server',
+    type: 'number',
+    default: 80
+  },
+  ENV_VARIABLES_FILE: {
+    alias: 'f',
+    desc: 'Target file path for env variables',
+    type: 'string'
+  },
+  verbose: {
+    type: 'boolean',
+    desc: 'Output more info',
+    default: false
+  }
 }
 
-const devServer = child_process.spawn(
-  process.argv[0],
-  args,
-  options,
-  (err, stdout, stderr) => {
-    if (err) {
-      console.error('execFile failed: ', err)
-      process.exit(1)
-      return
+const commands = {
+  clean: {
+    desc: 'Clean result file',
+    handler: clean
+  },
+  generate: {
+    desc: 'Generate result file',
+    handler: generate
+  },
+  upload: {
+    desc: 'Upload result file',
+    handler: upload
+  },
+  build: {
+    desc: 'Clean, generate & upload result file',
+    handler() {
+      return clean().then(generate).then(upload)
+    }
+  },
+  serve: {
+    isDefault: true,
+    desc: 'Launch the dev server',
+    handler(args) {
+      return serve(args.PORT)
     }
   }
-)
+}
+
+// define options
+yargs.options(options)
+
+// define commands
+_.forEach(commands, ({ desc, handler, isDefault }, command) => {
+  command = isDefault ? [command, '*'] : command
+  yargs.command(command, desc, () => {}, args => {
+    applyArgv(args)
+    handler(args).catch(handleError)
+  })
+})
+
+// enable --version
+yargs.version()
+
+// enable help (-h, --help, help)
+yargs.help('h').alias('h', 'help')
+
+// set locale
+yargs.locale('en')
+
+// run
+const argv = yargs.argv
+
+function applyArgv(argv) {
+  if (argv.verbose) {
+    logger.level = 'debug'
+  }
+
+  if (argv.BUILD_ROOT) {
+    paths.setBuildRoot(argv.BUILD_ROOT)
+  }
+
+  if (argv.ENV_VARIABLES_FILE) {
+    paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE)
+  }
+
+  if (argv.BUILD_ENV) {
+    buildEnv.set(argv.BUILD_ENV)
+  }
+}
+
+function handleError(e) {
+  logger.fatal(e)
+  process.exit(1)
+}
