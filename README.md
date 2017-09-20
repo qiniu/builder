@@ -152,9 +152,73 @@ https://c.163.com/hub#/m/repository/?repoId=52876
 
 		表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
 
+### Changelog
+
+v1.4.0 及以后后的 Changelog 见 [Releases 页面](https://github.com/Front-End-Engineering-Cloud/builder/releases)
+
+v1.4.0 前的 Changelog：
+
+##### 1.3.7
+
+支持省略项目目录下的 postcss.config.js 文件
+
+##### 1.3.6
+
+开发模式下避免类型检查（ts-loader 配置 [`transpileOnly`](https://github.com/TypeStrong/ts-loader/#transpileonly-boolean-defaultfalse)）
+
+##### 1.3.5
+
+修复 dev server 在 `publicUrl` 的 path 不为 `/` 时不能正确实现 history fallback 的 bug
+
+##### 1.3.4
+
+升级 vue 构建依赖，修复 vue 构建的 bug
+
+##### 1.3.3
+
+更新默认的 babel 配置
+
+原先为 `"presets": ["es2015"]`
+
+更新为 `"presets": ["es2015", "es2016", "es2017", "stage-2"], "plugins": ["babel-plugin-transform-decorators-legacy"]`
+
+##### 1.3.2
+
+更新 README
+
+##### 1.3.1
+
+完善 vue 支持，对 vue 文件内部资源（如 js）采用与外部（如 js）一致的转换（transform）策略
+
+##### 1.3.0
+
+升级 typescript(2.3.4)
+
+##### 1.2.0
+
+升级 webpack(2.6.1)、webpack-dev-server(2.4.5)、extract-text-webpack-plugin(2.1.2)
+
+对于 css 内容，使用 contenthash 而不是 chunkhash（生成的 css 文件有独立的 hash）
+
+##### 1.1.2
+
+debug babel 配置
+
+##### 1.1.1
+
+支持对 vue-loader 进行配置
+
+##### 1.1.0
+
+支持 vue
+
+##### 1.0.0
+
+可用
+
 ### 常见问题
 
-###### CPU 占用率异常
+##### CPU 占用率异常
 
 如发现 builder 的 npm 包执行出现 cpu 占用极高的情况（不编译时都 90%+），很可能是依赖 fsevents 没有正确安装，可以去 fec-builder 包的安装目录（一般是 `/usr/local/lib/node_modules/fec-builder`）下执行：
 
