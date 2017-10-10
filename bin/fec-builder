@@ -35,6 +35,10 @@ const options = {
     desc: 'Target file path for env variables',
     type: 'string'
   },
+  ISOMORPHIC_TOOLS_FILE: {
+    desc: 'Target file path for isomorphic-tools.js for ssr',
+    type: 'string'
+  },
   verbose: {
     type: 'boolean',
     desc: 'Output more info',
@@ -105,6 +109,10 @@ function applyArgv(argv) {
 
   if (argv.ENV_VARIABLES_FILE) {
     paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE)
+  }
+
+  if (argv.ISOMORPHIC_TOOLS_FILE) {
+    paths.setIsomorphicToolsFilePath(argv.ISOMORPHIC_TOOLS_FILE)
   }
 
   if (argv.BUILD_ENV) {
