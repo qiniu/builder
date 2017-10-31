@@ -12,10 +12,10 @@ cd /fec/input
 
 # 开发环境执行 serve
 if [[ "${BUILD_ENV}" == "development" ]]; then
-  node ../bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV serve
+  node /fec/bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV serve
 fi
 
 # 生产环境执行 build
 if [[ "${BUILD_ENV}" == "production" ]]; then
-  node ../bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV build
+  node /fec/bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV build
 fi

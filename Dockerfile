@@ -34,5 +34,8 @@ COPY ./lib ./lib
 COPY ./preset-configs ./preset-configs
 COPY ./cmd.sh ./cmd.sh
 
+# use bash instead of sh to support usage of source
+RUN rm /bin/sh && ln -sf /bin/bash /bin/sh
+
 # run script
 CMD ["/fec/cmd.sh"]
