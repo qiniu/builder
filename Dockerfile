@@ -1,5 +1,5 @@
 FROM node:6.9.1
-MAINTAINER nighca "nighca@live.cn"
+LABEL maintainer="nighca@live.cn"
 
 WORKDIR /fec
 
