@@ -19,7 +19,7 @@
       "transformer": "babel",
       "config": {
         "presets": ["env", "stage-2"],
-        "plugins": ["babel-plugin-transform-decorators-legacy"]
+        "plugins": ["babel-plugin-transform-runtime", "babel-plugin-transform-decorators-legacy"]
       }
     },
     "css": "css",
