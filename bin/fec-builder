@@ -121,6 +121,11 @@ function applyArgv(argv) {
 }
 
 function handleError(e) {
-  logger.fatal(e)
+  if (Array.isArray(e)) {
+    e.forEach(item => logger.error(item))
+  } else {
+    logger.error(e)
+  }
+  logger.fatal('encountered error, exit 1')
   process.exit(1)
 }
