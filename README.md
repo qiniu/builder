@@ -19,6 +19,8 @@
 npm 包（适合本地开发用）
 
 ```shell
+# fec-builder 使用 npm-shrinkwrap.json 锁定依赖版本，yarn 不会识别 npm-shrinkwrap.json
+# 这里请使用 npm 安装全局包
 npm i fec-builder -g
 # 项目目录下执行
 fec-builder -p 8080
@@ -85,7 +87,7 @@ npm 包与 docker 镜像的对比，优点：
 
 	1. 直接使用 transformer 名，如 `"css"`、`"less"`
 
-	2. 一个 object，包含两个字段：`transformer` 与 `config`
+	2. 一个 object，包含两个字段：`transformer` 与 `config`，具体各 transformer 对应的可配置项见下方 transformer 的配置
 
 		- `transformer`: 即 transformer 名，如 `babel`
 		- `config`: 即 transformer 的配置，如
@@ -147,6 +149,23 @@ npm 包与 docker 镜像的对比，优点：
 		```
 
 		表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
+
+### transformer 的配置
+
+对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置，这里是不同 transformer 支持的配置项：
+
+##### `ts`
+
+* `transpileOnlyWhenDev: boolean = true`
+
+	对于 ts 的转换，builder 会默认在开发模式跳过类型检查，提高构建效率，避免过严的限制；这个行为可以通过配置 `transpileOnlyWhenDev` 为 `false` 禁用，即，在开发时也进行类型检查
+
+##### `tsx`
+
+* `transpileOnlyWhenDev: boolean = true`
+
+	同 `ts` 的 `transpileOnlyWhenDev` 配置
+
 
 ### CHANGELOG
 
