@@ -38,7 +38,7 @@
     "stylus-loader": "^3.0.1",
     "svg-sprite-loader": "^0.2.1",
     "ts-loader": "^2.0.0",
-    "typescript": "^2.3.4",
+    "typescript": "^2.4.2",
     "vue-loader": "^13.0.4",
     "vue-template-compiler": "^2.4.2",
     "walk": "^2.3.9",
