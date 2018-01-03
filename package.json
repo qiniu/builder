@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "1.5.1",
+  "version": "1.5.2-beta.1",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
