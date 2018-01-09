@@ -121,6 +121,10 @@ npm 包与 docker 镜像的对比，优点：
 	const apiUrl = "http://foobar.com/api" + 'test'
 	```
 
+* targets
+
+  设置代码的目标版本，同时设定 babel-env 和 autoprefix，同时 scss/less/stylus 里的 config.autoprefixOptions 被移除
+
 * devProxy
 
 	需要 dev sever 进行代理的请求配置，要求是一个 object，key 为 api 路径前缀，value 为代理目标，如

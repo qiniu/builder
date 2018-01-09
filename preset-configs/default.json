@@ -41,6 +41,9 @@
     "ttf": "file"
   },
   "envVariables": {},
+  "targets": {
+    "browsers": ["last 2 versions"]
+  },
   "optimization": {
     "TODO:extract-common": false
   },
