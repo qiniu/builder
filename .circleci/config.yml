@@ -1,0 +1,21 @@
+version: 2
+jobs:
+    build:
+        working_directory: ~/workspace
+        docker:
+            - image: circleci/node:8.9
+        steps:
+            - checkout
+            - restore_cache:
+                key: add-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
+            - run: git submodule update --init
+            - run:
+                name: Install dependencies
+                command: npm i --registry https://registry.npmjs.org
+            - run:
+                name: Build samples
+                command: ./build-samples.sh
+            - save_cache:
+                key: add-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
+                paths:
+                    - "node_modules"
