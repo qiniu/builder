@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -o errexit
+
 echo 'Building sample/hello-world!'
 cd samples/hello-world
 ../../bin/fec-builder build
