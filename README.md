@@ -123,7 +123,7 @@ npm 包与 docker 镜像的对比，优点：
 
 * targets
 
-  设置代码的目标版本，同时设定 babel-env 和 autoprefix，同时 scss/less/stylus 里的 config.autoprefixOptions 被移除
+  设置代码的目标版本，同时设定 babel-env 和 autoprefix，autoprefix 只取其中的 browsers 部分
 
 * devProxy
 
