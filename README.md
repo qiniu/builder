@@ -77,6 +77,17 @@ npm 包与 docker 镜像的对比，优点：
 
 		页面上的入口文件列表，在只有一个入口文件的情况下，可以直接传入一个字符串，即该入口文件名（如 `"index"`）；也可以传入一个数组，数组每一项为一个入口文件名，（如 `["sidebar", "index"]`）
 
+	- vendor
+
+		公用固定依赖集合，使用字段信息如 entries ，但是不支持数组
+		如：vendor.js
+			```javascript
+			import 'react'
+			import 'moment'
+			import 'lodash'
+			// ...
+			```
+
 	- path
 
 		在应用中该页面的路径正则（如 `""`、`"^\\/financial\\/"`），dev server 在请求匹配对应 path 时会返回该页面的内容作为响应。
