@@ -1,13 +1,20 @@
+workflows:
+    version: 2
+    build:
+        jobs:
+            - build_node_6
+            - build_node_8
+
 version: 2
 jobs:
-    build:
+    base: &base
         working_directory: ~/workspace
         docker:
             - image: circleci/node:6.11
         steps:
             - checkout
             - restore_cache:
-                key: add-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
+                key: add-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
             - run: git submodule update --init
             - run:
                 name: Install dependencies
@@ -16,6 +23,16 @@ jobs:
                 name: Build samples
                 command: ./build-samples.sh
             - save_cache:
-                key: add-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
+                key: add-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
                 paths:
                     - "node_modules"
+
+    build_node_6:
+        <<: *base
+        docker:
+        - image: circleci/node:6.11
+
+    build_node_8:
+        <<: *base
+        docker:
+        - image: circleci/node:8.9
