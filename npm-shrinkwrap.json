@@ -1296,7 +1296,7 @@
         "babel-plugin-transform-regenerator": "6.24.1",
         "browserslist": "2.9.1",
         "invariant": "2.2.2",
-        "semver": "5.3.0"
+        "semver": "5.5.0"
       },
       "dependencies": {
         "browserslist": {
@@ -7250,7 +7250,7 @@
         "mailgun-js": "0.7.15",
         "nodemailer": "2.7.2",
         "redis": "2.8.0",
-        "semver": "5.3.0",
+        "semver": "5.5.0",
         "slack-node": "0.2.0",
         "streamroller": "0.6.0"
       },
@@ -7896,6 +7896,13 @@
         "semver": "5.3.0",
         "tar": "2.2.1",
         "which": "1.2.12"
+      },
+      "dependencies": {
+        "semver": {
+          "version": "5.3.0",
+          "resolved": "https://registry.npmjs.org/semver/-/semver-5.3.0.tgz",
+          "integrity": "sha1-myzl094C0XxgEq0yaqa00M9U+U8="
+        }
       }
     },
     "node-libs-browser": {
@@ -8056,7 +8063,7 @@
       "requires": {
         "hosted-git-info": "2.2.0",
         "is-builtin-module": "1.0.0",
-        "semver": "5.3.0",
+        "semver": "5.5.0",
         "validate-npm-package-license": "3.0.1"
       }
     },
@@ -10057,9 +10064,9 @@
       }
     },
     "semver": {
-      "version": "5.3.0",
-      "resolved": "https://registry.npmjs.org/semver/-/semver-5.3.0.tgz",
-      "integrity": "sha1-myzl094C0XxgEq0yaqa00M9U+U8="
+      "version": "5.5.0",
+      "resolved": "https://registry.npmjs.org/semver/-/semver-5.5.0.tgz",
+      "integrity": "sha512-4SJ3dm0WAwWy/NVeioZh5AntkdJoWKxHxcmyP622fOkgHa4z3R0TdBJICINyaSDE6uNwVc8gZr+ZinwZAH4xIA=="
     },
     "semver-regex": {
       "version": "1.0.0",
@@ -10071,7 +10078,7 @@
       "resolved": "https://registry.npmjs.org/semver-truncate/-/semver-truncate-1.1.2.tgz",
       "integrity": "sha1-V/Qd5pcHpicJp+AQS6IRcQnqR+g=",
       "requires": {
-        "semver": "5.3.0"
+        "semver": "5.5.0"
       }
     },
     "send": {
@@ -11364,7 +11371,7 @@
         "chalk": "2.3.0",
         "enhanced-resolve": "3.1.0",
         "loader-utils": "1.1.0",
-        "semver": "5.3.0"
+        "semver": "5.5.0"
       },
       "dependencies": {
         "ansi-styles": {
@@ -12498,7 +12505,7 @@
         "colors": "1.1.2",
         "fs-extra": "0.30.0",
         "require-hacker": "3.0.1",
-        "semver": "5.3.0",
+        "semver": "5.5.0",
         "sync-request": "3.0.1",
         "uglify-js": "2.8.28"
       }

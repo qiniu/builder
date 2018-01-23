@@ -55,5 +55,8 @@
       "SecretKey": "",
       "bucket": ""
     }
+  },
+  "engines": {
+    "builder": "*"
   }
 }
