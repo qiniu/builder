@@ -154,6 +154,24 @@ npm 包与 docker 镜像的对比，优点：
 
 		表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
 
+* engines
+
+	配置对构建环境的要求。目前支持字段：`builder`
+
+	- builder 配置项目所要求的 fec-builder 版本范围，格式遵循 [node-semver range](https://github.com/npm/node-semver#ranges)
+
+		在统一的构建环境中，服务应依据该版本范围去选择合适的 builder 版本对项目进行构建；本地开发时，若本地使用的 builder 版本不匹配项目所配置的版本范围，会输出警告信息，但不影响使用
+
+	示例：
+
+	```json
+	{
+		"engines": {
+			"builder": "^1.5.0"
+		}
+	}
+	```
+
 ### transformer 的配置
 
 对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置，这里是不同 transformer 支持的配置项：

@@ -6,6 +6,7 @@ const _ = require('lodash')
 const paths = require('../lib/utils/paths')
 const buildEnv = require('../lib/utils/build-env')
 const logger = require('../lib/utils/logger')
+const prepare = require('../lib/prepare')
 const clean = require('../lib/clean')
 const generate = require('../lib/generate')
 const upload = require('../lib/upload')
@@ -82,7 +83,10 @@ _.forEach(commands, ({ desc, handler, isDefault }, command) => {
   command = isDefault ? [command, '*'] : command
   yargs.command(command, desc, () => {}, args => {
     applyArgv(args)
-    handler(args).catch(handleError)
+
+    prepare().then(
+      () => handler(args)
+    ).catch(handleError)
   })
 })
 
