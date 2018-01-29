@@ -11462,9 +11462,9 @@
       "integrity": "sha1-hnrHTjhkGHsdPUfZlqeOxciDB3c="
     },
     "typescript": {
-      "version": "2.6.1",
-      "resolved": "http://registry.npm.taobao.org/typescript/download/typescript-2.6.1.tgz",
-      "integrity": "sha1-7znN6ierrAtQAkLWcmq5DgyEZjE="
+      "version": "2.6.2",
+      "resolved": "https://registry.npmjs.org/typescript/-/typescript-2.6.2.tgz",
+      "integrity": "sha1-PFtv1/beCRQmkCfwPAlGdY92c6Q="
     },
     "ua-parser-js": {
       "version": "0.7.17",

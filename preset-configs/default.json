@@ -33,6 +33,7 @@
     "svg@sass": "file",
     "svg@scss": "file",
     "png": "file",
+    "gif": "file",
     "jpg": "file",
     "jpeg": "file",
     "woff": "file",
