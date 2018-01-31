@@ -176,11 +176,11 @@ npm 包与 docker 镜像的对比，优点：
 
 	优化项
 
-	- extract-common
+	- extractCommon
 
-		是否处理 common-chunks
+		是否抽取 entries 间的公共内容到单独的文件中
 
-	- extract-vendor
+	- extractVendor
 
 		公用固定依赖集合，使用字段信息如 page.entries ，但是不支持数组
 		如：vendor.js
@@ -190,7 +190,6 @@ npm 包与 docker 镜像的对比，优点：
 			import 'lodash'
 			// ...
 			```
-		注：如果设置了改自动，则 extract-common 也开启
 
 ### transformer 的配置
 

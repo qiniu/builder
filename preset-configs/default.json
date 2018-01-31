@@ -46,8 +46,8 @@
     "browsers": ["last 2 versions"]
   },
   "optimization": {
-    "extract-common": true,
-    "extract-vendor": ""
+    "extractCommon": true,
+    "extractVendor": ""
   },
   "devProxy": {},
   "deploy": {
