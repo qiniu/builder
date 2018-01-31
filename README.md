@@ -172,6 +172,25 @@ npm 包与 docker 镜像的对比，优点：
 	}
 	```
 
+* optimization
+
+	优化项
+
+	- extractCommon
+
+		是否抽取 entries 间的公共内容到单独的文件中
+
+	- extractVendor
+
+		公用固定依赖集合，使用字段信息如 page.entries ，但是不支持数组
+		如：vendor.js
+			```javascript
+			import 'react'
+			import 'moment'
+			import 'lodash'
+			// ...
+			```
+
 ### transformer 的配置
 
 对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置，这里是不同 transformer 支持的配置项：
