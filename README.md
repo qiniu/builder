@@ -193,6 +193,10 @@ npm 包与 docker 镜像的对比，优点：
 			// ...
 			```
 
+	- imageCompression
+
+		是否压缩图片(png, jpe?g, gif, svg)
+
 ### transformer 的配置
 
 对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置，这里是不同 transformer 支持的配置项：
