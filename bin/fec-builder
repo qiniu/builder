@@ -31,6 +31,11 @@ const options = {
     type: 'number',
     default: 80
   },
+  BUILD_CONFIG_FILE: {
+    alias: 'c',
+    desc: 'Path of build config file. If provided, it will be used superior to build-config.json under BUILD_ROOT',
+    type: 'string'
+  },
   ENV_VARIABLES_FILE: {
     alias: 'f',
     desc: 'Target file path for env variables',
@@ -109,6 +114,10 @@ function applyArgv(argv) {
 
   if (argv.BUILD_ROOT) {
     paths.setBuildRoot(argv.BUILD_ROOT)
+  }
+
+  if (argv.BUILD_CONFIG_FILE) {
+    paths.setBuildConfigFilePath(argv.BUILD_CONFIG_FILE)
   }
 
   if (argv.ENV_VARIABLES_FILE) {
