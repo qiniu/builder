@@ -19,13 +19,19 @@
       "transformer": "babel",
       "config": {
         "presets": ["env", "stage-2"],
-        "plugins": ["babel-plugin-transform-runtime", "babel-plugin-transform-decorators-legacy"]
+        "plugins": [
+          "babel-plugin-syntax-dynamic-import",
+          "babel-plugin-transform-runtime",
+          "babel-plugin-transform-decorators-legacy",
+          "babel-plugin-transform-class-properties"
+        ]
       }
     },
     "css": "css",
     "less": "less",
     "sass": "sass",
     "scss": "sass",
+    "styl": "stylus",
     "tpl": "raw",
     "svg@js": "svg-sprite",
     "svg@css": "file",
