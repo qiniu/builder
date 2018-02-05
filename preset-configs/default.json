@@ -54,7 +54,7 @@
   "optimization": {
     "extractCommon": true,
     "extractVendor": "",
-    "imageCompression": true
+    "compressImage": true
   },
   "devProxy": {},
   "deploy": {

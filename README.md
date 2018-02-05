@@ -193,7 +193,7 @@ npm 包与 docker 镜像的对比，优点：
 			// ...
 			```
 
-	- imageCompression
+	- compressImage
 
 		是否压缩图片(png, jpe?g, gif, svg)
 
