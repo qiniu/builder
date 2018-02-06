@@ -1,0 +1,19 @@
+{
+  "extends": "default",
+  "transforms": {
+    "js": {
+      "transformer": "babel",
+      "config": {
+        "presets": ["env", "stage-2"],
+        "plugins": [
+          "babel-plugin-syntax-dynamic-import",
+          "babel-plugin-transform-runtime",
+          "babel-plugin-angularjs-annotate",
+          "babel-plugin-transform-decorators-legacy",
+          "babel-plugin-transform-class-properties"
+        ]
+      }
+    },
+    "html": "html"
+  }
+}
