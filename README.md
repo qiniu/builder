@@ -195,7 +195,7 @@ npm 包与 docker 镜像的对比，优点：
 
 	- compressImage
 
-		是否压缩图片(png, jpe?g, gif, svg)
+		是否压缩图片(png, jpe?g, gif)
 
 ### transformer 的配置
 
