@@ -49,6 +49,8 @@ npm 包与 docker 镜像的对比，优点：
 
 	作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json)，目前可用的内置配置[见此](https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs)。若该项值置为 `""`，则不会基于任何已有配置进行扩展。
 
+	也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+
 * publicUrl
 
 	静态资源被发布后的线上 URL，一般直接使用存放静态资源的 bucket 对应的公开域名即可，如 `"https://o4jiepyc4.qnssl.com/"`。
