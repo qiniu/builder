@@ -180,18 +180,17 @@ npm 包与 docker 镜像的对比，优点：
 
 	- extractCommon
 
-		是否抽取 entries 间的公共内容到单独的文件中
+		控制是否抽取 entries 间的公共内容到单独的文件中，在有多个 entry 时可以减少结果文件的总体积，`true` 启用，`false` 禁用
 
 	- extractVendor
 
-		公用固定依赖集合，使用字段信息如 page.entries ，但是不支持数组
-		如：vendor.js
-			```javascript
-			import 'react'
-			import 'moment'
-			import 'lodash'
-			// ...
-			```
+		控制是否抽取固定依赖（vendor），要求传入一个入口文件名（`entry`），该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：
+
+		```javascript
+		import 'react'
+		import 'moment'
+		import 'lodash'
+		```
 
 	- compressImage
 
