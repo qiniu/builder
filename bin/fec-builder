@@ -49,6 +49,11 @@ const options = {
     type: 'boolean',
     desc: 'Output more info',
     default: false
+  },
+  WEBPACK_CONFIG_FILE: {
+    alias: 'w',
+    desc: 'Path of extra webpack config file. If provided, it will be used to extend default webpack config',
+    type: 'string'
   }
 }
 
@@ -126,6 +131,10 @@ function applyArgv(argv) {
 
   if (argv.ISOMORPHIC_TOOLS_FILE) {
     paths.setIsomorphicToolsFilePath(argv.ISOMORPHIC_TOOLS_FILE)
+  }
+
+  if (argv.WEBPACK_CONFIG_FILE) {
+    paths.setWebpackConfigFilePath(argv.WEBPACK_CONFIG_FILE)
   }
 
   if (argv.BUILD_ENV) {
