@@ -145,6 +145,5 @@ function handleError(e) {
     e && logger.error(e)
   }
   logger.fatal('encountered error, exit 1')
-  // TODO: not working for test script (it exits with 0)
   process.exit(1)
 }
