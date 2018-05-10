@@ -196,6 +196,15 @@ npm 包与 docker 镜像的对比，优点：
 
 		是否压缩图片(png, jpe?g, gif)
 
+* test
+
+	测试相关配置
+
+	- setupFiles
+
+		需要在每个测试用例前执行的脚本，数组，每项值为脚本相对于项目根目录的路径，如：`["test/setup.js"]`
+
+
 ### transformer 的配置
 
 对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置，这里是不同 transformer 支持的配置项：
