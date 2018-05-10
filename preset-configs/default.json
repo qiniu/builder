@@ -65,6 +65,10 @@
       "bucket": ""
     }
   },
+  "test": {
+    "setupFiles": [],
+    "moduleNameMapper": {}
+  },
   "engines": {
     "builder": "*"
   }
