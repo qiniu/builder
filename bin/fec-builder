@@ -11,6 +11,7 @@ const clean = require('../lib/clean')
 const generate = require('../lib/generate')
 const upload = require('../lib/upload')
 const serve = require('../lib/serve')
+const test = require('../lib/test')
 
 const options = {
   BUILD_ROOT: {
@@ -64,6 +65,10 @@ const commands = {
   upload: {
     desc: 'Upload result file',
     handler: upload
+  },
+  test: {
+    desc: 'Run unit test cases',
+    handler: test
   },
   build: {
     desc: 'Clean, generate & upload result file',
@@ -137,7 +142,7 @@ function handleError(e) {
   if (Array.isArray(e)) {
     e.forEach(item => logger.error(item))
   } else {
-    logger.error(e)
+    e && logger.error(e)
   }
   logger.fatal('encountered error, exit 1')
   process.exit(1)

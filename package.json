@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "1.8.0",
+  "version": "1.9.0-beta.1",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
@@ -17,15 +17,18 @@
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.24.1",
     "babel-preset-stage-2": "^6.24.1",
+    "copy-webpack-plugin": "^4.5.1",
     "css-loader": "^0.28.7",
     "del": "^3.0.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "file-loader": "^1.1.5",
     "fork-ts-checker-webpack-plugin": "^0.3.0",
+    "glob": "^7.1.2",
     "html-loader": "^0.5.5",
     "html-webpack-plugin": "^2.30.1",
     "image-webpack-loader": "^3.4.2",
     "immutability-helper": "^2.5.0",
+    "jest-cli": "^22.4.3",
     "json-loader": "^0.5.7",
     "less": "^2.7.3",
     "less-loader": "^4.0.5",
