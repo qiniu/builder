@@ -17,5 +17,5 @@ fi
 
 # 生产环境执行 build
 if [[ "${BUILD_ENV}" == "production" ]]; then
-  node /fec/bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV build
+  node --max_old_space_size=4096 /fec/bin/fec-builder --verbose -r $BUILD_ROOT -e $BUILD_ENV build
 fi
