@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "1.9.0",
+  "version": "1.9.1",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
@@ -47,6 +47,7 @@
     "svg-sprite-loader": "^3.4.1",
     "ts-loader": "^3.1.1",
     "typescript": "^2.6.2",
+    "uglifyjs-webpack-plugin": "^1.2.7",
     "vue-loader": "^13.5.0",
     "vue-template-compiler": "^2.5.8",
     "walk": "^2.3.9",
