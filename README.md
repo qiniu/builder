@@ -303,3 +303,7 @@ npm i fsevents@1.0.17
 Tree Shaking 功能的生效需要由 Webpack 来处理 ES6 的 module 格式，所以在 Webpack 之前（loader 中）对 ES6 module 进行转换（如转换为 CommonJS 格式）的话，会导致构建没有 Tree Shaking 的效果。如果你在使用 Typescript，很可能是配置 Typescript 输出了 CommonJS 的结果。
 
 修正做法：配置项目根目录下的 `tsconfig.json`，配置其中 `compilerOptions` 中的 `module` 值为 `ES6` 即可；或者不对 `compilerOptions.module` 进行配置，直接配置 `compilerOptions.target` 为 `ES6` 或更高（`ES2016`, `ES2017` 或 `ESNext`）亦可。
+
+##### Error: EACCES, mkdir '/usr/local/lib/node_modules/fec-builder/node_modules/node-sass'
+
+参考 https://github.com/sass/node-sass/issues/1098
