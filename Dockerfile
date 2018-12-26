@@ -37,7 +37,7 @@ COPY ./cmd.sh ./cmd.sh
 # use bash instead of sh to support usage of source
 RUN rm /bin/sh && ln -sf /bin/bash /bin/sh
 
-#clean npm cache
+# clean npm cache
 RUN npm cache clean  --force
 
 # run script
