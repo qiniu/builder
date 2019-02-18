@@ -64,8 +64,5 @@
     "webpack-dev-server": "^3.1.14",
     "webpack-isomorphic-tools": "^3.0.5",
     "yargs": "^10.0.3"
-  },
-  "devDependencies": {
-    "@babel/plugin-proposal-class-properties": "^7.3.3"
   }
 }
