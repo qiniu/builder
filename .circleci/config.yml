@@ -21,7 +21,9 @@ jobs:
                 command: npm i --registry https://registry.npmjs.org
             - run:
                 name: Build samples
-                command: ./build-samples.sh
+                command: |
+                    npm i -g npm
+                    ./build-samples.sh
             - save_cache:
                 key: add-{{ .Environment.CIRCLE_JOB }}-{{ .Branch }}-{{ checksum "npm-shrinkwrap.json" }}
                 paths:
