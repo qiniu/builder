@@ -58,7 +58,6 @@
     "browsers": ["last 2 versions"]
   },
   "optimization": {
-    "extractCommon": true,
     "extractVendor": "",
     "compressImage": false
   },
