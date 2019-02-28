@@ -4,8 +4,19 @@
       "transformer": "jsx",
       "config": {
         "babelOptions": {
-          "presets": ["env", "stage-2"],
-          "plugins": ["babel-plugin-transform-runtime", "babel-plugin-transform-decorators-legacy"]
+          "presets": ["@babel/preset-env"],
+          "plugins": [
+            "@babel/plugin-transform-runtime",
+            ["@babel/plugin-proposal-decorators", { "legacy": true }],
+            "@babel/plugin-proposal-function-sent",
+            "@babel/plugin-proposal-export-namespace-from",
+            "@babel/plugin-proposal-numeric-separator",
+            "@babel/plugin-proposal-throw-expressions",
+            "@babel/plugin-syntax-dynamic-import",
+            "@babel/plugin-syntax-import-meta",
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-proposal-json-strings"
+          ]
         }
       }
     },
@@ -13,8 +24,19 @@
       "transformer": "jsx",
       "config": {
         "babelOptions": {
-          "presets": ["env", "stage-2"],
-          "plugins": ["babel-plugin-transform-runtime", "babel-plugin-transform-decorators-legacy"]
+          "presets": ["@babel/preset-env"],
+          "plugins": [
+            "@babel/plugin-transform-runtime",
+            ["@babel/plugin-proposal-decorators", { "legacy": true }],
+            "@babel/plugin-proposal-function-sent",
+            "@babel/plugin-proposal-export-namespace-from",
+            "@babel/plugin-proposal-numeric-separator",
+            "@babel/plugin-proposal-throw-expressions",
+            "@babel/plugin-syntax-dynamic-import",
+            "@babel/plugin-syntax-import-meta",
+            "@babel/plugin-proposal-class-properties",
+            "@babel/plugin-proposal-json-strings"
+          ]
         }
       }
     },
