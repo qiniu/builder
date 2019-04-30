@@ -12,6 +12,15 @@ RUN cd $(npm root -g)/npm \
 # upgrade npm
 RUN npm install -g npm@5.4.2
 
+RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
+    echo "deb http://deb.debian.org/debian/ jessie main" >/etc/apt/sources.list && \
+    echo "deb-src http://deb.debian.org/debian/ jessie main" >>/etc/apt/sources.list && \
+    echo "deb http://security.debian.org/ jessie/updates main" >>/etc/apt/sources.list && \
+    echo "deb-src http://security.debian.org/ jessie/updates main" >>/etc/apt/sources.list && \
+    echo "deb http://archive.debian.org/debian jessie-backports main" >>/etc/apt/sources.list && \
+    echo "deb-src http://archive.debian.org/debian jessie-backports main" >>/etc/apt/sources.list && \
+    echo "Acquire::Check-Valid-Until "false";" >>/etc/apt/apt.conf
+
 # install yarn (https://yarnpkg.com/en/docs/install#linux-tab)
 RUN apt-get update && apt-get install -y apt-transport-https
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
