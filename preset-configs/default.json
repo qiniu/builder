@@ -34,7 +34,14 @@
       }
     },
     "css": "css",
-    "less": "less",
+    "less": {
+      "transformer": "less",
+      "config": {
+        "options": {
+          "javascriptEnabled": true
+        }
+      }
+    },
     "sass": "sass",
     "scss": "sass",
     "styl": "stylus",
