@@ -1,7 +1,7 @@
 {
   "extends": "react",
   "entries": {
-    "index": "src/index.ts"
+    "index": "src/index.tsx"
   },
   "transforms": {
     "ts": "tsx",
