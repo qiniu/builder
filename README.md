@@ -184,7 +184,7 @@ npm 包与 docker 镜像的对比，优点：
 
 	- extractVendor
 
-		控制是否抽取固定依赖（vendor），要求传入一个入口文件名（`entry`），该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：
+		控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：
 
 		```javascript
 		import 'react'
@@ -194,7 +194,11 @@ npm 包与 docker 镜像的对比，优点：
 
 	- compressImage
 
-		是否压缩图片(png, jpe?g, gif)
+		是否压缩图片(png, jpe?g, gif)，`true` 启用，`false` 禁用
+
+	- transformDeps
+
+		是否对第三方依赖包（node_modules 中的内容）的 Javascript 内容进行转换（builder 默认会跳过对依赖包 Javascript 内容的转换，以提升构建效率）。这里传入 `true` 表示全部进行转换，`false` 则全部不转换；也可以传入包名列表来指定需要转换的第三方依赖包，如传入 `[ "react", "mobx" ]`，表示仅对包 react 与包 mobx 的 Javascript 内容进行转换
 
 * test
 

@@ -30,7 +30,8 @@
           "@babel/plugin-syntax-import-meta",
           "@babel/plugin-proposal-class-properties",
           "@babel/plugin-proposal-json-strings"
-        ]
+        ],
+        "sourceType": "unambiguous"
       }
     },
     "css": "css",
@@ -67,7 +68,8 @@
   "optimization": {
     "extractCommon": true,
     "extractVendor": "",
-    "compressImage": false
+    "compressImage": false,
+    "transformDeps": false
   },
   "devProxy": {},
   "deploy": {

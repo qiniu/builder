@@ -16,7 +16,8 @@
             "@babel/plugin-syntax-import-meta",
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-json-strings"
-          ]
+          ],
+          "sourceType": "unambiguous"
         }
       }
     },
@@ -36,7 +37,8 @@
             "@babel/plugin-syntax-import-meta",
             "@babel/plugin-proposal-class-properties",
             "@babel/plugin-proposal-json-strings"
-          ]
+          ],
+          "sourceType": "unambiguous"
         }
       }
     },
