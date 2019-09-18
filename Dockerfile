@@ -3,15 +3,7 @@ LABEL maintainer="nighca@live.cn"
 
 WORKDIR /fec
 
-# provide both npm 5.x & yarn for user
-
-# prepare for npm upgrade https://github.com/npm/npm/issues/9863
-RUN cd $(npm root -g)/npm \
-  && npm install fs-extra \
-  && sed -i -e s/graceful-fs/fs-extra/ -e s/fs\.rename/fs.move/ ./lib/utils/rename.js
-# upgrade npm
-RUN npm install -g npm@5.4.2
-
+# provide yarn for user
 RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
     echo "deb http://deb.debian.org/debian/ jessie main" >/etc/apt/sources.list && \
     echo "deb-src http://deb.debian.org/debian/ jessie main" >>/etc/apt/sources.list && \
