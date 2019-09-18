@@ -1,4 +1,4 @@
-FROM node:6.9.1
+FROM node:8.16.1
 LABEL maintainer="nighca@live.cn"
 
 WORKDIR /fec
