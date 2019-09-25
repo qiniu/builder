@@ -1,11 +1,10 @@
 {
-  "extends": "esnext",
+  "extends": "default",
   "transforms": {
     "js": {
       "transformer": "babel",
       "config": {
         "plugins": [
-          "babel-plugin-angularjs-annotate",
           ["@babel/plugin-proposal-decorators", { "legacy": true }],
           "@babel/plugin-proposal-class-properties"
         ]
