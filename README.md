@@ -178,6 +178,10 @@ npm 包与 docker 镜像的对比，优点：
 
 	优化项
 
+	- addPolyfill
+
+		是否开启自动 polyfill 功能，开启后会根据 `targets` 参数自动打包对应的 polyfill，并在作为独立的包被页面前置引用，`true` 启用，`false` 禁用
+
 	- extractCommon
 
 		控制是否抽取 entries 间的公共内容到单独的文件中，在有多个 entry 时可以减少结果文件的总体积，`true` 启用，`false` 禁用

@@ -1,28 +1,22 @@
 {
   "name": "fec-builder",
-  "version": "1.14.2",
+  "version": "1.15.0",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
   "scripts": {},
   "dependencies": {
-    "@babel/core": "^7.3.3",
-    "@babel/plugin-proposal-class-properties": "^7.3.3",
-    "@babel/plugin-proposal-decorators": "^7.3.0",
-    "@babel/plugin-proposal-export-namespace-from": "^7.2.0",
-    "@babel/plugin-proposal-function-sent": "^7.2.0",
-    "@babel/plugin-proposal-json-strings": "^7.2.0",
-    "@babel/plugin-proposal-numeric-separator": "^7.2.0",
-    "@babel/plugin-proposal-throw-expressions": "^7.2.0",
-    "@babel/plugin-syntax-dynamic-import": "^7.2.0",
-    "@babel/plugin-syntax-import-meta": "^7.2.0",
-    "@babel/plugin-transform-runtime": "^7.2.0",
-    "@babel/plugin-transform-typescript": "^7.3.2",
-    "@babel/preset-env": "^7.3.1",
+    "@babel/core": "^7.6.2",
+    "@babel/plugin-proposal-class-properties": "^7.5.5",
+    "@babel/plugin-proposal-decorators": "^7.6.0",
+    "@babel/plugin-transform-runtime": "^7.6.2",
+    "@babel/plugin-transform-typescript": "^7.6.0",
+    "@babel/preset-env": "^7.6.2",
     "@babel/preset-react": "^7.0.0",
-    "@babel/preset-typescript": "^7.3.3",
-    "@babel/runtime": "^7.3.1",
-    "autoprefixer": "^7.1.6",
+    "@babel/preset-typescript": "^7.6.0",
+    "@babel/runtime": "^7.6.2",
+    "@babel/runtime-corejs2": "^7.6.2",
+    "autoprefixer": "^9.6.1",
     "babel-loader": "^8.0.5",
     "babel-plugin-angularjs-annotate": "^0.10.0",
     "copy-webpack-plugin": "^4.6.0",
@@ -64,6 +58,7 @@
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.3.0",
     "webpack-isomorphic-tools": "^3.0.5",
+    "webpack-virtual-modules": "^0.1.11",
     "yargs": "^10.0.3"
   }
 }
