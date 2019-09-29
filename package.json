@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "1.14.4",
+  "version": "1.15.0",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
@@ -51,7 +51,6 @@
     "ts-loader": "^5.3.3",
     "typescript": "~3.4.0",
     "uglifyjs-webpack-plugin": "^2.1.1",
-    "virtual-module-webpack-plugin": "^0.4.1",
     "vue-loader": "^14.2.4",
     "vue-template-compiler": "^2.5.8",
     "walk": "^2.3.9",
@@ -59,6 +58,7 @@
     "webpack-cli": "^3.2.3",
     "webpack-dev-server": "^3.3.0",
     "webpack-isomorphic-tools": "^3.0.5",
+    "webpack-virtual-modules": "^0.1.11",
     "yargs": "^10.0.3"
   }
 }
