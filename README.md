@@ -125,7 +125,9 @@ npm 包与 docker 镜像的对比，优点：
 
 * targets
 
-  设置代码的目标版本，同时设定 babel-env 和 autoprefix，autoprefix 只取其中的 browsers 部分
+	配置构建的目标环境信息。目前支持字段：`browsers`
+
+	- browsers 设置构建的目标浏览器版本，同时设定 babel-env 和 autoprefix，类型为 `string[]`，详见：[browserslist](https://github.com/browserslist/browserslist#full-list)
 
 * devProxy
 
@@ -180,7 +182,7 @@ npm 包与 docker 镜像的对比，优点：
 
 	- addPolyfill
 
-		是否开启自动 polyfill 功能，开启后会根据 `targets` 参数自动打包对应的 polyfill，并在作为独立的包被页面前置引用，`true` 启用，`false` 禁用
+		是否开启自动 polyfill 功能，开启后会根据 `targets.browsers` 参数自动打包对应的 polyfill，并在作为独立的包被页面前置引用，`true` 启用，`false` 禁用
 
 	- extractCommon
 
