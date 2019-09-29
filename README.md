@@ -125,7 +125,9 @@ npm 包与 docker 镜像的对比，优点：
 
 * targets
 
-	- browsers 设置代码的目标浏览器版本，同时设定 babel-env 和 autoprefix，类型为 `string[]`，详见：[browserslist](https://github.com/browserslist/browserslist#full-list)
+	配置构建的目标环境信息。目前支持字段：`browsers`
+
+	- browsers 设置构建的目标浏览器版本，同时设定 babel-env 和 autoprefix，类型为 `string[]`，详见：[browserslist](https://github.com/browserslist/browserslist#full-list)
 
 * devProxy
 
