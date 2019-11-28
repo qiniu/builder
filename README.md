@@ -45,6 +45,21 @@ npm 包与 docker 镜像的对比，优点：
 
 ### build-config.json 的配置
 
+VSCode 中可以通过在配置中增加 `json.schema` 配置获取提示，例如：
+
+```json
+{
+  "json.schemas": [
+    {
+      "fileMatch": [
+				"/build-config*.json"
+      ],
+      "url": "file:///<PATH_TO_YOUR_LOCAL_FEC_BUILDER>/build-config.schema.json"
+    }
+  ]
+}
+```
+
 * extends
 
 	作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json)，目前可用的内置配置[见此](https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs)。若该项值置为 `""`，则不会基于任何已有配置进行扩展。
