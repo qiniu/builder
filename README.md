@@ -45,6 +45,8 @@ npm 包与 docker 镜像的对比，优点：
 
 ### build-config.json 的配置
 
+见 [build-config.md](./build-config.md) (TODO: 目前格式可能不是很完美，改好以后要删除下面的文档)
+
 VSCode 中可以通过在配置中增加 `json.schema` 配置获取提示，例如：
 
 ```json

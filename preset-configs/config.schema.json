@@ -1,8 +1,11 @@
 {
   "type": "object",
+  "title": "Build Config Schema",
+  "description": "build config 字段定义",
   "properties": {
     "extends": {
       "type": "string",
+      "title": "extends",
       "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。\r\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\r\n* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。"
     },
     "publicUrl": {
@@ -23,7 +26,13 @@
     },
     "entries": {
       "type": "object",
-      "description": "入口文件，要求是一个 object，key 为入口文件名（如 `\"index\"`），value 为入口文件相对于项目根目录的路径（如 \"src/index.js\"）。"
+      "description": "入口文件，要求是一个 object，key 为入口文件名（如 `\"index\"`），value 为入口文件相对于项目根目录的路径（如 \"src/index.js\"）。",
+      "patternProperties": {
+        ".*": {
+          "type": "string",
+          "description": "入口文件相对于项目根目录的路径（如 \"src/index.js\"）"
+        }
+      }
     },
     "pages": {
       "type": "object",
@@ -31,6 +40,7 @@
       "patternProperties": {
         ".*": {
           "type": "object",
+          "description": "一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`",
           "properties": {
             "template": {
               "type": "string",
