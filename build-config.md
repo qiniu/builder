@@ -2,7 +2,7 @@
 
 类型：object
 
-build config 字段定义，与被 extends 的 JSON 配置是 shallow extends 的关系
+Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow extends 的关系
 
 `Build Config` 的字段描述如下：
 
@@ -46,6 +46,8 @@ build config 字段定义，与被 extends 的 JSON 配置是 shallow extends �
 
 入口文件，要求是一个 object，key 为入口文件名（如 `"index"`），value 为入口文件相对于项目根目录的路径（如 "src/index.js"）。
 
+`entries` 的字段描述如下：
+
 - **`entries.(.*)`**
 
     类型：string
@@ -57,6 +59,8 @@ build config 字段定义，与被 extends 的 JSON 配置是 shallow extends �
 类型：object
 
 页面，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为页面名（如 `"index"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`
+
+`pages` 的字段描述如下：
 
 - **`pages.(.*)`**
 
@@ -103,6 +107,8 @@ build config 字段定义，与被 extends 的 JSON 配置是 shallow extends �
 1. 直接使用 transformer 名，如 "css"、"less"
 
 2. 一个 object，包含两个字段：`transformer` 与 `config`。对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置。
+
+`transforms` 的字段描述如下：
 
 - **`transforms.(.*)`**
 
@@ -255,6 +261,8 @@ const apiUrl = "http://foobar.com/api" + 'test'
 类型：object
 
 需要 dev sever 进行代理的请求配置，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ "/api": "http://foobar.com" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`
+
+`devProxy` 的字段描述如下：
 
 - **`devProxy.(.*)`**
 

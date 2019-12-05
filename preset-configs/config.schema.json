@@ -1,7 +1,6 @@
 {
   "type": "object",
-  "title": "Build Config Schema",
-  "description": "build config 字段定义，与被 extends 的 JSON 配置是 shallow extends 的关系",
+  "description": "Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow extends 的关系",
   "properties": {
     "extends": {
       "type": "string",
