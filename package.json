@@ -5,7 +5,7 @@
     "fec-builder": "./bin/fec-builder"
   },
   "scripts": {
-    "schema2md": "tsc ./schema2md.ts --outDir ./tmp && node ./tmp/schema2md.js && rm -rf ./tmp"
+    "schema2md": "ts-node ./schema2md.ts"
   },
   "dependencies": {
     "@babel/core": "^7.6.2",
@@ -64,6 +64,7 @@
     "yargs": "^10.0.3"
   },
   "devDependencies": {
-    "@types/node": "^12.11.7"
+    "@types/node": "^12.11.7",
+    "ts-node": "^8.5.4"
   }
 }
