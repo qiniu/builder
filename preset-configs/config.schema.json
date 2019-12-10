@@ -1,11 +1,10 @@
 {
   "type": "object",
-  "description": "Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow extends 的关系",
+  "description": "Build config 各个字段的定义。",
   "properties": {
     "extends": {
       "type": "string",
-      "title": "extends",
-      "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\n* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。"
+      "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\n* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。\n* 扩展时，假设 `A.json` extends `B.json`，\n    * `A.json` 中，`{ ..., \"foo\": { \"bar\": \"a\" }, ... }`\n    * `B.json` 中，`{ ..., \"foo\": { \"baz\": \"b\" }, ... }`\n    则对配置中的每个字段存在两类行为：\n    1. **覆盖**：**默认行为**，即 `A.json` 中的 `foo` 的值覆盖了 `B.json` 中对应的值，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\" }`；\n    2. **合并**：即 `A.json` 中的 `foo` 的值与 `B.json` 中对应的值进行了合并操作，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\", \"baz\": \"b\" }`；"
     },
     "publicUrl": {
       "type": "string",
@@ -25,7 +24,7 @@
     },
     "entries": {
       "type": "object",
-      "description": "入口文件，要求是一个 object，key 为入口文件名（如 `\"index\"`），value 为入口文件相对于项目根目录的路径（如 \"src/index.js\"）。",
+      "description": "入口文件，在扩展时会覆盖原值，要求是一个 object，key 为入口文件名（如 `\"index\"`），value 为入口文件相对于项目根目录的路径（如 \"src/index.js\"）。",
       "patternProperties": {
         ".*": {
           "type": "string",
@@ -35,7 +34,7 @@
     },
     "pages": {
       "type": "object",
-      "description": "页面，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为页面名（如 `\"index\"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`",
+      "description": "页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `\"index\"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`",
       "patternProperties": {
         ".*": {
           "type": "object",
@@ -64,7 +63,7 @@
     },
     "transforms": {
       "type": "object",
-      "description": "构建过程中的转换配置，与被 extend 的文件的该字段是「extends」的关系，要求是一个 object。key 为文件后缀名，value 为转换信息。转换信息支持两种格式：\n1. 直接使用 transformer 名，如 \"css\"、\"less\"\n2. 一个 object，包含两个字段：`transformer` 与 `config`。对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置。",
+      "description": "构建过程中的转换配置，在扩展时会合并原值，要求是一个 object。key 为文件后缀名，value 为转换信息。转换信息支持两种格式：\n1. 直接使用 transformer 名，如 \"css\"、\"less\"\n2. 一个 object，包含两个字段：`transformer` 与 `config`。对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置。",
       "patternProperties": {
         ".*": {
           "oneOf": [{
@@ -89,11 +88,11 @@
     },
     "envVariables": {
       "type": "object",
-      "description": "注入到代码中的环境变量，与被 extend 的文件的该字段是「替换」的关系。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
+      "description": "注入到代码中的环境变量，在扩展时会覆盖原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
     },
     "targets": {
       "type": "object",
-      "description": "配置构建的目标环境信息，与被 extend 的文件的该字段是「替换」的关系。目前支持字段：`browsers`。",
+      "description": "配置构建的目标环境信息，在扩展时会覆盖原值。目前支持字段：`browsers`。",
       "properties": {
         "browsers": {
           "type": "array",
@@ -104,7 +103,7 @@
     },
     "optimization": {
       "type": "object",
-      "description": "优化项，与被 extend 的文件的该字段是「extends」的关系",
+      "description": "优化项，在扩展时会合并原值",
       "properties": {
         "addPolyfill": {
           "type": "boolean",
@@ -135,14 +134,14 @@
     },
     "devProxy": {
       "type": "object",
-      "description": "需要 dev sever 进行代理的请求配置，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ \"/api\": \"http://foobar.com\" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`",
+      "description": "需要 dev sever 进行代理的请求配置，在扩展时会覆盖原值。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ \"/api\": \"http://foobar.com\" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`",
       "patternProperties": {
         ".*": { "type": "string" }
       }
     },
     "deploy": {
       "type": "object",
-      "description": "部署配置，与被 extend 的文件的该字段是「extends」的关系，要求是一个 object，包含两个字段：`target` 及 `config`",
+      "description": "部署配置，在扩展时会合并原值，要求是一个 object，包含两个字段：`target` 及 `config`",
       "properties": {
         "target": { "type": "string", "enum": ["qiniu"], "description": "部署目标" },
         "config": {
@@ -153,11 +152,11 @@
     },
     "test": {
       "type": "object",
-      "description": "测试相关配置，与被 extend 的文件的该字段是「extends」的关系"
+      "description": "测试相关配置，在扩展时会合并原值"
     },
     "engines": {
       "type": "object",
-      "description": "配置对构建环境的要求，与被 extend 的文件的该字段是「替换」的关系。目前支持字段：`builder`",
+      "description": "配置对构建环境的要求，在扩展时会覆盖原值。目前支持字段：`builder`",
       "properties": {
         "builder": {
           "type": "string",

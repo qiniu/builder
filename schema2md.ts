@@ -17,7 +17,7 @@ type SimpleTypeJSONSchema = {
 }
 
 type MultiTypeJSONSchema = {
-  type: 'null'
+  type: undefined
   description?: string
   oneOf: Array<JSONSchema>
 }
@@ -122,12 +122,12 @@ function schemaToMarkdown(schema: JSONSchema, { level, keyPath, title }: IExtraO
   }
 
   // 几种类型之一
-  if ((schema as any as MultiTypeJSONSchema).oneOf) {
+  if ((schema as MultiTypeJSONSchema).oneOf) {
     return joinLines(
       sectionTitle,
       sectionDesc,
       `${contentIndent}${code(fullField)} 类型为以下几种之一：`,
-      ...(schema as any as MultiTypeJSONSchema).oneOf.map(
+      ...(schema as MultiTypeJSONSchema).oneOf.map(
         typeSchema => schemaToMarkdown(typeSchema, { level: level + 1, keyPath, title: typeSchema.type || '' })
       )
     )

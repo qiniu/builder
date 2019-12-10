@@ -2,7 +2,7 @@
 
 类型：`object`
 
-Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow extends 的关系
+Build config 各个字段的定义。
 
 `Build Config` 的字段描述如下：
 
@@ -15,6 +15,18 @@ Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow e
 * 若该项值置为 ""，则不会基于任何已有配置进行扩展。
 
 * 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+
+* 扩展时，假设 `A.json` extends `B.json`，
+
+    * `A.json` 中，`{ ..., "foo": { "bar": "a" }, ... }`
+
+    * `B.json` 中，`{ ..., "foo": { "baz": "b" }, ... }`
+
+    则对配置中的每个字段存在两类行为：
+
+    1. **覆盖**：**默认行为**，即 `A.json` 中的 `foo` 的值覆盖了 `B.json` 中对应的值，最终配置的 `foo` 的值等于 `{ "bar": "a" }`；
+
+    2. **合并**：即 `A.json` 中的 `foo` 的值与 `B.json` 中对应的值进行了合并操作，最终配置的 `foo` 的值等于 `{ "bar": "a", "baz": "b" }`；
 
 ## **`publicUrl`**
 
@@ -44,7 +56,7 @@ Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow e
 
 类型：`object`
 
-入口文件，要求是一个 object，key 为入口文件名（如 `"index"`），value 为入口文件相对于项目根目录的路径（如 "src/index.js"）。
+入口文件，在扩展时会覆盖原值，要求是一个 object，key 为入口文件名（如 `"index"`），value 为入口文件相对于项目根目录的路径（如 "src/index.js"）。
 
 `entries` 的字段描述如下：
 
@@ -58,7 +70,7 @@ Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow e
 
 类型：`object`
 
-页面，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为页面名（如 `"index"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`
+页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `"index"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`
 
 `pages` 的字段描述如下：
 
@@ -104,7 +116,7 @@ Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow e
 
 类型：`object`
 
-构建过程中的转换配置，与被 extend 的文件的该字段是「extends」的关系，要求是一个 object。key 为文件后缀名，value 为转换信息。转换信息支持两种格式：
+构建过程中的转换配置，在扩展时会合并原值，要求是一个 object。key 为文件后缀名，value 为转换信息。转换信息支持两种格式：
 
 1. 直接使用 transformer 名，如 "css"、"less"
 
@@ -146,7 +158,7 @@ Build config 各个字段的定义，与被 extends 的 JSON 配置是 shallow e
 
 类型：`object`
 
-注入到代码中的环境变量，与被 extend 的文件的该字段是「替换」的关系。如配置：
+注入到代码中的环境变量，在扩展时会覆盖原值。如配置：
 
 ```
 "API_PREFIX": "http://foobar.com/api"
@@ -168,7 +180,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 类型：`object`
 
-配置构建的目标环境信息，与被 extend 的文件的该字段是「替换」的关系。目前支持字段：`browsers`。
+配置构建的目标环境信息，在扩展时会覆盖原值。目前支持字段：`browsers`。
 
 `targets` 的字段描述如下：
 
@@ -182,7 +194,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 类型：`object`
 
-优化项，与被 extend 的文件的该字段是「extends」的关系
+优化项，在扩展时会合并原值
 
 `optimization` 的字段描述如下：
 
@@ -242,7 +254,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 类型：`object`
 
-需要 dev sever 进行代理的请求配置，与被 extend 的文件的该字段是「替换」的关系。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ "/api": "http://foobar.com" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`
+需要 dev sever 进行代理的请求配置，在扩展时会覆盖原值。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ "/api": "http://foobar.com" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`
 
 `devProxy` 的字段描述如下：
 
@@ -254,7 +266,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 类型：`object`
 
-部署配置，与被 extend 的文件的该字段是「extends」的关系，要求是一个 object，包含两个字段：`target` 及 `config`
+部署配置，在扩展时会合并原值，要求是一个 object，包含两个字段：`target` 及 `config`
 
 `deploy` 的字段描述如下：
 
@@ -284,13 +296,13 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 类型：`object`
 
-测试相关配置，与被 extend 的文件的该字段是「extends」的关系
+测试相关配置，在扩展时会合并原值
 
 ## **`engines`**
 
 类型：`object`
 
-配置对构建环境的要求，与被 extend 的文件的该字段是「替换」的关系。目前支持字段：`builder`
+配置对构建环境的要求，在扩展时会覆盖原值。目前支持字段：`builder`
 
 `engines` 的字段描述如下：
 
