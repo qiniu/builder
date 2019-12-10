@@ -1,0 +1,168 @@
+{
+  "type": "object",
+  "description": "Build config 各个字段的定义。",
+  "properties": {
+    "extends": {
+      "type": "string",
+      "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\n* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。\n* 扩展时，假设 `A.json` extends `B.json`，\n    * `A.json` 中，`{ ..., \"foo\": { \"bar\": \"a\" }, ... }`\n    * `B.json` 中，`{ ..., \"foo\": { \"baz\": \"b\" }, ... }`\n    则对配置中的每个字段存在两类行为：\n    1. **覆盖**：**默认行为**，即 `A.json` 中的 `foo` 的值覆盖了 `B.json` 中对应的值，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\" }`；\n    2. **合并**：即 `A.json` 中的 `foo` 的值与 `B.json` 中对应的值进行了合并操作，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\", \"baz\": \"b\" }`；"
+    },
+    "publicUrl": {
+      "type": "string",
+      "description": "静态资源被发布后的线上 URL，一般直接使用存放静态资源的 bucket 对应的公开域名即可，如 \"https://o4jiepyc4.qnssl.com/ \"。"
+    },
+    "srcDir": {
+      "type": "string",
+      "description": "源码目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 \"src\"。"
+    },
+    "staticDir": {
+      "type": "string",
+      "description": "构建静态资源目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 \"static\"。"
+    },
+    "distDir": {
+      "type": "string",
+      "description": "构建目标目录，相对于项目根目录（即存放 `build-prepare.sh` 与 `build-config.json` 的目录）的路径，如 \"dist\"。"
+    },
+    "entries": {
+      "type": "object",
+      "description": "入口文件，在扩展时会覆盖原值，要求是一个 object，key 为入口文件名（如 `\"index\"`），value 为入口文件相对于项目根目录的路径（如 \"src/index.js\"）。",
+      "patternProperties": {
+        ".*": {
+          "type": "string",
+          "description": "入口文件相对于项目根目录的路径（如 \"src/index.js\"）"
+        }
+      }
+    },
+    "pages": {
+      "type": "object",
+      "description": "页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `\"index\"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`",
+      "patternProperties": {
+        ".*": {
+          "type": "object",
+          "description": "一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`",
+          "properties": {
+            "template": {
+              "type": "string",
+              "description": "页面的模板文件相对于项目根目录的路径，支持 ejs"
+            },
+            "entries": {
+              "description": "页面上的入口文件列表\n* 在只有一个入口文件的情况下，可以直接传入一个字符串，即该入口文件名（如 \"index\"）；\n* 也可以传入一个数组，数组每一项为一个入口文件名（如 `[\"sidebar\", \"index\"]`）",
+              "oneOf": [{
+                "type": "string"
+              }, {
+                "type": "array",
+                "items": { "type": "string" }
+              }]
+            },
+            "path": {
+              "type": "string",
+              "description": "在应用中该页面的路径正则（如 `\"\"`、`\"^\\/financial\\/\"`），dev server 在请求匹配对应 path 时会返回该页面的内容作为响应。"
+            }
+          }
+        }
+      }
+    },
+    "transforms": {
+      "type": "object",
+      "description": "构建过程中的转换配置，在扩展时会合并原值，要求是一个 object。key 为文件后缀名，value 为转换信息。转换信息支持两种格式：\n1. 直接使用 transformer 名，如 \"css\"、\"less\"\n2. 一个 object，包含两个字段：`transformer` 与 `config`。对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置。",
+      "patternProperties": {
+        ".*": {
+          "oneOf": [{
+            "type": "string",
+            "description": "直接使用 transformer 名，如 \"css\"、\"less\""
+          }, {
+            "type": "object",
+            "description": "一个 object，包含两个字段：`transformer` 与 `config`。对于不同的 transformer，我们可以通过与 `transformer` 平级的 `config` 字段对 transformer 的行为进行配置。",
+            "properties": {
+              "transformer": {
+                "type": "string",
+                "description": "即 transformer 名，如 `babel`"
+              },
+              "config": {
+                "type": "object",
+                "description": "即 transformer 的配置，如 `{ \"presets\": [\"es2015\"] }`"
+              }
+            }
+          }]
+        }
+      }
+    },
+    "envVariables": {
+      "type": "object",
+      "description": "注入到代码中的环境变量，在扩展时会覆盖原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
+    },
+    "targets": {
+      "type": "object",
+      "description": "配置构建的目标环境信息，在扩展时会覆盖原值。目前支持字段：`browsers`。",
+      "properties": {
+        "browsers": {
+          "type": "array",
+          "description": "设置构建的目标浏览器版本，同时设定 babel-env 和 autoprefix，类型为 `string[]`，详见：[browserslist](https://github.com/browserslist/browserslist#full-list)",
+          "items": { "type": "string" }
+        }
+      }
+    },
+    "optimization": {
+      "type": "object",
+      "description": "优化项，在扩展时会合并原值",
+      "properties": {
+        "addPolyfill": {
+          "type": "boolean",
+          "description": "是否开启自动 polyfill 功能，开启后会根据 `targets.browsers` 参数自动打包对应的 polyfill，并在作为独立的包被页面前置引用，`true` 启用，`false` 禁用"
+        },
+        "extractCommon": {
+          "type": "boolean",
+          "description": "控制是否抽取 entries 间的公共内容到单独的文件中，在有多个 entry 时可以减少结果文件的总体积，`true` 启用，`false` 禁用"
+        },
+        "extractVendor": {
+          "type": "string",
+          "description": "控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；\n该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。\n一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：\n```javascript\nimport 'react'\nimport 'moment'\nimport 'lodash'\n```"
+        },
+        "compressImage": {
+          "type": "boolean",
+          "description": "是否压缩图片(png, jpe?g, gif)，`true` 启用，`false` 禁用"
+        },
+        "transformDeps": {
+          "oneOf": [{
+            "type": "boolean"
+          }, {
+            "type": "array",
+            "items": { "type": "string" }
+          }],
+          "description": "是否对第三方依赖包（node_modules 中的内容）的 Javascript 内容进行转换（builder 默认会跳过对依赖包 Javascript 内容的转换，以提升构建效率）。\n这里传入 `true` 表示全部进行转换，`false` 则全部不转换；\n也可以传入包名列表来指定需要转换的第三方依赖包，如传入 `[ \"react\", \"mobx\" ]`，表示仅对包 react 与包 mobx 的 Javascript 内容进行转换"
+        }
+      }
+    },
+    "devProxy": {
+      "type": "object",
+      "description": "需要 dev sever 进行代理的请求配置，在扩展时会覆盖原值。要求是一个 object，key 为 api 路径前缀，value 为代理目标，如 `{ \"/api\": \"http://foobar.com\" }` 表示把形如 `/api/*` 的请求代理到 `http://foobar.com/api/*`",
+      "patternProperties": {
+        ".*": { "type": "string" }
+      }
+    },
+    "deploy": {
+      "type": "object",
+      "description": "部署配置，在扩展时会合并原值，要求是一个 object，包含两个字段：`target` 及 `config`",
+      "properties": {
+        "target": { "type": "string", "enum": ["qiniu"], "description": "部署目标" },
+        "config": {
+          "type": "object",
+          "description": "针对当前部署目标的配置信息，如 target 为 `\"qiniu\"` 时，需要提供的 config 形如：\n```json\n{\n  \"AccessKey\": \"xxx\",\n  \"SecretKey\": \"yyy\",\n  \"bucket\": \"zzz\"\n}\n```\n表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。"
+        }
+      }
+    },
+    "test": {
+      "type": "object",
+      "description": "测试相关配置，在扩展时会合并原值"
+    },
+    "engines": {
+      "type": "object",
+      "description": "配置对构建环境的要求，在扩展时会覆盖原值。目前支持字段：`builder`",
+      "properties": {
+        "builder": {
+          "type": "string",
+          "description": "配置项目所要求的 fec-builder 版本范围，格式遵循 [node-semver range](https://github.com/npm/node-semver#ranges)\n在统一的构建环境中，服务应依据该版本范围去选择合适的 builder 版本对项目进行构建；本地开发时，若本地使用的 builder 版本不匹配项目所配置的版本范围，会输出警告信息，但不影响使用"
+        }
+      }
+    }
+  }
+}

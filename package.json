@@ -1,10 +1,12 @@
 {
   "name": "fec-builder",
-  "version": "1.16.0",
+  "version": "1.16.1",
   "bin": {
     "fec-builder": "./bin/fec-builder"
   },
-  "scripts": {},
+  "scripts": {
+    "schema2md": "ts-node ./schema2md.ts"
+  },
   "dependencies": {
     "@babel/core": "^7.6.2",
     "@babel/plugin-proposal-class-properties": "^7.5.5",
@@ -60,5 +62,9 @@
     "webpack-isomorphic-tools": "^3.0.5",
     "webpack-virtual-modules": "^0.1.11",
     "yargs": "^10.0.3"
+  },
+  "devDependencies": {
+    "@types/node": "^12.11.7",
+    "ts-node": "^8.5.4"
   }
 }
