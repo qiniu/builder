@@ -28,6 +28,8 @@ fec-builder -p 8080
 
 docker 镜像（适合持续集成环境使用）
 
+**最新的 builder image 不再在 `hub.c.163.com` 发布**
+
 ```shell
 docker pull hub.c.163.com/nighca/fec-builder:latest
 # 项目目录下执行
