@@ -33,7 +33,7 @@
     "immutability-helper": "^2.5.0",
     "jest-cli": "^24.7.1",
     "less": "^3.9.0",
-    "less-loader": "^5.0.0",
+    "less-loader": "^6.1.0",
     "lodash": "^4.17.15",
     "log4js": "^4.1.0",
     "mini-css-extract-plugin": "^0.5.0",
