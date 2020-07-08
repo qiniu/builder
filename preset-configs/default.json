@@ -25,15 +25,11 @@
         }
       }
     },
-    "sass": "sass",
-    "scss": "sass",
     "styl": "stylus",
     "tpl": "raw",
     "svg@js": "svg-sprite",
     "svg@css": "file",
     "svg@less": "file",
-    "svg@sass": "file",
-    "svg@scss": "file",
     "png": "file",
     "gif": "file",
     "jpg": "file",
