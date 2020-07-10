@@ -111,7 +111,7 @@
         },
         "polyfillType": {
           "type": "string",
-          "description": "使用什么形式的 polyfill，默认为 `default`，即：使用基于 `@babel/polyfill` 的形式，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；`runtime`，为使用 `@babel/plugin-transform-runtime` 实现的 polyfill，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
+          "description": "使用什么形式的 polyfill，默认为 `default`，即：使用基于 `useBuiltIns` 的形式，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；`runtime`，为使用 `@babel/plugin-transform-runtime` 实现的 polyfill，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
         },
         "extractCommon": {
           "type": "boolean",

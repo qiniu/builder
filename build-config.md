@@ -210,7 +210,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     使用什么形式的 polyfill
 
-    - 默认值：`default`，即：使用基于 `@babel/polyfill` 的 polyfill，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；
+    - 默认值：`default`，即：使用基于 `useBuiltIns` 的 polyfill，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；
     - 可选值：`runtime`，使用 `@babel/plugin-transform-runtime` 实现的 polyfill，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库
 
 - **`optimization.extractCommon`**
