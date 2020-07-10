@@ -107,7 +107,11 @@
       "properties": {
         "addPolyfill": {
           "type": "boolean",
-          "description": "是否开启自动 polyfill 功能，开启后会根据 `targets.browsers` 参数自动打包对应的 polyfill，并在作为独立的包被页面前置引用，`true` 启用，`false` 禁用"
+          "description": "是否开启自动 polyfill 功能，开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；`true` 启用，`false` 禁用"
+        },
+        "polyfillType": {
+          "type": "string",
+          "description": "使用什么形式的 polyfill，默认为 `default`，即：使用基于 `@babel/polyfill` 的形式，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；`runtime`，为使用 `@babel/plugin-transform-runtime` 实现的 polyfill，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
         },
         "extractCommon": {
           "type": "boolean",
