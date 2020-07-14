@@ -4,6 +4,8 @@ set -o errexit
 
 sudo npm link
 
+sudo chown -R circleci workspace/samples
+
 cd samples
 for dir in `ls .`
 do
