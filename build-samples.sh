@@ -5,7 +5,6 @@ set -o errexit
 sudo npm link
 
 sudo chown -R circleci samples
-sudo chmod -R 777 samples
 
 cd samples
 for dir in `ls .`
