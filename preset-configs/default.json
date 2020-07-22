@@ -45,7 +45,6 @@
   },
   "optimization": {
     "addPolyfill": true,
-    "polyfillType": "default",
     "extractCommon": true,
     "extractVendor": "",
     "compressImage": false,

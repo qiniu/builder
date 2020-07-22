@@ -200,18 +200,16 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 - **`optimization.addPolyfill`**
 
-    类型：`boolean`
+    类型：`boolean` 或 `string`
 
-    是否开启自动 polyfill 功能，开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；`true` 启用，`false` 禁用
+    是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；
 
-- **`optimization.polyfillType`**
-
-    类型：`string`
-
-    使用什么形式的 polyfill
-
-    - 默认值：`default`，即：使用基于 `useBuiltIns` 的 polyfill，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合大型应用；
-    - 可选值：`runtime`，使用 `@babel/plugin-transform-runtime` 实现的 polyfill，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库
+    | value  | desc |
+    | ------------- | ------------- |
+    | `false`  | 不开启 `polyfill`  |
+    | `true`  | 开启 `polyfill`，使用 `global` 方式的 `polyfill`  |
+    | `"global"`  | 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用 |
+    | `"runtime"`  | 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库 |
 
 - **`optimization.extractCommon`**
 
