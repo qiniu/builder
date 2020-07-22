@@ -7,6 +7,9 @@
   "scripts": {
     "schema2md": "ts-node ./schema2md.ts"
   },
+  "engines": {
+    "node": ">=12"
+  },
   "dependencies": {
     "@babel/core": "^7.10.4",
     "@babel/plugin-proposal-class-properties": "^7.10.4",
