@@ -206,8 +206,8 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     | value  | desc |
     | ------------- | ------------- |
-    | `false`  | 不开启 `polyfill`  |
-    | `true`  | 开启 `polyfill`，使用 `global` 方式的 `polyfill`  |
+    | `false`  | 不开启 `polyfill` |
+    | `true`  | 开启 `polyfill`，使用默认的方式 (`"global"`) 进行 `polyfill` |
     | `"global"`  | 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用 |
     | `"runtime"`  | 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库 |
 
