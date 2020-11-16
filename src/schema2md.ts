@@ -160,7 +160,7 @@ function schemaToMarkdown(schema: JSONSchema, { level, keyPath, title }: IExtraO
 }
 
 export default function main() {
-  const schema = require('./preset-configs/config.schema.json')
+  const schema = require('../preset-configs/config.schema.json')
   const markdown = schemaToMarkdown(schema, { level: 0, keyPath: [], title: 'Build Config' })
 
   const targetPath = path.join(__dirname, './build-config.md')
