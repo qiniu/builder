@@ -1,9 +1,11 @@
+import { mapValues } from 'lodash'
 import * as fs from 'fs'
 import * as path from 'path'
 import files from '../constants/files'
 import { extend } from '.'
-import { getBuildConfigFilePath, abs, getEnvVariablesFilePath, getIsomorphicToolsFilePath } from './paths'
+import { getBuildConfigFilePath, abs, getEnvVariablesFilePath } from './paths'
 import logger from './logger'
+import { Transform } from '../constants/transform'
 
 export interface Engines {
   /** required builder version range */
@@ -17,6 +19,27 @@ export interface TestConfig {
   moduleNameMapper: Record<string, string>
 }
 
+export enum PolyfillType {
+  /** 在全局环境做 polyfill，适合应用 */
+  Global = 'global',
+  /** 在运行的上下文做 polyfill，不污染全局，适合工具类库 */
+  Runtime = 'runtime'
+}
+
+export type AddPolyfill = boolean | PolyfillType
+
+export function shouldAddPolyfill(value: AddPolyfill) {
+  return !!value
+}
+
+export function shouldAddGlobalPolyfill(value: AddPolyfill) {
+  return value === true || value === PolyfillType.Global
+}
+
+export function shouldAddRuntimePolyfill(value: AddPolyfill) {
+  return value === PolyfillType.Runtime
+}
+
 export interface Optimization {
   /** 是否抽取 entries 间的公共内容到单独的文件中 */
   extractCommon: boolean
@@ -25,49 +48,95 @@ export interface Optimization {
   /** 是否压缩图片 */
   compressImage: boolean
   /** 是否对第三方依赖包的 Javascript 内容进行转换 */
-  transformDeps: boolean|string[]
+  transformDeps: boolean | string[]
+  /** 是否开启自动 polyfill 功能，以及开启何种形式的 polyfill */
+  addPolyfill: AddPolyfill
 }
 
-interface EnvVariables {
+export interface EnvVariables {
   [key: string]: unknown
 }
 
-export interface BuildConfig {
+export type Entries = Record<string, string>
+
+export interface PageInput {
+  template: string
+  entries: string | string[]
+  path: string
+}
+
+export interface Page extends PageInput {
+  entries: string[]
+}
+
+export type PagesInput = Record<string, PageInput>
+
+export type Pages = Record<string, Page>
+
+export interface TransformObject {
+  transformer: Transform
+  config?: unknown
+}
+
+export type TransformsInput = Record<string, Transform | TransformObject>
+
+export type Transforms = Record<string, TransformObject>
+
+export type DevProxy = Record<string, string>
+
+export interface QiniuDeploy {
+  target: 'qiniu'
+  config: {
+    accessKey: string
+    secretKey: string
+    bucket: string
+  }
+}
+
+export type Deploy = QiniuDeploy
+
+export interface Targets {
+  browsers: string[]
+}
+
+export interface BuildConfigInput {
   /** target config to extend */
-  extends: string
-  publicUrl: string
-  srcDir: string
-  staticDir: string
-  distDir: string
-  entries: object
-  pages: object
-  transforms: object
-  /** 构建时需要被包含进来（被 transformer 处理）的第三方内容 */
-  transformIncludes: string[]
+  extends?: string
+  publicUrl?: string
+  srcDir?: string
+  staticDir?: string
+  distDir?: string
+  entries?: Entries
+  pages?: PagesInput
+  transforms?: TransformsInput
   /** 注入到代码中的环境变量 */
-  envVariables: EnvVariables,
-  /** ssr 相关的 webpack-isomorphic-tools config */
-  isomorphicTools: object
-  optimization: Optimization
-  devProxy: object
-  deploy: object
-  targets: object
-  test: TestConfig
-  engines: Engines
+  envVariables?: EnvVariables,
+  optimization?: Optimization
+  devProxy?: DevProxy
+  deploy?: Deploy
+  targets?: Targets
+  test?: TestConfig
+  engines?: Engines
+}
+
+export interface BuildConfig extends Required<BuildConfigInput> {
+  pages: Pages
+  transforms: Transforms
 }
 
 /** merge two config content */
-function mergeConfig(cfg1: BuildConfig, cfg2: BuildConfig): BuildConfig {
-  return extend<BuildConfig>({}, cfg1, cfg2, {
-    optimization: extend({}, cfg1.optimization, cfg2.optimization) as Optimization,
-    transforms: extend({}, cfg1.transforms, cfg2.transforms),
-    deploy: extend({}, cfg1.deploy, cfg2.deploy),
-    test: extend({}, cfg1.test, cfg2.test) as TestConfig
-  }) as BuildConfig
+function mergeConfig(cfg1: BuildConfigInput, cfg2: BuildConfigInput): BuildConfigInput {
+  return extend(cfg1, cfg2, {
+    transforms: extend(cfg1.transforms, cfg2.transforms) as TransformsInput,
+    envVariables: extend(cfg1.envVariables, cfg2.envVariables),
+    optimization: extend(cfg1.optimization, cfg2.optimization) as Optimization,
+    test: extend(cfg1.test, cfg2.test) as TestConfig,
+    engines: extend(cfg1.engines, cfg2.engines) as Engines
+  })
 }
 
 /** parse config content */
-const parseConfig = (cnt: string) => JSON.parse(cnt) as BuildConfig
+const parseConfig = (cnt: string) => JSON.parse(cnt) as BuildConfigInput
 
 /** read and parse config content */
 const readConfig = (configFilePath: string) => {
@@ -129,7 +198,7 @@ async function getExtendsTarget(
   name: string,
   /** path of source config file */
   sourceConfigFilePath: string
-): Promise<BuildConfig> {
+): Promise<BuildConfigInput> {
   const configFilePath = await lookupExtendsTarget(name, sourceConfigFilePath)
   return readAndResolveConfig(configFilePath)
 }
@@ -138,7 +207,7 @@ async function getExtendsTarget(
 async function readAndResolveConfig(
   /** path of given config */
   configFilePath: string
-): Promise<BuildConfig> {
+): Promise<BuildConfigInput> {
   const config = readConfig(configFilePath)
   const extendsTarget = config.hasOwnProperty('extends') ? config['extends'] : 'default'
   if (!extendsTarget) {
@@ -146,6 +215,53 @@ async function readAndResolveConfig(
   }
   const extendsConfig = await getExtendsTarget(extendsTarget, configFilePath)
   return mergeConfig(extendsConfig, config)
+}
+
+function normalizePage({ template, entries: _entries, path }: PageInput): Page {
+  const entries = typeof _entries === 'string' ? [_entries] : _entries
+  return { template, path, entries }
+}
+
+function normalizePages(input: PagesInput): Pages {
+  return mapValues(input, normalizePage)
+}
+
+function normalizeTransforms(input: TransformsInput): Transforms {
+  return mapValues(input, value => (
+    typeof value === 'string'
+    ? { transformer: value }
+    : value
+  ))
+}
+
+function normalizeConfig({
+  extends: _extends, publicUrl: _publicUrl, srcDir, staticDir, distDir, entries, pages: _pages,
+  transforms: _transforms, envVariables, optimization, devProxy,
+  deploy, targets, test, engines
+}: BuildConfigInput): BuildConfig {
+  if (_extends == null) throw new Error('Invalid value of field extends')
+  if (_publicUrl == null) throw new Error('Invalid value of field publicUrl')
+  if (srcDir == null) throw new Error('Invalid value of field srcDir')
+  if (staticDir == null) throw new Error('Invalid value of field staticDir')
+  if (distDir == null) throw new Error('Invalid value of field distDir')
+  if (entries == null) throw new Error('Invalid value of field entries')
+  if (_pages == null) throw new Error('Invalid value of field pages')
+  if (_transforms == null) throw new Error('Invalid value of field transforms')
+  if (envVariables == null) throw new Error('Invalid value of field envVariables')
+  if (optimization == null) throw new Error('Invalid value of field optimization')
+  if (devProxy == null) throw new Error('Invalid value of field devProxy')
+  if (deploy == null) throw new Error('Invalid value of field deploy')
+  if (targets == null) throw new Error('Invalid value of field targets')
+  if (test == null) throw new Error('Invalid value of field test')
+  if (engines == null) throw new Error('Invalid value of field engines')
+  const publicUrl = _publicUrl.replace(/\/?$/, '/')
+  const pages = normalizePages(_pages)
+  const transforms = normalizeTransforms(_transforms)
+  return {
+    extends: _extends, publicUrl, srcDir, staticDir, distDir, entries, pages,
+    transforms, envVariables, optimization, devProxy,
+    deploy, targets, test, engines
+  }
 }
 
 let cached: Promise<BuildConfig> | null = null
@@ -172,15 +288,11 @@ export async function findBuildConfig(): Promise<BuildConfig> {
         config.envVariables = envVariables
       }
 
-      const isomorphicToolsFilePath = getIsomorphicToolsFilePath()
-      if (isomorphicToolsFilePath) {
-        logger.debug(`use isomorphic-tools file: ${isomorphicToolsFilePath}`)
-        config.isomorphicTools = require(isomorphicToolsFilePath)
-      }
+      const normalized = normalizeConfig(config)
 
       logger.debug('result build config:')
-      logger.debug(config)
-      return config
+      logger.debug(normalized)
+      return normalized
     }
   )
 }

@@ -17,6 +17,12 @@
   "transforms": {
     "js": "babel",
     "css": "css",
+    "m.css": {
+      "transformer": "css",
+      "config": {
+        "modules": true
+      }
+    },
     "less": {
       "transformer": "less",
       "config": {
@@ -25,11 +31,21 @@
         }
       }
     },
-    "styl": "stylus",
+    "m.less": {
+      "transformer": "less",
+      "config": {
+        "modules":true,
+        "options": {
+          "javascriptEnabled": true
+        }
+      }
+    },
     "tpl": "raw",
     "svg@js": "svg-sprite",
     "svg@css": "file",
+    "svg@m.css": "file",
     "svg@less": "file",
+    "svg@m.less": "file",
     "png": "file",
     "gif": "file",
     "jpg": "file",

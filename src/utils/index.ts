@@ -6,7 +6,8 @@
 import { Logger } from 'log4js'
 import { parse as parseUrl } from 'url'
 
-export function extend<T extends Record<string, any>>(target: Partial<T>, ...addons: Array<Partial<T>>): Partial<T> {
+export function extend<T extends Record<string, any>>(...addons: Array<Partial<T> | null | undefined>): Partial<T> {
+  const target: Partial<T> = {}
   addons.forEach(addon => {
     for (let key in addon) {
       if (addon.hasOwnProperty(key)) {
@@ -40,12 +41,6 @@ function getDurationFrom(startAt: number) {
   return result[0].join(' ')
 }
 
-function getMessage(e: any): string | null {
-  if (!e) return null
-  if (e.message) return e.message
-  return e + ''
-}
-
 /** log behavior lifecycle */
 export function logLifecycle<T extends Array<any>, P>(
   /** behavior name */
@@ -54,22 +49,16 @@ export function logLifecycle<T extends Array<any>, P>(
   method: (...args: T) => P,
   logger: Logger
 ) {
-  return (...args: T) => {
+  return async (...args: T) => {
     logger.info(`${name} start`)
     const startAt = Date.now()
-    const result = new Promise<P>(resolve => resolve(method(...args)))
-    result.then(
-      () => logger.info(`${name} succeeded, costs: ${getDurationFrom(startAt)}`),
-      err => {
-        const message = getMessage(err)
-        logger.error(
-          message
-          ? `${name} failed: ${message}`
-          : `${name} failed.`
-        )
-      }
-    )
-    return result
+    try {
+      const result = await method(...args)
+      logger.info(`${name} succeeded, costs: ${getDurationFrom(startAt)}`)
+      return result
+    } catch (e) {
+      logger.error(`${name} failed:`, e)
+    }
   }
 }
 

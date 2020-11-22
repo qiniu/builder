@@ -27,7 +27,6 @@ export function abs(p: string) {
 
 let buildConfigFilePath = process.env.BUILD_CONFIG_FILE || null
 let envVariablesFilePath = process.env.ENV_VARIABLES_FILE || null
-let isomorphicToolsFilePath = process.env.ISOMORPHIC_TOOLS_FILE || null
 
 /** get build config file path */
 export function getBuildConfigFilePath() {
@@ -47,16 +46,6 @@ export function getEnvVariablesFilePath() {
 /** set env variables file path */
 export function setEnvVariablesFilePath(target: string) {
   envVariablesFilePath = path.resolve(target)
-}
-
-/** get ssr isomorphic-tools.js file path */
-export function getIsomorphicToolsFilePath() {
-  return isomorphicToolsFilePath
-}
-
-/** set ssr isomorphic-tools.js file path */
-export function setIsomorphicToolsFilePath(target: string) {
-  isomorphicToolsFilePath = path.resolve(target)
 }
 
 /** get src path */

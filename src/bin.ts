@@ -1,5 +1,6 @@
 #! /usr/bin/env node
 
+import { setAutoFreeze } from 'immer'
 import * as yargs from 'yargs'
 
 import * as paths from './utils/paths'
@@ -11,6 +12,11 @@ import generate from './generate'
 import upload from './upload'
 import serve from './serve'
 import test from './test'
+
+// 禁掉 auto freeze，否则有的插件改数据时会异常，
+// 比如 postcss-loader 会去 delete options 上的 plugins 字段；
+// 详情见 https://immerjs.github.io/immer/docs/freezing
+setAutoFreeze(false)
 
 function applyArgv(argv: yargs.Arguments) {
   if (argv.verbose) {
@@ -27,10 +33,6 @@ function applyArgv(argv: yargs.Arguments) {
 
   if (argv.ENV_VARIABLES_FILE) {
     paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE as string)
-  }
-
-  if (argv.ISOMORPHIC_TOOLS_FILE) {
-    paths.setIsomorphicToolsFilePath(argv.ISOMORPHIC_TOOLS_FILE as string)
   }
 
   if (argv.BUILD_ENV) {
@@ -77,10 +79,6 @@ const options: Record<string, yargs.Options> = {
     desc: 'Target file path for env variables',
     type: 'string'
   },
-  ISOMORPHIC_TOOLS_FILE: {
-    desc: 'Target file path for isomorphic-tools.js for ssr',
-    type: 'string'
-  },
   verbose: {
     type: 'boolean',
     desc: 'Output more info',
@@ -123,7 +121,7 @@ const commands: Record<string, Command> = {
     isDefault: true,
     desc: 'Launch the dev server',
     handler(args) {
-      return serve(args.PORT)
+      return serve(args.PORT as number)
     }
   }
 }

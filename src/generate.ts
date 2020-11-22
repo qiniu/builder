@@ -10,10 +10,11 @@ import { getConfig } from './webpack'
 
 async function generate() {
   const config = await getConfig()
-  return new Promise((resolve, reject) => {
+
+  return new Promise<void>((resolve, reject) => {
     webpack(config, (err, stats) => {
       if (err) {
-        reject()
+        reject(err)
         return
       }
       if (stats && stats.hasErrors()) {
