@@ -1,4 +1,3 @@
-* svg
 * optimization
 * 开发环境不加 polyfill
 * sourcemap

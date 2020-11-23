@@ -12,5 +12,6 @@ export enum Transform {
   Tsx = 'tsx',
   Raw = 'raw',
   File = 'file',
-  SvgSprite = 'svg-sprite'
+  SvgSprite = 'svg-sprite',
+  Svgr = 'svgr'
 }

@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+import produce from 'immer'
 import * as fs from 'fs'
 import * as path from 'path'
 import { Configuration, DefinePlugin, WebpackPluginInstance } from 'webpack'
@@ -17,33 +18,6 @@ const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 
 export async function getConfig(): Promise<Configuration> {
   const buildConfig = await findBuildConfig()
-
-  const htmlPlugins = Object.entries(buildConfig.pages).map(([ name, { template, entries } ]) => {
-    return new HtmlPlugin({
-      template: abs(template),
-      filename: `${name}.html`,
-      chunks: entries
-    })
-  })
-
-  const definePlugin = new DefinePlugin(
-    // webpack DefinePlugin 只是简单的文本替换，这里进行 JSON stringify 转换
-    mapValues(buildConfig.envVariables, JSON.stringify)
-  )
-
-  const plugins: WebpackPluginInstance[] = [
-    ...htmlPlugins,
-    definePlugin
-  ]
-
-  const staticDirCopyPlugin = getStaticDirCopyPlugin(buildConfig)
-  if (staticDirCopyPlugin) {
-    plugins.push(staticDirCopyPlugin)
-  }
-
-  if (getEnv() === Env.Dev) {
-    plugins.push(new ReactFastRefreshPlugin())
-  }
 
   let config: Configuration = {
     mode: getMode(),
@@ -68,7 +42,7 @@ export async function getConfig(): Promise<Configuration> {
     },
     entry: mapValues(buildConfig.entries, entryFile => abs(entryFile)),
     module: { rules: [] },
-    plugins: plugins,
+    plugins: [],
     output: {
       path: getDistPath(buildConfig),
       filename: 'static/[name]-[contenthash].js',
@@ -83,9 +57,50 @@ export async function getConfig(): Promise<Configuration> {
 
   config = addTransforms(config, buildConfig)
 
+  const htmlPlugins = Object.entries(buildConfig.pages).map(([ name, { template, entries } ]) => {
+    return new HtmlPlugin({
+      template: abs(template),
+      filename: `${name}.html`,
+      chunks: entries
+    })
+  })
+
+  const definePlugin = new DefinePlugin(
+    // webpack DefinePlugin 只是简单的文本替换，这里进行 JSON stringify 转换
+    mapValues(buildConfig.envVariables, JSON.stringify)
+  )
+
+  const staticDirCopyPlugin = getStaticDirCopyPlugin(buildConfig)
+
+  config = appendPlugins(
+    config,
+    ...htmlPlugins,
+    definePlugin,
+    staticDirCopyPlugin
+  )
+
   logger.debug('webpack config:', config)
 
   return config
+}
+
+export async function getServeConfig() {
+  const config = await getConfig()
+  return appendPlugins(
+    config,
+    new ReactFastRefreshPlugin()
+  )
+}
+
+function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
+  return produce(config, newConfig => {
+    newConfig.plugins = newConfig.plugins || []
+    for (const plugin of plugins) {
+      if (plugin != null) {
+        newConfig.plugins.push(plugin)
+      }
+    }
+  })
 }
 
 function getMode(): Configuration['mode'] {

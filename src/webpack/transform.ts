@@ -250,6 +250,11 @@ function addTransform(
       return config
     }
 
+    case Transform.Svgr: {
+      return appendRuleWithLoaders(config, { loader: '@svgr/webpack' })
+      return config
+    }
+
     default: {
       throw new Error(`Invalid transformer: ${transform.transformer}`)
     }
@@ -314,16 +319,10 @@ function makeRule(loaderList: LoaderInfo[], extension: string, resource: Pattern
 }
 
 function adaptLoader({ loader, options }: LoaderInfo) {
-  loader = /\-loader$/.test(loader) ? loader : `${loader}-loader`
-
   // 这里先前会把 loader 的值通过 `require.resolve` 替换为绝对路径
   // 目的是为了保证总是能拿到正确的一致的 loader 实现（不受项目本地 node_modules 中 loader 实现的影响）
-  // 但是这样会有一些问题，比如 vue-loader 会通过正则匹配找到其中的 css-loader，而 resolve 后的绝对路径无法
-  // 被匹配（从 vue-loader 的角度也很难实现），见 https://github.com/vuejs/vue-loader/blob/f5b944b3f7bc68d7e4afe7abbb4a8036301f76c0/lib/loader.js#L593
-  // 结果是 vue-loader 不能正确地找到 css-loader 的位置，从而将 style-compiler 插到 less-loader 后边，导致不能正确编译 less 内容
-  // 因此这里先把这个行为干掉，保持 loader 的值为其名字，即（`css-loader`, `less-loader` 这种形式）
-  // `__loaderName__` 仍保留，builder 的实现中优先使用 `__loaderName__` 的值来判断 loader 的类型，而不是 loader 的值
-  const loaderObj = { loader, options }
+  const resolvedLoader = require.resolve(loader)
+  const loaderObj = { loader: resolvedLoader, options }
 
   // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 webpack 乱报错
   // 比如 extract-style 处要根据 `__loaderName__ === 'style-loader'` 判断是否需处理
@@ -339,12 +338,11 @@ function adaptLoader({ loader, options }: LoaderInfo) {
 function addDefaultExtension(config: Configuration, extension: string) {
   extension = extension && ('.' + extension)
   return produce(config, newConfig => {
-    const resolve = newConfig.resolve || {}
-    const extensions = resolve.extensions || []
-    if (extensions.includes(extension)) return
-    extensions.push(extension)
-    resolve.extensions = extensions
-    newConfig.resolve = resolve
+    const resolve = newConfig.resolve = newConfig.resolve || {}
+    const extensions = resolve.extensions = resolve.extensions || []
+    if (!extensions.includes(extension)) {
+      extensions.push(extension)
+    }
   })
 }
 
@@ -418,7 +416,7 @@ function makeBabelLoaderOptions(
   options = options || {}
 
   return produce(options, nextOptions => {
-    const presets = options.presets || []
+    const presets = nextOptions.presets || []
     const presetEnvName = '@babel/preset-env'
     if (!includes(presets, presetEnvName)) {
       presets.unshift([presetEnvName, getBabelPresetEnvOptions(targets, polyfill)])
@@ -429,7 +427,7 @@ function makeBabelLoaderOptions(
     }
     nextOptions.presets = presets.map(adaptBabelPreset)
 
-    const plugins = options.plugins || []
+    const plugins = nextOptions.plugins || []
     const pluginTransformRuntimeName = '@babel/plugin-transform-runtime'
     if (!includes(plugins, pluginTransformRuntimeName)) {
       plugins.unshift([pluginTransformRuntimeName, { corejs: corejsOptions }])
@@ -441,6 +439,6 @@ function makeBabelLoaderOptions(
     nextOptions.plugins = plugins.map(adaptBabelPlugin)
 
     // 用于指定预期模块类型，若用户未指定，则使用默认值 unambiguous，即：自动推断
-    nextOptions.sourceType = options.sourceType || 'unambiguous'
+    nextOptions.sourceType = nextOptions.sourceType || 'unambiguous'
   })
 }

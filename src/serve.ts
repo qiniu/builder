@@ -9,13 +9,13 @@ import * as WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
 import { getPathFromUrl, logLifecycle } from './utils'
-import { getConfig } from './webpack'
+import { getServeConfig } from './webpack'
 import { DevProxy, findBuildConfig } from './utils/build-conf'
 import { mapValues } from 'lodash'
 
 async function serve(port: number) {
   const buildConfig = await findBuildConfig()
-  const webpackConfig = await getConfig()
+  const webpackConfig = await getServeConfig()
   const devServerConfig: WebpackDevServer.Configuration = {
     // TODO: maybe hotOnly?
     hot: true,

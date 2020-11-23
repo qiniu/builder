@@ -23,6 +23,7 @@
         }
       }
     },
-    "svg@jsx": "svg-sprite"
+    "svg@js": "svgr",
+    "svg@jsx": "svgr"
   }
 }
