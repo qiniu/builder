@@ -7,6 +7,8 @@ import logger from './utils/logger'
 
 const logLifecycle = require('./utils').logLifecycle
 
-async function upload() {}
+async function upload() {
+  // TODO
+}
 
 export default logLifecycle('Upload', upload, logger)

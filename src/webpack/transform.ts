@@ -12,7 +12,7 @@ export interface Condition {
   exclude: string[]
 }
 
-/** 配置资源转换逻辑（buildConfig.transforms） */
+/** 添加资源转换逻辑（buildConfig.transforms） */
 export function addTransforms(
   /** 当前 webpack 配置 */
   config: Configuration,
@@ -400,7 +400,7 @@ function getBabelPresetEnvOptions(targets: string[], polyfill: AddPolyfill) {
 }
 
 /**
- * 修改 babel-loader 的配置，主要是添加默认的 polyfill 相关配置
+ * 构造 babel-loader 的配置对象，主要是添加默认的 polyfill 相关配置
  * 另外会调整 preset、plugin 的名字为绝对路径
  */
 function makeBabelLoaderOptions(

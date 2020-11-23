@@ -18,38 +18,6 @@ import test from './test'
 // 详情见 https://immerjs.github.io/immer/docs/freezing
 setAutoFreeze(false)
 
-function applyArgv(argv: yargs.Arguments) {
-  if (argv.verbose) {
-    logger.level = 'debug'
-  }
-
-  if (argv.BUILD_ROOT) {
-    paths.setBuildRoot(argv.BUILD_ROOT as string)
-  }
-
-  if (argv.BUILD_CONFIG_FILE) {
-    paths.setBuildConfigFilePath(argv.BUILD_CONFIG_FILE as string)
-  }
-
-  if (argv.ENV_VARIABLES_FILE) {
-    paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE as string)
-  }
-
-  if (argv.BUILD_ENV) {
-    setEnv(argv.BUILD_ENV as Env)
-  }
-}
-
-function handleError(e: unknown) {
-  if (Array.isArray(e)) {
-    e.forEach(item => logger.error(item))
-  } else {
-    e && logger.error(e)
-  }
-  logger.fatal('encountered error, exit 1')
-  process.exit(1)
-}
-
 const options: Record<string, yargs.Options> = {
   BUILD_ROOT: {
     alias: 'r',
@@ -124,6 +92,38 @@ const commands: Record<string, Command> = {
       return serve(args.PORT as number)
     }
   }
+}
+
+function applyArgv(argv: yargs.Arguments) {
+  if (argv.verbose) {
+    logger.level = 'debug'
+  }
+
+  if (argv.BUILD_ROOT) {
+    paths.setBuildRoot(argv.BUILD_ROOT as string)
+  }
+
+  if (argv.BUILD_CONFIG_FILE) {
+    paths.setBuildConfigFilePath(argv.BUILD_CONFIG_FILE as string)
+  }
+
+  if (argv.ENV_VARIABLES_FILE) {
+    paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE as string)
+  }
+
+  if (argv.BUILD_ENV) {
+    setEnv(argv.BUILD_ENV as Env)
+  }
+}
+
+function handleError(e: unknown) {
+  if (Array.isArray(e)) {
+    e.forEach(item => logger.error(item))
+  } else {
+    e && logger.error(e)
+  }
+  logger.fatal('encountered error, exit 1')
+  process.exit(1)
 }
 
 let parser = yargs(process.argv.slice(2))

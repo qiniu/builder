@@ -6,6 +6,8 @@
 import logger from './utils/logger'
 const logLifecycle = require('./utils').logLifecycle
 
-async function test() {}
+async function test() {
+  // TODO
+}
 
 export default logLifecycle('Terve', test, logger)

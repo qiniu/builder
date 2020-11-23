@@ -16,6 +16,7 @@ import { getPathFromUrl } from '../utils'
 const dirnameOfBuilder = path.resolve(__dirname, '../../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 
+/** 获取 webpack 配置（构建用） */
 export async function getConfig(): Promise<Configuration> {
   const buildConfig = await findBuildConfig()
 
@@ -84,6 +85,7 @@ export async function getConfig(): Promise<Configuration> {
   return config
 }
 
+/** 获取 webpack 配置（dev server 用） */
 export async function getServeConfig() {
   const config = await getConfig()
   return appendPlugins(
@@ -92,6 +94,7 @@ export async function getServeConfig() {
   )
 }
 
+/** 向配置中追加 plugin */
 function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
   return produce(config, newConfig => {
     newConfig.plugins = newConfig.plugins || []
@@ -103,6 +106,7 @@ function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginIns
   })
 }
 
+/** 获取合适的 webpack mode */
 function getMode(): Configuration['mode'] {
   const buildEnv = getEnv()
   if (buildEnv === Env.Dev) return 'development'
@@ -110,6 +114,7 @@ function getMode(): Configuration['mode'] {
   return 'none'
 }
 
+/** 构造用于 static 目录复制的 plugin 实例 */
 function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
   const staticPath = getStaticPath(buildConfig)
   if (!fs.existsSync(staticPath)) return null
