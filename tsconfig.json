@@ -1,7 +1,7 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es6",
+    "target": "es5",
     "outDir": "lib",
     "rootDir": "src",
     "lib": [
@@ -13,7 +13,8 @@
     "downlevelIteration": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "sourceMap": true
   },
   "exclude": [
     "node_modules",
