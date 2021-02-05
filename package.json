@@ -1,8 +1,12 @@
 {
   "name": "fec-builder",
   "version": "2.0.0",
-  "bin": {},
-  "scripts": {},
+  "bin": {
+    "fec-builder": "./lib/bin"
+  },
+  "scripts": {
+    "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react"
+  },
   "engines": {
     "node": ">=12"
   },
@@ -49,6 +53,7 @@
     "@types/semver": "^7.3.4",
     "@types/walk": "^2.3.0",
     "@types/webpack-dev-server": "^3.11.1",
-    "@types/yargs": "^15.0.9"
+    "@types/yargs": "^15.0.9",
+    "ts-node": "^9.1.1"
   }
 }
