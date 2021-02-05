@@ -26,7 +26,6 @@ export function abs(p: string) {
 }
 
 let buildConfigFilePath = process.env.BUILD_CONFIG_FILE || null
-let envVariablesFilePath = process.env.ENV_VARIABLES_FILE || null
 
 /** get build config file path */
 export function getBuildConfigFilePath() {
@@ -36,16 +35,6 @@ export function getBuildConfigFilePath() {
 /** set build config file path */
 export function setBuildConfigFilePath(target: string) {
   buildConfigFilePath = path.resolve(target)
-}
-
-/** get env variables file path */
-export function getEnvVariablesFilePath() {
-  return envVariablesFilePath
-}
-
-/** set env variables file path */
-export function setEnvVariablesFilePath(target: string) {
-  envVariablesFilePath = path.resolve(target)
 }
 
 /** get src path */

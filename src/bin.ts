@@ -42,11 +42,6 @@ const options: Record<string, yargs.Options> = {
     desc: 'Path of build config file. If provided, it will be used superior to build-config.json under BUILD_ROOT',
     type: 'string'
   },
-  ENV_VARIABLES_FILE: {
-    alias: 'f',
-    desc: 'Target file path for env variables',
-    type: 'string'
-  },
   verbose: {
     type: 'boolean',
     desc: 'Output more info',
@@ -105,10 +100,6 @@ function applyArgv(argv: yargs.Arguments) {
 
   if (argv.BUILD_CONFIG_FILE) {
     paths.setBuildConfigFilePath(argv.BUILD_CONFIG_FILE as string)
-  }
-
-  if (argv.ENV_VARIABLES_FILE) {
-    paths.setEnvVariablesFilePath(argv.ENV_VARIABLES_FILE as string)
   }
 
   if (argv.BUILD_ENV) {

@@ -3,7 +3,7 @@ import * as fs from 'fs'
 import * as path from 'path'
 import files from '../constants/files'
 import { extend } from '.'
-import { getBuildConfigFilePath, abs, getEnvVariablesFilePath } from './paths'
+import { getBuildConfigFilePath, abs } from './paths'
 import logger from './logger'
 import { Transform } from '../constants/transform'
 
@@ -145,14 +145,6 @@ const readConfig = (configFilePath: string) => {
   return configFileContent
 }
 
-const parseEnvVariables = (cnt: string) => JSON.parse(cnt) as EnvVariables
-
-const readEnvVariables = (envVariablesFilePath: string) => {
-  const envVariablesFileRawContent = fs.readFileSync(envVariablesFilePath, { encoding: 'utf8' })
-  const envVariablesFileContent = parseEnvVariables(envVariablesFileRawContent)
-  return envVariablesFileContent
-}
-
 /** lookup extends target */
 function lookupExtendsTarget (
   /** name of extends target */
@@ -279,15 +271,6 @@ export async function findBuildConfig(): Promise<BuildConfig> {
 
   return cached = readAndResolveConfig(configFilePath).then(
     config => {
-      // 若指定了 env variables file path
-      // 读取之并覆盖 build config 中的 envVariables 字段
-      const envVariablesFilePath = getEnvVariablesFilePath()
-      if (envVariablesFilePath) {
-        logger.debug(`use env variables file: ${envVariablesFilePath}`)
-        const envVariables = readEnvVariables(envVariablesFilePath)
-        config.envVariables = envVariables
-      }
-
       const normalized = normalizeConfig(config)
 
       logger.debug('result build config:')
