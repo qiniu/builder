@@ -41,11 +41,7 @@
       }
     },
     "tpl": "raw",
-    "svg@js": "svg-sprite",
-    "svg@css": "file",
-    "svg@m.css": "file",
-    "svg@less": "file",
-    "svg@m.less": "file",
+    "svg": "file",
     "png": "file",
     "gif": "file",
     "jpg": "file",

@@ -1,0 +1,9 @@
+{
+  "extends": "typescript-react",
+  "transforms": {
+    "svg@js": "raw",
+    "svg@jsx": "raw",
+    "svg@ts": "raw",
+    "svg@tsx": "raw"
+  }
+}

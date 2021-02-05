@@ -246,8 +246,7 @@ function addTransform(
     }
 
     case Transform.SvgSprite: {
-      // TODO
-      return config
+      throw new Error('Transform svg-sprite is not supported any more.')
     }
 
     case Transform.Svgr: {
