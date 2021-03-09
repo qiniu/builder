@@ -11,9 +11,9 @@ import { BuildConfig, findBuildConfig } from '../utils/build-conf'
 import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
-import { getPathFromUrl } from '../utils'
+import { getPathFromUrl, getPageFilename } from '../utils'
 
-const dirnameOfBuilder = path.resolve(__dirname, '../../..')
+const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 
 /** 获取 webpack 配置（构建用） */
@@ -28,17 +28,15 @@ export async function getConfig(): Promise<Configuration> {
       extensions: ['.wasm', '.mjs', '.js', '.json'],
       modules: [
         getSrcPath(buildConfig),
-        abs('node_modules'),
+        'node_modules',
         nodeModulesOfBuilder,
-        dirnameOfBuilder,
-        'node_modules'
+        abs('node_modules')
       ]
     },
     resolveLoader: {
       modules: [
-        nodeModulesOfBuilder,
-        dirnameOfBuilder,
-        'node_modules'
+        'node_modules',
+        nodeModulesOfBuilder
       ]
     },
     entry: mapValues(buildConfig.entries, entryFile => abs(entryFile)),
@@ -61,7 +59,7 @@ export async function getConfig(): Promise<Configuration> {
   const htmlPlugins = Object.entries(buildConfig.pages).map(([ name, { template, entries } ]) => {
     return new HtmlPlugin({
       template: abs(template),
-      filename: `${name}.html`,
+      filename: getPageFilename(name),
       chunks: entries
     })
   })

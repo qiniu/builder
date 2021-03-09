@@ -117,6 +117,11 @@ export function makeSnapshotGlob(srcDir: string) {
   return `${srcDir}/**/*.snap`
 }
 
+/** 从 page 名（buildConfig.pages 的 key）得到在 serve / 构建时对应的页面文件名  */
+export function getPageFilename(pageName: string) {
+  return `${pageName}.html`
+}
+
 // TODO
 // export function getDefaultExtensions(webpackConfig) {
 //   return webpackConfig.resolve.extensions.map(

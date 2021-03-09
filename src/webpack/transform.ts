@@ -414,15 +414,17 @@ function makeBabelLoaderOptions(
 ) {
   options = options || {}
 
+  const isDev = getEnv() === Env.Dev
+
   return produce(options, nextOptions => {
     const presets = nextOptions.presets || []
     const presetEnvName = '@babel/preset-env'
-    if (!includes(presets, presetEnvName)) {
+    if (!isDev && !includes(presets, presetEnvName)) {
       presets.unshift([presetEnvName, getBabelPresetEnvOptions(targets, polyfill)])
     }
     const presetReactName = '@babel/preset-react'
     if (withReact && !includes(presets, presetReactName)) {
-      presets.push([presetReactName, { development: getEnv() === Env.Dev }])
+      presets.push([presetReactName, { development: isDev }])
     }
     nextOptions.presets = presets.map(adaptBabelPreset)
 
@@ -432,7 +434,7 @@ function makeBabelLoaderOptions(
       plugins.unshift([pluginTransformRuntimeName, { corejs: corejsOptions }])
     }
     const pluginReactRefreshName = 'react-refresh/babel'
-    if (withReact && getEnv() === Env.Dev && !includes(plugins, pluginReactRefreshName)) {
+    if (withReact && isDev && !includes(plugins, pluginReactRefreshName)) {
       plugins.push('react-refresh/babel')
     }
     nextOptions.plugins = plugins.map(adaptBabelPlugin)

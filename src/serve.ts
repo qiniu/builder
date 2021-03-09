@@ -8,14 +8,15 @@ import * as webpack from 'webpack'
 import * as WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
-import { getPathFromUrl, logLifecycle } from './utils'
+import { getPageFilename, getPathFromUrl, logLifecycle } from './utils'
 import { getServeConfig } from './webpack'
-import { DevProxy, findBuildConfig } from './utils/build-conf'
-import { mapValues } from 'lodash'
+import { BuildConfig, DevProxy, findBuildConfig } from './utils/build-conf'
+import { entries, mapValues } from 'lodash'
 
 async function serve(port: number) {
   const buildConfig = await findBuildConfig()
   const webpackConfig = await getServeConfig()
+
   const devServerConfig: WebpackDevServer.Configuration = {
     // TODO: maybe hotOnly?
     hot: true,
@@ -29,7 +30,10 @@ async function serve(port: number) {
     public: '0.0.0.0:0',
     publicPath: getPathFromUrl(buildConfig.publicUrl),
     stats: 'errors-only', // TODO: 好像不生效？
-    proxy: getProxyConfig(buildConfig.devProxy)
+    proxy: getProxyConfig(buildConfig.devProxy),
+    historyApiFallback: {
+      rewrites: getHistoryApiFallbackRewrites(buildConfig)
+    }
   }
   const compiler = webpack(webpackConfig)
   const server = new WebpackDevServer(compiler, devServerConfig)
@@ -86,4 +90,19 @@ function getProxyConfig(devProxy: DevProxy) {
     ...defaultProxyConfig,
     target
   }))
+}
+
+// get rewrites for devServerConfig.historyApiFallback
+function getHistoryApiFallbackRewrites(buildConfig: BuildConfig) {
+  const prefix = getPathFromUrl(buildConfig.publicUrl, false)
+  return entries(buildConfig.pages).map(
+    ([name, { path }]) => ({
+      from: new RegExp(path),
+      to: '/' + (
+        prefix
+        ? `${prefix}/${getPageFilename(name)}`
+        : getPageFilename(name)
+      )
+    })
+  )
 }
