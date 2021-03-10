@@ -11,6 +11,8 @@ import { getConfig } from './webpack'
 async function generate() {
   const config = await getConfig()
 
+  logger.debug('webpack config:', config)
+
   return new Promise<void>((resolve, reject) => {
     webpack(config, (err, stats) => {
       if (err) {

@@ -66,7 +66,10 @@ export async function getConfig(): Promise<Configuration> {
 
   const definePlugin = new DefinePlugin(
     // webpack DefinePlugin 只是简单的文本替换，这里进行 JSON stringify 转换
-    mapValues(buildConfig.envVariables, JSON.stringify)
+    mapValues({
+      'process.env.NODE_ENV': getEnv(),
+      ...buildConfig.envVariables
+    }, JSON.stringify)
   )
 
   const staticDirCopyPlugin = getStaticDirCopyPlugin(buildConfig)
@@ -77,8 +80,6 @@ export async function getConfig(): Promise<Configuration> {
     definePlugin,
     staticDirCopyPlugin
   )
-
-  logger.debug('webpack config:', config)
 
   return config
 }

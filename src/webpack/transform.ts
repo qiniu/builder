@@ -218,7 +218,7 @@ function addTransform(
       )
       const tsLoaderOptions = {
         // TODO: 看下构建性能，是不是需要开 transpileOnly
-        // transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
+        transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
         // TODO: 是不是通过 compilerOptions 覆盖一些本地 tsconfig.json 的配置？
         // compilerOptions: {}
         // 方便项目直接把内部依赖（portal-base / fe-core 等）的源码 link 进来一起构建调试
@@ -437,7 +437,7 @@ function makeBabelLoaderOptions(
     }
     const pluginReactRefreshName = 'react-refresh/babel'
     if (withReact && isDev && !includes(plugins, pluginReactRefreshName)) {
-      plugins.push('react-refresh/babel')
+      plugins.push(pluginReactRefreshName)
     }
     nextOptions.plugins = plugins.map(adaptBabelPlugin)
 

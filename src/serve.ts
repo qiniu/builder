@@ -17,9 +17,10 @@ async function serve(port: number) {
   const buildConfig = await findBuildConfig()
   const webpackConfig = await getServeConfig()
 
+  logger.debug('webpack config:', webpackConfig)
+
   const devServerConfig: WebpackDevServer.Configuration = {
-    // TODO: maybe hotOnly?
-    hot: true,
+    hotOnly: true,
     // 方便开发调试
     disableHostCheck: true,
     // devServer 中的 public 字段会被拿去计算得到 hot module replace 相关请求的 URI
@@ -29,7 +30,7 @@ async function serve(port: number) {
     // 即可能配置 port 为 80，在（宿主机）浏览器中通过 8080 端口访问
     public: '0.0.0.0:0',
     publicPath: getPathFromUrl(buildConfig.publicUrl),
-    stats: 'errors-only', // TODO: 好像不生效？
+    // stats: 'errors-only', // TODO: 好像不生效？
     proxy: getProxyConfig(buildConfig.devProxy),
     historyApiFallback: {
       rewrites: getHistoryApiFallbackRewrites(buildConfig)
