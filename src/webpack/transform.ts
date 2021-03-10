@@ -221,6 +221,8 @@ function addTransform(
         // transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
         // TODO: 是不是通过 compilerOptions 覆盖一些本地 tsconfig.json 的配置？
         // compilerOptions: {}
+        // 方便项目直接把内部依赖（portal-base / fe-core 等）的源码 link 进来一起构建调试
+        allowTsInNodeModules: true
       }
       return appendRuleWithLoaders(
         config,
