@@ -1,4 +1,10 @@
-* optimization
-* sourcemap
-* extract css
-* watch build config change
+### optimization
+
+* extractCommon
+* extractVendor
+* compressImage
+* transformDeps
+
+### sourcemap
+
+### watch build config change

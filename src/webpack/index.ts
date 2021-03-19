@@ -1,8 +1,7 @@
 import { mapValues } from 'lodash'
-import produce from 'immer'
 import * as fs from 'fs'
 import * as path from 'path'
-import { Configuration, DefinePlugin, WebpackPluginInstance } from 'webpack'
+import { Configuration, DefinePlugin } from 'webpack'
 import * as HtmlPlugin from 'html-webpack-plugin'
 import * as CopyPlugin from 'copy-webpack-plugin'
 import * as ReactFastRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -14,6 +13,7 @@ import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
+import { appendPlugins } from '../utils/webpack'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
@@ -105,18 +105,6 @@ export async function getServeConfig() {
     config,
     new ReactFastRefreshPlugin()
   )
-}
-
-/** 向配置中追加 plugin */
-function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
-  return produce(config, newConfig => {
-    newConfig.plugins = newConfig.plugins || []
-    for (const plugin of plugins) {
-      if (plugin != null) {
-        newConfig.plugins.push(plugin)
-      }
-    }
-  })
 }
 
 /** 获取合适的 webpack mode */

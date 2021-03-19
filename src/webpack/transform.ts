@@ -3,7 +3,7 @@ import { Configuration, RuleSetConditionAbsolute, RuleSetRule } from 'webpack'
 import * as postcssPresetEnv from 'postcss-preset-env'
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Transform } from '../constants/transform'
-import { BuildConfig, TransformObject, shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
+import { BuildConfig, TransformObject, shouldAddGlobalPolyfill, AddPolyfill, shouldAddRuntimePolyfill } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 
 export interface Condition {
@@ -220,11 +220,17 @@ function addTransform(
         optimization.addPolyfill,
         transform.transformer === Transform.Tsx
       )
+      const compilerOptions = {
+        // 这里设置为 ES2020（最新的规范能力），进一步的转换由 babel 处理
+        target: 'ES2020',
+        // enable tree-shaking，由 webpack 来做 module 格式的转换
+        module: 'ES2015',
+        // module 为 ES2015 时，moduleResolution 默认为 Classic，这里设置为 Node
+        moduleResolution: 'Node'
+      }
       const tsLoaderOptions = {
-        // TODO: 看下构建性能，是不是需要开 transpileOnly
         transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
-        // TODO: 是不是通过 compilerOptions 覆盖一些本地 tsconfig.json 的配置？
-        // compilerOptions: {}
+        compilerOptions,
         // 方便项目直接把内部依赖（portal-base / fe-core 等）的源码 link 进来一起构建调试
         allowTsInNodeModules: true
       }
@@ -436,7 +442,7 @@ function makeBabelLoaderOptions(
 
     const plugins = nextOptions.plugins || []
     const pluginTransformRuntimeName = '@babel/plugin-transform-runtime'
-    if (!includes(plugins, pluginTransformRuntimeName)) {
+    if (!isDev && shouldAddRuntimePolyfill(polyfill) && !includes(plugins, pluginTransformRuntimeName)) {
       plugins.unshift([pluginTransformRuntimeName, { corejs: corejsOptions }])
     }
     const pluginReactRefreshName = 'react-refresh/babel'
