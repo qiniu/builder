@@ -60,9 +60,6 @@ interface TransformStyleConfig {
   options?: unknown
 }
 
-// 同 raw-loader options
-type TransformRawConfig = unknown
-
 type BabelPreset = string | [string, ...unknown[]]
 type BabelPlugin = string | [string, ...unknown[]]
 
@@ -119,12 +116,18 @@ function addTransform(
     exclude: context.exclude.map(makeExtensionPattern)
   }
 
-  const appendRuleWithLoaders = (previousConfig: Configuration, ...loaders: LoaderInfo[]) => {
-    const rule = makeRule(loaders, resource.include, resourcePattern, contextPattern)
-    return produce(previousConfig, (nextConfig: Configuration) => {
-      nextConfig.module!.rules!.push(rule)
-    })
-  }
+  const appendRule = (previousConfig: Configuration, ruleBase: Partial<RuleSetRule>) => produce(previousConfig, (nextConfig: Configuration) => {
+    const rule = makeRule(resource.include, resourcePattern, contextPattern, ruleBase)
+    nextConfig.module!.rules!.push(rule)
+  })
+
+  const appendRuleWithLoaders = (previousConfig: Configuration, ...loaders: LoaderInfo[]) => (
+    appendRule(previousConfig, { use: loaders.map(adaptLoader) })
+  )
+
+  const appendRuleWithAssetType = (previousConfig: Configuration, assetType: string) => (
+    appendRule(previousConfig, { type: assetType })
+  )
 
   const markDefaultExtension = (previousConfig: Configuration) => {
     return addDefaultExtension(previousConfig, extension)
@@ -243,18 +246,11 @@ function addTransform(
     }
 
     case Transform.Raw: {
-      const transformConfig = transform.config as TransformRawConfig
-      return appendRuleWithLoaders(config, {
-        loader: 'raw-loader',
-        options: transformConfig
-      })
+      return appendRuleWithAssetType(config, 'asset/source')
     }
 
     case Transform.File: {
-      return appendRuleWithLoaders(config, {
-        loader: 'file-loader',
-        options: { name: 'static/[name]-[hash].[ext]' }
-      })
+      return appendRuleWithAssetType(config, 'asset')
     }
 
     case Transform.SvgSprite: {
@@ -263,7 +259,6 @@ function addTransform(
 
     case Transform.Svgr: {
       return appendRuleWithLoaders(config, { loader: '@svgr/webpack' })
-      return config
     }
 
     default: {
@@ -307,16 +302,16 @@ export interface PatternCondition {
   exclude: RegExp[]
 }
 
-function makeRule(loaderList: LoaderInfo[], extension: string, resource: PatternCondition, context: PatternCondition) {
+function makeRule(extension: string, resource: PatternCondition, context: PatternCondition, base: Partial<RuleSetRule>): RuleSetRule {
   const issuerConditions: RuleSetConditionAbsolute[] = []
   if (context.include != null) issuerConditions.push(context.include)
   if (context.exclude.length > 0) issuerConditions.push({ not: context.exclude })
 
   const rule: RuleSetRule = {
+    ...base,
     test: resource.include,
     exclude: resource.exclude,
-    issuer: issuerConditions.length > 0 ? { and: issuerConditions } : undefined,
-    use: loaderList.map(adaptLoader)
+    issuer: issuerConditions.length > 0 ? { and: issuerConditions } : undefined
   }
 
   // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 webpack 乱报错

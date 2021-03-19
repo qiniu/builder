@@ -48,6 +48,7 @@ export async function getConfig(): Promise<Configuration> {
       path: getDistPath(buildConfig),
       filename: 'static/[name]-[contenthash].js',
       chunkFilename: 'static/[id]-[chunkhash].js',
+      assetModuleFilename: 'static/[name]-[contenthash][ext]',
       publicPath: (
         getEnv() === Env.Prod
         ? buildConfig.publicUrl
