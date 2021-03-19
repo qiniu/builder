@@ -6,6 +6,8 @@ import { Configuration, DefinePlugin, WebpackPluginInstance } from 'webpack'
 import * as HtmlPlugin from 'html-webpack-plugin'
 import * as CopyPlugin from 'copy-webpack-plugin'
 import * as ReactFastRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig } from '../utils/build-conf'
 import { addTransforms } from './transform'
@@ -51,6 +53,12 @@ export async function getConfig(): Promise<Configuration> {
         ? buildConfig.publicUrl
         : getPathFromUrl(buildConfig.publicUrl)
       )
+    },
+    optimization: {
+      minimizer: [
+        '...',
+        new CssMinimizerPlugin()
+      ]
     }
   }
 
@@ -74,11 +82,17 @@ export async function getConfig(): Promise<Configuration> {
 
   const staticDirCopyPlugin = getStaticDirCopyPlugin(buildConfig)
 
+  const miniCssExtractPlugin = new MiniCssExtractPlugin({
+    filename: 'static/[name]-[contenthash].css',
+    chunkFilename: 'static/[id]-[chunkhash].css'
+  })
+
   config = appendPlugins(
     config,
     ...htmlPlugins,
     definePlugin,
-    staticDirCopyPlugin
+    staticDirCopyPlugin,
+    miniCssExtractPlugin
   )
 
   return config

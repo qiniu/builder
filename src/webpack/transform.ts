@@ -1,6 +1,7 @@
 import produce from 'immer'
 import { Configuration, RuleSetConditionAbsolute, RuleSetRule } from 'webpack'
 import * as postcssPresetEnv from 'postcss-preset-env'
+import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Transform } from '../constants/transform'
 import { BuildConfig, TransformObject, shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
@@ -135,10 +136,13 @@ function addTransform(
       const transformConfig = (transform.config || {}) as TransformStyleConfig
       const loaders: LoaderInfo[] = []
 
-      // 测试时无需 style-loader
-      if (getEnv() !== Env.Test) {
-        loaders.push({ loader: 'style-loader' })
-      }
+      // // 测试时无需 style-loader
+      // if (getEnv() !== Env.Test) {
+      //   loaders.push({ loader: 'style-loader' })
+      // }
+
+      // TODO: 确认是否需要在测试时干掉
+      loaders.push({ loader: MiniCssExtractPlugin.loader })
 
       loaders.push({
         loader: 'css-loader',
