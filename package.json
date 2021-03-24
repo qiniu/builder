@@ -1,12 +1,13 @@
 {
   "name": "fec-builder",
-  "version": "2.0.0-beta.3",
+  "version": "2.0.0-beta.4",
   "bin": {
     "fec-builder": "./lib/bin.js"
   },
   "scripts": {
     "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react",
-    "build": "rm -rf lib && tsc"
+    "build": "rm -rf lib && tsc",
+    "prepublishOnly": "npm run build"
   },
   "engines": {
     "node": ">=12"
