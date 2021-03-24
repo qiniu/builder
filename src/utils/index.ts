@@ -58,6 +58,7 @@ export function logLifecycle<T extends Array<any>, P>(
       return result
     } catch (e) {
       logger.error(`${name} failed:`, e)
+      throw e
     }
   }
 }
