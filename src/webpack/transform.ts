@@ -258,7 +258,15 @@ function addTransform(
     }
 
     case Transform.Svgr: {
-      return appendRuleWithLoaders(config, { loader: '@svgr/webpack' })
+      return appendRuleWithLoaders(config, {
+        loader: '@svgr/webpack',
+        options: {
+          // 已知 svgo 的 removeViewBox 会导致指定了 width & height 的 svg 文件的 viewBox 被删掉，
+          // 而删掉 viewBox 会导致 svg 不能在外部指定 css 宽高时正确地缩放内容，故这里先把 svgo 干掉
+          // TODO: 小心地配置 svgo 对 svg 内容进行优化
+          svgo: false
+        }
+      })
     }
 
     default: {
