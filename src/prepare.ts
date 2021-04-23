@@ -3,7 +3,7 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as semver from 'semver'
+import semver from 'semver'
 import logger from './utils/logger'
 import { findBuildConfig } from './utils/build-conf'
 

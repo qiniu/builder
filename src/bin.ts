@@ -1,9 +1,9 @@
 #! /usr/bin/env node
 
 import { setAutoFreeze } from 'immer'
-import * as yargs from 'yargs'
+import yargs from 'yargs'
 
-import * as paths from './utils/paths'
+import { setBuildRoot, setBuildConfigFilePath } from './utils/paths'
 import { Env, setEnv } from './utils/build-env'
 import logger from './utils/logger'
 import prepare from './prepare'
@@ -95,11 +95,11 @@ function applyArgv(argv: yargs.Arguments) {
   }
 
   if (argv.BUILD_ROOT) {
-    paths.setBuildRoot(argv.BUILD_ROOT as string)
+    setBuildRoot(argv.BUILD_ROOT as string)
   }
 
   if (argv.BUILD_CONFIG_FILE) {
-    paths.setBuildConfigFilePath(argv.BUILD_CONFIG_FILE as string)
+    setBuildConfigFilePath(argv.BUILD_CONFIG_FILE as string)
   }
 
   if (argv.BUILD_ENV) {

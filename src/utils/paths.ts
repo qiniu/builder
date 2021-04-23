@@ -3,7 +3,7 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as path from 'path'
+import path from 'path'
 
 import logger from './logger'
 import { BuildConfig } from './build-conf'

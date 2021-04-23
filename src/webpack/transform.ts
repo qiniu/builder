@@ -1,8 +1,8 @@
 import produce from 'immer'
-import * as path from 'path'
+import path from 'path'
 import { Configuration, RuleSetConditionAbsolute, RuleSetRule, Chunk } from 'webpack'
-import * as postcssPresetEnv from 'postcss-preset-env'
-import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import postcssPresetEnv from 'postcss-preset-env'
+import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Transform } from '../constants/transform'
 import {
   BuildConfig, TransformObject, shouldAddGlobalPolyfill,

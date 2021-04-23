@@ -3,7 +3,7 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as webpack from 'webpack'
+import webpack from 'webpack'
 import logger from './utils/logger'
 import { logLifecycle } from './utils'
 import { getConfig } from './webpack'

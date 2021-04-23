@@ -3,9 +3,9 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as path from 'path'
-import * as walk from 'walk'
-import * as qiniu from 'qiniu'
+import path from 'path'
+import walk from 'walk'
+import qiniu from 'qiniu'
 import logger from './utils/logger'
 import { findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'

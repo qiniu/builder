@@ -3,7 +3,7 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as del from 'del'
+import del from 'del'
 
 import { getDistPath } from './utils/paths'
 import logger from './utils/logger'

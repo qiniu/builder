@@ -3,9 +3,9 @@
  * @author nighca <nighca@live.cn>
  */
 
-import * as url from 'url'
-import * as webpack from 'webpack'
-import * as WebpackDevServer from 'webpack-dev-server'
+import url from 'url'
+import webpack from 'webpack'
+import WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
 import { getPageFilename, getPathFromUrl, logLifecycle } from './utils'

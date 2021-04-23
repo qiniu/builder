@@ -1,6 +1,6 @@
 import { mapValues } from 'lodash'
-import * as fs from 'fs'
-import * as path from 'path'
+import fs from 'fs'
+import path from 'path'
 import files from '../constants/files'
 import { extend } from '.'
 import { getBuildConfigFilePath, abs } from './paths'

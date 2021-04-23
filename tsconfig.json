@@ -1,20 +1,21 @@
 {
   "compilerOptions": {
     "module": "commonjs",
-    "target": "es5",
+    "target": "es6",
     "outDir": "lib",
     "rootDir": "src",
     "lib": [
       "es6"
     ],
     "strict": true,
+    "esModuleInterop": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true,
     "downlevelIteration": true,
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "resolveJsonModule": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "skipLibCheck": true
   },
   "exclude": [

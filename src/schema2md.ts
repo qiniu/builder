@@ -4,8 +4,8 @@
  * @author yaojingtian <yaojingtian@qiniu.com>
  */
 
-import * as path from 'path'
-import * as fs from 'fs'
+import path from 'path'
+import fs from 'fs'
 
 // JSON Schema 的定义
 // 这里根据实际情况做了更细化的定义，去掉了一些不太用得着的字段，增加了字段对应关系的限定
