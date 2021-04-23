@@ -1,10 +1,15 @@
 import produce from 'immer'
-import { Configuration, RuleSetConditionAbsolute, RuleSetRule } from 'webpack'
+import * as path from 'path'
+import { Configuration, RuleSetConditionAbsolute, RuleSetRule, Chunk } from 'webpack'
 import * as postcssPresetEnv from 'postcss-preset-env'
 import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Transform } from '../constants/transform'
-import { BuildConfig, TransformObject, shouldAddGlobalPolyfill, AddPolyfill, shouldAddRuntimePolyfill } from '../utils/build-conf'
+import {
+  BuildConfig, TransformObject, shouldAddGlobalPolyfill,
+  AddPolyfill, shouldAddRuntimePolyfill, Optimization
+} from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
+import chunks from '../constants/chunks'
 
 export interface Condition {
   /** 需要处理的资源 */
@@ -456,5 +461,95 @@ function makeBabelLoaderOptions(
 
     // 用于指定预期模块类型，若用户未指定，则使用默认值 unambiguous，即：自动推断
     nextOptions.sourceType = nextOptions.sourceType || 'unambiguous'
+  })
+}
+
+export interface SplitChunksCacheGroup {
+  /**
+   * Select chunks for determining cache group content
+   * @default 'initial'
+   */
+  chunks?: 'all' | 'initial' | 'async' | ((chunk: Chunk) => boolean)
+  /**
+   * Minimum number of times a module has to be duplicated until it's considered for splitting.
+   * @default 1
+   */
+  minChunks?: number
+  /**
+   * Give chunks for this cache group a name (chunks with equal name are merged).
+   */
+  name?: string
+  /**
+   * Priority of this cache group.
+   * @default -20
+   */
+  priority?: number
+  /**
+   * Assign modules to a cache group by module name.
+   */
+  test?: string | Function | RegExp
+}
+
+export type SplitChunksCacheGroups = { [key: string]: SplitChunksCacheGroup }
+
+/** 解析 optimization 配置，获取 chunks 及 cacheGroups */
+export function parseOptimizationConfig(optimization: Optimization): {
+  baseChunks: string[]
+  cacheGroups: SplitChunksCacheGroups
+} {
+  const { extractVendor, extractCommon } = optimization
+  const baseChunks: string[] = []
+  const cacheGroups: SplitChunksCacheGroups = {}
+
+  if (extractVendor) {
+    if (typeof extractVendor === 'string') {
+      throw new Error('BREAKING CHANGE: extractVendor 已不再支持该用法，使用方式请参考帮助文档！')
+    } else if (typeof extractVendor === 'boolean' || extractVendor.length > 0) {
+      baseChunks.push(chunks.vendor)
+
+      cacheGroups[chunks.vendor] = {
+        name: chunks.vendor,
+        chunks: 'all',
+        priority: -10,
+        test: function(module: { resource?: string }): boolean {
+          const resource = module.resource
+          if (!resource) return false
+
+          const nodeModulesPath = path.join(path.sep, 'node_modules', path.sep)
+          if (typeof extractVendor === 'boolean') {
+            return resource.includes(nodeModulesPath)
+          }
+
+          return extractVendor.some(packageName => {
+            return resource.includes(path.join(nodeModulesPath, packageName, path.sep))
+          })
+        }
+      }
+    }
+  }
+
+  if (extractCommon) {
+    baseChunks.push(chunks.common)
+    cacheGroups[chunks.common] = {
+      name: chunks.common,
+      chunks: 'all',
+      minChunks: 2,
+      priority: -20
+    }
+  }
+
+  return { baseChunks, cacheGroups }
+}
+
+/** 向配置中追加 cacheGroup 项 */
+export function appendCacheGroups(
+  config: Configuration, cacheGroups: SplitChunksCacheGroups
+): Configuration {
+  return produce(config, newConfig => {
+    newConfig.optimization ||= {}
+    newConfig.optimization.splitChunks ||= {}
+    newConfig.optimization.splitChunks.cacheGroups ||= {}
+
+    Object.assign(newConfig.optimization.splitChunks.cacheGroups, cacheGroups)
   })
 }

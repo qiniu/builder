@@ -219,19 +219,21 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 - **`optimization.extractVendor`**
 
-    类型：`string`
+    控制是否抽取固定依赖（vendor）到单独的文件中，而不会重复出现在每个 entry 的结果文件里。
 
-    控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；
+    使用方式为指定固定依赖的数组或者传 `boolean`，传指定的依赖时会所依赖的包都将打包进 vendor，指定 `true` 时则抽取所有 node_modules 下的依赖包。
 
-    该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。
+    一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor 的内容如：`["react", "moment", "lodash"]`
 
-    一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：
+    `optimization.extractVendor` 类型为以下几种之一：
 
-    ```javascript
-    import 'react'
-    import 'moment'
-    import 'lodash'
-    ```    
+    - **`boolean`**
+
+        类型：`boolean`
+
+    - **`array`**
+
+        类型：`string[]`
 
 - **`optimization.compressImage`**
 

@@ -44,7 +44,7 @@ export interface Optimization {
   /** 是否抽取 entries 间的公共内容到单独的文件中 */
   extractCommon: boolean
   /** 抽取固定依赖行为 */
-  extractVendor: string
+  extractVendor: boolean | string[]
   /** 是否压缩图片 */
   compressImage: boolean
   /** 是否对第三方依赖包的 Javascript 内容进行转换 */

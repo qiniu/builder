@@ -118,8 +118,13 @@
           "description": "控制是否抽取 entries 间的公共内容到单独的文件中，在有多个 entry 时可以减少结果文件的总体积，`true` 启用，`false` 禁用"
         },
         "extractVendor": {
-          "type": "string",
-          "description": "控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；\n该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。\n一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：\n```javascript\nimport 'react'\nimport 'moment'\nimport 'lodash'\n```"
+          "oneOf": [{
+            "type": "boolean"
+            }, {
+              "type": "array",
+              "items": { "type": "string" }
+          }],
+          "description": "控制是否抽取固定依赖（vendor）到单独的文件中，而不会重复出现在每个 entry 的结果文件里。\n使用方式为指定固定依赖的数组或者传 `boolean`，传指定的依赖时会所依赖的包都将打包进 vendor，指定 `true` 时则抽取所有 node_modules 下的依赖包。\n一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor 的内容如：`[\"react\", \"moment\", \"lodash\"]`"
         },
         "compressImage": {
           "type": "boolean",

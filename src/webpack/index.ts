@@ -9,7 +9,7 @@ import * as MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import * as CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig } from '../utils/build-conf'
-import { addTransforms } from './transform'
+import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
@@ -63,13 +63,22 @@ export async function getConfig(): Promise<Configuration> {
     }
   }
 
+  let baseChunks: string[] = []
+
+  if (getEnv() === Env.Prod) {
+    const result = parseOptimizationConfig(buildConfig.optimization)
+    baseChunks = result.baseChunks
+    config = appendCacheGroups(config, result.cacheGroups)
+  }
+
   config = addTransforms(config, buildConfig)
 
   const htmlPlugins = Object.entries(buildConfig.pages).map(([ name, { template, entries } ]) => {
     return new HtmlPlugin({
       template: abs(template),
       filename: getPageFilename(name),
-      chunks: entries
+      chunks: [...baseChunks, ...entries],
+      chunksSortMode: 'manual'
     })
   })
 
