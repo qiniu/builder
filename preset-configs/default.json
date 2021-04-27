@@ -53,7 +53,7 @@
   },
   "envVariables": {},
   "targets": {
-    "browsers": ["> 0.5% and not ie 11 and last 2 versions"]
+    "browsers": ["defaults"]
   },
   "optimization": {
     "addPolyfill": true,
