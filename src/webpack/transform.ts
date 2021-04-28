@@ -10,6 +10,10 @@ import {
 } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 import chunks from '../constants/chunks'
+import logger from '../utils/logger'
+
+// ts-loader 开启 transpileOnly 后会出的 warning
+const tsTranspileOnlyWarningPattern = /export .* was not found in/
 
 export interface Condition {
   /** 需要处理的资源 */
@@ -241,6 +245,23 @@ function addTransform(
         compilerOptions,
         // 方便项目直接把内部依赖（portal-base / fe-core 等）的源码 link 进来一起构建调试
         allowTsInNodeModules: true
+      }
+      if (tsLoaderOptions.transpileOnly) {
+        // 干掉因为开启 transpileOnly 导致的 warning
+        // 详情见 https://github.com/TypeStrong/ts-loader#transpileonly
+        config = produce(config, newConfig => {
+          newConfig.stats ??= {}
+          if (typeof(newConfig.stats) === 'boolean' || typeof(newConfig.stats) === 'string') {
+            throw new Error("Expect config.stats to be object.")
+          }
+          const originFilter = newConfig.stats.warningsFilter ?? []
+          const warningsFilter = Array.isArray(originFilter) ? originFilter : [originFilter]
+          if (!warningsFilter.includes(tsTranspileOnlyWarningPattern)) {
+            logger.debug('append warningsFilter:', tsTranspileOnlyWarningPattern)
+            warningsFilter.push(tsTranspileOnlyWarningPattern)
+            newConfig.stats.warningsFilter = warningsFilter
+          }
+        })
       }
       return appendRuleWithLoaders(
         config,
