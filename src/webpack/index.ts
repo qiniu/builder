@@ -7,6 +7,7 @@ import CopyPlugin from 'copy-webpack-plugin'
 import ReactFastRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
+import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig } from '../utils/build-conf'
 import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
@@ -102,7 +103,8 @@ export async function getConfig(): Promise<Configuration> {
     ...htmlPlugins,
     definePlugin,
     staticDirCopyPlugin,
-    miniCssExtractPlugin
+    miniCssExtractPlugin,
+    new BundleAnalyzerPlugin()
   )
 
   return config
