@@ -279,3 +279,14 @@ export async function findBuildConfig(): Promise<BuildConfig> {
     }
   )
 }
+
+let needAnalyze = false
+
+/** Whether analyze bundle */
+export function getNeedAnalyze() {
+  return needAnalyze
+}
+
+export function setNeedAnalyze(value: boolean) {
+  needAnalyze = value
+}

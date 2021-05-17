@@ -9,7 +9,7 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
-import { BuildConfig, findBuildConfig } from '../utils/build-conf'
+import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
 import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
@@ -98,13 +98,15 @@ export async function getConfig(): Promise<Configuration> {
     chunkFilename: 'static/[id]-[chunkhash].css'
   })
 
+  const bundleAnalyzerPlugin = getNeedAnalyze() ? new BundleAnalyzerPlugin() : null
+
   config = appendPlugins(
     config,
     ...htmlPlugins,
     definePlugin,
     staticDirCopyPlugin,
     miniCssExtractPlugin,
-    new BundleAnalyzerPlugin()
+    bundleAnalyzerPlugin
   )
 
   return config
