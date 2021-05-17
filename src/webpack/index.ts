@@ -98,15 +98,16 @@ export async function getConfig(): Promise<Configuration> {
     chunkFilename: 'static/[id]-[chunkhash].css'
   })
 
-  const bundleAnalyzerPlugin = getNeedAnalyze() ? new BundleAnalyzerPlugin() : null
+  if (getNeedAnalyze()) {
+    config = appendPlugins(config, new BundleAnalyzerPlugin())
+  }
 
   config = appendPlugins(
     config,
     ...htmlPlugins,
     definePlugin,
     staticDirCopyPlugin,
-    miniCssExtractPlugin,
-    bundleAnalyzerPlugin
+    miniCssExtractPlugin
   )
 
   return config
