@@ -10,13 +10,22 @@ import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
 import { getPageFilename, getPathFromUrl, logLifecycle } from './utils'
 import { getServeConfig } from './webpack'
-import { BuildConfig, DevProxy, findBuildConfig } from './utils/build-conf'
+import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
 
 async function serve(port: number) {
+  let stopServer = await runDevServer(port)
+  const stopWatch = watchBuildConfig(async () => {
+    logger.info('Detected build config change, stoping server...')
+    stopServer?.()
+    stopServer = await runDevServer(port)
+  })
+  process.on('exit', stopWatch)
+}
+
+async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
   const webpackConfig = await getServeConfig()
-
   logger.debug('webpack config:', webpackConfig)
 
   const devServerConfig: WebpackDevServer.Configuration = {
@@ -41,7 +50,10 @@ async function serve(port: number) {
 
   const host = '0.0.0.0'
   server.listen(port, host, () => {
-    logger.info(`Starting server on ${host}:${port}`)
+    logger.info(`Server started on ${host}:${port}`)
+  })
+  return () => new Promise<void>(resolve => {
+    server.close(resolve)
   })
 }
 
