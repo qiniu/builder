@@ -5,7 +5,7 @@
     "fec-builder": "./lib/bin.js"
   },
   "scripts": {
-    "dev": "ts-node ./src/bin.ts clean -r ./samples/hello-world && ts-node ./src/bin.ts generate -e production -r ./samples/hello-world",
+    "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react",
     "build": "rm -rf lib && tsc",
     "prepublishOnly": "npm run build"
   },
