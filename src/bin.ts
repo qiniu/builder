@@ -11,6 +11,7 @@ import clean from './clean'
 import generate from './generate'
 import upload from './upload'
 import serve from './serve'
+import { setNeedAnalyze } from './utils/build-conf'
 import test from './test'
 
 // 禁掉 auto freeze，否则有的插件改数据时会异常，
@@ -85,6 +86,13 @@ const commands: Record<string, Command> = {
     desc: 'Launch the dev server',
     handler(args) {
       return serve(args.PORT as number)
+    }
+  },
+  analyze: {
+    desc: 'Visually analyze bundle dependencies',
+    async handler() {
+      setNeedAnalyze(true)
+      await generate()
     }
   }
 }
