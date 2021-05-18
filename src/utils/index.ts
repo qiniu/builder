@@ -3,6 +3,8 @@
  * @author nighca <nighca@live.cn>
  */
 
+import fs from 'fs'
+import { debounce } from 'lodash'
 import { Logger } from 'log4js'
 import { parse as parseUrl } from 'url'
 
@@ -123,22 +125,26 @@ export function getPageFilename(pageName: string) {
   return `${pageName}.html`
 }
 
-// TODO
-// export function getDefaultExtensions(webpackConfig) {
-//   return webpackConfig.resolve.extensions.map(
-//     extension => extension.replace(/^\./, '')
-//   )
-// }
+/** 监听文件内容变化，会对内容做比对，适用于体积较小的文本文件 */
+export function watchFile(filePath: string, listener: (content: string) => void) {
 
-// TODO
-// function runWebpackCompiler(compiler) {
-//   return new Promise((resolve, reject) => {
-//     compiler.run((err, stats) => {
-//       if (err || stats.hasErrors()) {
-//         reject(err || stats.toJson().errors)
-//         return
-//       }
-//       resolve(stats)
-//     })
-//   })
-// }
+  function readFile() {
+    return fs.readFileSync(filePath, { encoding: 'utf-8' })
+  }
+
+  let previousCnt = readFile()
+
+  // 1. debounce 是因为有时候可能会在短时间内触发多次变更事件，这里做下合并
+  // 2. 比较文件内容是因为触发变更事件时文件的内容可能没有其实没有变化，这里假设使用方只关心内容的变化
+  const onChange = debounce(() => {
+    const currentCnt = readFile()
+    if (previousCnt !== currentCnt) {
+      previousCnt = currentCnt
+      listener(currentCnt)
+    }
+  }, 100)
+
+  const fsWatcher = fs.watch(filePath)
+  fsWatcher.on('change', onChange)
+  return () => fsWatcher.close()
+}

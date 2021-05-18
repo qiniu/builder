@@ -116,7 +116,7 @@ function addTransform(
   }
 
   const resourcePattern = {
-    include: makeExtensionPattern(resource.include),
+    include: makeExtensionPattern(extension),
     exclude: excludePatterns
   }
 
@@ -126,7 +126,7 @@ function addTransform(
   }
 
   const appendRule = (previousConfig: Configuration, ruleBase: Partial<RuleSetRule>) => produce(previousConfig, (nextConfig: Configuration) => {
-    const rule = makeRule(resource.include, resourcePattern, contextPattern, ruleBase)
+    const rule = makeRule(extension, resourcePattern, contextPattern, ruleBase)
     nextConfig.module!.rules!.push(rule)
   })
 

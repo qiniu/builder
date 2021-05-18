@@ -2,7 +2,7 @@ import { mapValues } from 'lodash'
 import fs from 'fs'
 import path from 'path'
 import files from '../constants/files'
-import { extend } from '.'
+import { extend, watchFile } from '.'
 import { getBuildConfigFilePath, abs } from './paths'
 import logger from './logger'
 import { Transform } from '../constants/transform'
@@ -256,17 +256,22 @@ function normalizeConfig({
   }
 }
 
+/** 获取最终使用的 build config 文件路径 */
+function resolveBuildConfigFilePath() {
+  // 若指定了 build config file path，则使用之
+  // 否则使用 build root 下的 build config 文件
+  return getBuildConfigFilePath() || abs(files.config)
+}
+
 let cached: Promise<BuildConfig> | null = null
 
 /** find config file and resolve config content based on paths info */
-export async function findBuildConfig(): Promise<BuildConfig> {
-  if (cached) {
+export async function findBuildConfig(disableCache = false): Promise<BuildConfig> {
+  if (cached && !disableCache) {
     return cached
   }
 
-  // 若指定了 build config file path，则使用之
-  // 否则使用 build root 下的 build config 文件
-  const configFilePath = getBuildConfigFilePath() || abs(files.config)
+  const configFilePath = resolveBuildConfigFilePath()
   logger.debug(`use build config file: ${configFilePath}`)
 
   return cached = readAndResolveConfig(configFilePath).then(
@@ -289,4 +294,14 @@ export function getNeedAnalyze() {
 
 export function setNeedAnalyze(value: boolean) {
   needAnalyze = value
+}
+
+/** watch build config, call listener when build config changes */
+export function watchBuildConfig(listener: (config: BuildConfig) => void) {
+  const configFilePath = resolveBuildConfigFilePath()
+  logger.debug(`watch build config file: ${configFilePath}`)
+  return watchFile(configFilePath, async () => {
+    const buildConfig = await findBuildConfig(true) // 把 build config 缓存刷掉
+    listener(buildConfig)
+  })
 }
