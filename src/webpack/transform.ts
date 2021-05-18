@@ -116,7 +116,7 @@ function addTransform(
   }
 
   const resourcePattern = {
-    include: makeExtensionPattern(resource.include),
+    include: makeExtensionPattern(extension),
     exclude: excludePatterns
   }
 
