@@ -146,23 +146,3 @@ export function watchFile(filePath: string, listener: (content: string) => void)
   fsWatcher.on('change', onChange)
   return () => fsWatcher.close()
 }
-
-// TODO
-// export function getDefaultExtensions(webpackConfig) {
-//   return webpackConfig.resolve.extensions.map(
-//     extension => extension.replace(/^\./, '')
-//   )
-// }
-
-// TODO
-// function runWebpackCompiler(compiler) {
-//   return new Promise((resolve, reject) => {
-//     compiler.run((err, stats) => {
-//       if (err || stats.hasErrors()) {
-//         reject(err || stats.toJson().errors)
-//         return
-//       }
-//       resolve(stats)
-//     })
-//   })
-// }

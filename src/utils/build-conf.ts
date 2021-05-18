@@ -296,10 +296,6 @@ export function setNeedAnalyze(value: boolean) {
   needAnalyze = value
 }
 
-export type Disposer = () => void
-
-export type BuildConfigListener = (config: BuildConfig) => void
-
 /** watch build config, call listener when build config changes */
 export function watchBuildConfig(listener: (config: BuildConfig) => void) {
   const configFilePath = resolveBuildConfigFilePath()
