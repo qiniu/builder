@@ -125,7 +125,7 @@ export function getPageFilename(pageName: string) {
   return `${pageName}.html`
 }
 
-/** 监听文件变化，会对内容做比对，适用于体积较小的文本文件 */
+/** 监听文件内容变化，会对内容做比对，适用于体积较小的文本文件 */
 export function watchFile(filePath: string, listener: (content: string) => void) {
 
   function readFile() {
@@ -134,6 +134,8 @@ export function watchFile(filePath: string, listener: (content: string) => void)
 
   let previousCnt = readFile()
 
+  // 1. debounce 是因为有时候可能会在短时间内触发多次变更事件，这里做下合并
+  // 2. 比较文件内容是因为触发变更事件时文件的内容可能没有其实没有变化，这里假设使用方只关心内容的变化
   const onChange = debounce(() => {
     const currentCnt = readFile()
     if (previousCnt !== currentCnt) {
