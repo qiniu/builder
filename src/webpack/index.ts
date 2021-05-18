@@ -54,7 +54,19 @@ export async function getConfig(): Promise<Configuration> {
         getEnv() === Env.Prod
         ? buildConfig.publicUrl
         : getPathFromUrl(buildConfig.publicUrl)
-      )
+      ),
+      environment: {
+        // 这里控制 webpack 本身的运行时代码（而不是业务代码），
+        // 对于语言 feature 先全部配合不支持，以确保 webpack 会产出兼容性最好的代码；
+        // TODO: 后续考虑通过使用 build config 中的 targets.browsers 来挨个判断是否支持
+        arrowFunction: false,
+        bigIntLiteral: false,
+        const: false,
+        destructuring: false,
+        dynamicImport: false,
+        forOf: false,
+        module: false
+      }
     },
     optimization: {
       minimizer: [
