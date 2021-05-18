@@ -2,7 +2,7 @@ import { mapValues } from 'lodash'
 import fs from 'fs'
 import path from 'path'
 import files from '../constants/files'
-import { extend } from '.'
+import { extend, watchFile } from '.'
 import { getBuildConfigFilePath, abs } from './paths'
 import logger from './logger'
 import { Transform } from '../constants/transform'
@@ -300,17 +300,12 @@ export type Disposer = () => void
 
 export type BuildConfigListener = (config: BuildConfig) => void
 
-export function watchBuildConfig(listener: BuildConfigListener): Disposer {
+/** watch build config, call listener when build config changes */
+export function watchBuildConfig(listener: (config: BuildConfig) => void) {
   const configFilePath = resolveBuildConfigFilePath()
   logger.debug(`watch build config file: ${configFilePath}`)
-
-  const fsWatcher = fs.watch(configFilePath)
-  fsWatcher.on('change', async eventType => {
-    if (eventType === 'change') {
-      const buildConfig = await findBuildConfig(true)
-      listener(buildConfig)
-    }
+  return watchFile(configFilePath, async () => {
+    const buildConfig = await findBuildConfig(true) // 把 build config 缓存刷掉
+    listener(buildConfig)
   })
-
-  return () => fsWatcher.close()
 }

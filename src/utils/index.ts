@@ -3,6 +3,8 @@
  * @author nighca <nighca@live.cn>
  */
 
+import fs from 'fs'
+import { debounce } from 'lodash'
 import { Logger } from 'log4js'
 import { parse as parseUrl } from 'url'
 
@@ -121,6 +123,28 @@ export function makeSnapshotGlob(srcDir: string) {
 /** 从 page 名（buildConfig.pages 的 key）得到在 serve / 构建时对应的页面文件名  */
 export function getPageFilename(pageName: string) {
   return `${pageName}.html`
+}
+
+/** 监听文件变化，会对内容做比对，适用于体积较小的文本文件 */
+export function watchFile(filePath: string, listener: (content: string) => void) {
+
+  function readFile() {
+    return fs.readFileSync(filePath, { encoding: 'utf-8' })
+  }
+
+  let previousCnt = readFile()
+
+  const onChange = debounce(() => {
+    const currentCnt = readFile()
+    if (previousCnt !== currentCnt) {
+      previousCnt = currentCnt
+      listener(currentCnt)
+    }
+  }, 100)
+
+  const fsWatcher = fs.watch(filePath)
+  fsWatcher.on('change', onChange)
+  return () => fsWatcher.close()
 }
 
 // TODO

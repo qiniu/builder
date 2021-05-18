@@ -3,24 +3,51 @@
  * @author nighca <nighca@live.cn>
  */
 
+import fs from 'fs'
 import url from 'url'
 import webpack from 'webpack'
 import WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
-import { getPageFilename, getPathFromUrl, logLifecycle } from './utils'
+import { getPageFilename, getPathFromUrl, logLifecycle, watchFile } from './utils'
 import { getServeConfig } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
+import { abs } from './utils/paths'
+
+// 业务项目的配置文件，变更时需要重启 server
+const projectConfigFiles = [
+  'tsconfig.json'
+]
 
 async function serve(port: number) {
-  let stopServer = await runDevServer(port)
-  const stopWatch = watchBuildConfig(async () => {
-    logger.info('Detected build config change, stoping server...')
-    stopServer?.()
-    stopServer = await runDevServer(port)
+  let stopDevServer = await runDevServer(port)
+
+  async function restartDevServer() {
+    await stopDevServer?.()
+    stopDevServer = await runDevServer(port)
+  }
+
+  const disposers: Array<() => void> = []
+
+  disposers.push(watchBuildConfig(async () => {
+    logger.info('Detected build config change, restarting server...')
+    restartDevServer()
+  }))
+
+  projectConfigFiles.forEach(file => {
+    const filePath = abs(file)
+    if (fs.existsSync(filePath)) {
+      disposers.push(watchFile(filePath, async () => {
+        logger.info(`Detected ${file} change, restarting server...`)
+        restartDevServer()
+      }))
+    }
   })
-  process.on('exit', stopWatch)
+
+  process.on('exit', () => {
+    disposers.forEach(disposer => disposer())
+  })
 }
 
 async function runDevServer(port: number) {
