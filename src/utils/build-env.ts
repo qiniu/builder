@@ -9,7 +9,7 @@ export enum Env {
   Prod = 'production'
 }
 
-let env: Env = process.env.BUILD_ENV as Env
+let env = (process.env.BUILD_ENV || Env.Dev) as Env
 
 /** Get build env */
 export function getEnv() {

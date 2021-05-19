@@ -111,7 +111,12 @@ function applyArgv(argv: yargs.Arguments) {
   }
 
   if (argv.BUILD_ENV) {
-    setEnv(argv.BUILD_ENV as Env)
+    const value = argv.BUILD_ENV as Env
+    if (!Object.values(Env).includes(value)) {
+      logger.warn('Invalid BUILD_ENV value:', value)
+    } else {
+      setEnv(argv.BUILD_ENV as Env)
+    }
   }
 }
 
@@ -121,7 +126,7 @@ function handleError(e: unknown) {
   } else {
     e && logger.error(e)
   }
-  logger.fatal('encountered error, exit 1')
+  logger.fatal('Encountered error, exit 1')
   process.exit(1)
 }
 
