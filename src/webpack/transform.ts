@@ -148,13 +148,13 @@ function addTransform(
       const transformConfig = (transform.config || {}) as TransformStyleConfig
       const loaders: LoaderInfo[] = []
 
-      // // 测试时无需 style-loader
-      // if (getEnv() !== Env.Test) {
-      //   loaders.push({ loader: 'style-loader' })
-      // }
-
-      // TODO: 确认是否需要在测试时干掉
-      loaders.push({ loader: MiniCssExtractPlugin.loader })
+      if (getEnv() === Env.Dev) {
+        loaders.push({ loader: 'style-loader' })
+      } else if (getEnv() === Env.Prod) {
+        // dev 环境不能用 MiniCssExtractPlugin.loader
+        // 已知 less with css-module 的项目，样式 hot reload 会有问题
+        loaders.push({ loader: MiniCssExtractPlugin.loader })
+      }
 
       loaders.push({
         loader: 'css-loader',

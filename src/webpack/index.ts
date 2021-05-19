@@ -105,22 +105,23 @@ export async function getConfig(): Promise<Configuration> {
 
   const staticDirCopyPlugin = getStaticDirCopyPlugin(buildConfig)
 
-  const miniCssExtractPlugin = new MiniCssExtractPlugin({
-    filename: 'static/[name]-[contenthash].css',
-    chunkFilename: 'static/[id]-[chunkhash].css'
-  })
-
-  if (getNeedAnalyze()) {
-    config = appendPlugins(config, new BundleAnalyzerPlugin())
-  }
-
   config = appendPlugins(
     config,
     ...htmlPlugins,
     definePlugin,
-    staticDirCopyPlugin,
-    miniCssExtractPlugin
+    staticDirCopyPlugin
   )
+
+  if (getEnv() === Env.Prod) {
+    config = appendPlugins(config, new MiniCssExtractPlugin({
+      filename: 'static/[name]-[contenthash].css',
+      chunkFilename: 'static/[id]-[chunkhash].css'
+    }))
+  }
+
+  if (getNeedAnalyze()) {
+    config = appendPlugins(config, new BundleAnalyzerPlugin())
+  }
 
   return config
 }
