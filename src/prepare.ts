@@ -15,7 +15,7 @@ export default async function prepare(){
   if (typeof builderVersionRange === 'string') {
     const builderVersion = packageInfo.version as string
     if (!semver.satisfies(builderVersion, builderVersionRange)) {
-      logger.warn(`builder version not satisfied, which may causes error (expected \`${builderVersionRange}\`, got \`${builderVersion}\`)`)
+      logger.warn(`Builder version not satisfied, which may causes error (expected \`${builderVersionRange}\`, got \`${builderVersion}\`)`)
     }
   }
 }
