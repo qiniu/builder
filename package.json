@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "2.0.0-beta.8",
+  "version": "2.0.0-beta.9",
   "bin": {
     "fec-builder": "./lib/bin.js"
   },
@@ -42,7 +42,7 @@
     "semver": "^7.3.2",
     "style-loader": "^2.0.0",
     "ts-loader": "^8.0.11",
-    "typescript": "^4.0.5",
+    "typescript": "~4.1.3",
     "walk": "^2.3.14",
     "webpack": "^5.4.0",
     "webpack-bundle-analyzer": "^4.4.1",
