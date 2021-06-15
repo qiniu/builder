@@ -8,6 +8,7 @@ import ReactFastRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
+import WebpackBarPlugin from 'webpackbar'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
 import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
@@ -109,7 +110,8 @@ export async function getConfig(): Promise<Configuration> {
     config,
     ...htmlPlugins,
     definePlugin,
-    staticDirCopyPlugin
+    staticDirCopyPlugin,
+    new WebpackBarPlugin({ color: 'green' })
   )
 
   if (getEnv() === Env.Prod) {
