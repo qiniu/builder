@@ -66,7 +66,7 @@ async function runDevServer(port: number) {
     // 即可能配置 port 为 80，在（宿主机）浏览器中通过 8080 端口访问
     public: '0.0.0.0:0',
     publicPath: getPathFromUrl(buildConfig.publicUrl),
-    stats: webpackConfig.stats,
+    stats: 'errors-only',
     proxy: getProxyConfig(buildConfig.devProxy),
     historyApiFallback: {
       rewrites: getHistoryApiFallbackRewrites(buildConfig)
