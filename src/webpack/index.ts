@@ -171,7 +171,7 @@ function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
 function processSourceMap(previousConfig: Configuration, highQuality: boolean) {
   return produce(previousConfig, (config: Configuration) => {
     config.devtool = highQuality ? 'eval-source-map' : 'eval'
-    config.module?.rules?.push({
+    config.module!.rules!.push({
       test: /node_modules\/.*\.js$/,
       enforce: 'pre',
       use: [{
