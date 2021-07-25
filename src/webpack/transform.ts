@@ -358,7 +358,7 @@ function makeRule(extension: string, resource: PatternCondition, context: Patter
   return rule
 }
 
-function adaptLoader({ loader, options }: LoaderInfo) {
+export function adaptLoader({ loader, options }: LoaderInfo) {
   // 这里先前会把 loader 的值通过 `require.resolve` 替换为绝对路径
   // 目的是为了保证总是能拿到正确的一致的 loader 实现（不受项目本地 node_modules 中 loader 实现的影响）
   const resolvedLoader = require.resolve(loader)

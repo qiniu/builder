@@ -51,6 +51,8 @@ export interface Optimization {
   transformDeps: boolean | string[]
   /** 是否开启自动 polyfill 功能，以及开启何种形式的 polyfill */
   addPolyfill: AddPolyfill
+  /** 是否提供高质量的 source map */
+  highQualitySourceMap: boolean
 }
 
 export interface EnvVariables {

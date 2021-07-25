@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+import produce from 'immer'
 import fs from 'fs'
 import path from 'path'
 import { Configuration, DefinePlugin } from 'webpack'
@@ -11,7 +12,7 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
-import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
+import { adaptLoader, addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
@@ -83,6 +84,10 @@ export async function getConfig(): Promise<Configuration> {
     const result = parseOptimizationConfig(buildConfig.optimization)
     baseChunks = result.baseChunks
     config = appendCacheGroups(config, result.cacheGroups)
+  }
+
+  if (getEnv() === Env.Dev) {
+    config = processSourceMap(config, buildConfig.optimization.highQualitySourceMap)
   }
 
   config = addTransforms(config, buildConfig)
@@ -161,4 +166,24 @@ function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
   } catch (e) {
     logger.warn('Copy staticDir content failed:', e.message)
   }
+}
+
+function processSourceMap(previousConfig: Configuration, highQuality: boolean) {
+  return produce(previousConfig, (config: Configuration) => {
+    config.devtool = highQuality ? 'eval-source-map' : 'eval'
+    config.module?.rules?.push({
+      test: /node_modules\/.*\.js$/,
+      enforce: 'pre',
+      use: [{
+        loader: 'source-map-loader',
+        options: {
+          filterSourceMappingUrl(_url: string, _resourcePath: string) {
+            // highQuality 为 false 时也需要引入 source-map-loader 并在这里返回 remove
+            // 来把第三方库代码中的 SourceMappingURL 信息干掉，以避免开发时的 warning
+            return highQuality ? 'consume' : 'remove'
+          }
+        }
+      }].map(adaptLoader)
+    })
+  })
 }
