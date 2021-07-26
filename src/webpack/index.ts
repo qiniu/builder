@@ -170,7 +170,9 @@ function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
 
 function processSourceMap(previousConfig: Configuration, highQuality: boolean) {
   return produce(previousConfig, (config: Configuration) => {
-    config.devtool = highQuality ? 'eval-source-map' : 'eval'
+    // 使用 cheap-module-source-map 而不是 eval-cheap-module-source-map 或 eval-source-map
+    // 具体原因见 https://github.com/Front-End-Engineering-Cloud/builder/pull/139#discussion_r676475522
+    config.devtool = highQuality ? 'cheap-module-source-map' : 'eval'
     config.module!.rules!.push({
       test: /node_modules\/.*\.js$/,
       enforce: 'pre',
