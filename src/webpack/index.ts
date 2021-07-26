@@ -1,5 +1,4 @@
 import { mapValues } from 'lodash'
-import produce from 'immer'
 import fs from 'fs'
 import path from 'path'
 import { Configuration, DefinePlugin } from 'webpack'
@@ -12,11 +11,11 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
-import { adaptLoader, addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
+import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
-import { appendPlugins } from '../utils/webpack'
+import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig } from '../utils/webpack'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
@@ -166,26 +165,4 @@ function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
   } catch (e) {
     logger.warn('Copy staticDir content failed:', e.message)
   }
-}
-
-function processSourceMap(previousConfig: Configuration, highQuality: boolean) {
-  return produce(previousConfig, (config: Configuration) => {
-    // 使用 cheap-module-source-map 而不是 eval-cheap-module-source-map 或 eval-source-map
-    // 具体原因见 https://github.com/Front-End-Engineering-Cloud/builder/pull/139#discussion_r676475522
-    config.devtool = highQuality ? 'cheap-module-source-map' : 'eval'
-    config.module!.rules!.push({
-      test: /node_modules\/.*\.js$/,
-      enforce: 'pre',
-      use: [{
-        loader: 'source-map-loader',
-        options: {
-          filterSourceMappingUrl(_url: string, _resourcePath: string) {
-            // highQuality 为 false 时也需要引入 source-map-loader 并在这里返回 remove
-            // 来把第三方库代码中的 SourceMappingURL 信息干掉，以避免开发时的 warning
-            return highQuality ? 'consume' : 'remove'
-          }
-        }
-      }].map(adaptLoader)
-    })
-  })
 }
