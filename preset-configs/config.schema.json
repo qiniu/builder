@@ -111,7 +111,7 @@
           }, {
             "type": "boolean"
           }],
-          "description": "是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；`false` 不开启 `polyfill`；`true` 使用默认的方式 `\"global\"` 进行 `polyfill`；`\"global\"` 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用；`\"runtime\"` 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
+          "description": "是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；\n* `false`: 不开启 `polyfill`\n* `true`: 开启 `polyfill`，使用默认的方式 (`\"global\"`) 进行 `polyfill`\n* `\"global\"`: 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用\n* `\"runtime\"`: 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
         },
         "extractCommon": {
           "type": "boolean",
@@ -138,6 +138,10 @@
             "items": { "type": "string" }
           }],
           "description": "是否对第三方依赖包（node_modules 中的内容）的 Javascript 内容进行转换（builder 默认会跳过对依赖包 Javascript 内容的转换，以提升构建效率）。\n这里传入 `true` 表示全部进行转换，`false` 则全部不转换；\n也可以传入包名列表来指定需要转换的第三方依赖包，如传入 `[ \"react\", \"mobx\" ]`，表示仅对包 react 与包 mobx 的 Javascript 内容进行转换"
+        },
+        "highQualitySourceMap": {
+          "type": "boolean",
+          "description": "是否提供高质量的 source map。\nbuilder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。"
         }
       }
     },

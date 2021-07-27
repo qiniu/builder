@@ -60,7 +60,8 @@
     "extractCommon": true,
     "extractVendor": true,
     "compressImage": false,
-    "transformDeps": false
+    "transformDeps": false,
+    "highQualitySourceMap": false
   },
   "devProxy": {},
   "deploy": {

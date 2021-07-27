@@ -11,11 +11,11 @@ import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
-import { addTransforms, appendCacheGroups, parseOptimizationConfig } from './transform'
+import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
-import { appendPlugins } from '../utils/webpack'
+import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig } from '../utils/webpack'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
@@ -83,6 +83,10 @@ export async function getConfig(): Promise<Configuration> {
     const result = parseOptimizationConfig(buildConfig.optimization)
     baseChunks = result.baseChunks
     config = appendCacheGroups(config, result.cacheGroups)
+  }
+
+  if (getEnv() === Env.Dev) {
+    config = processSourceMap(config, buildConfig.optimization.highQualitySourceMap)
   }
 
   config = addTransforms(config, buildConfig)

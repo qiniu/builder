@@ -200,16 +200,25 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 - **`optimization.addPolyfill`**
 
-    类型：`boolean` 或 `string`
-
     是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；
 
-    | value  | desc |
-    | ------------- | ------------- |
-    | `false`  | 不开启 `polyfill` |
-    | `true`  | 开启 `polyfill`，使用默认的方式 (`"global"`) 进行 `polyfill` |
-    | `"global"`  | 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用 |
-    | `"runtime"`  | 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库 |
+    * `false`: 不开启 `polyfill`
+
+    * `true`: 开启 `polyfill`，使用默认的方式 (`"global"`) 进行 `polyfill`
+
+    * `"global"`: 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用
+
+    * `"runtime"`: 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库
+
+    `optimization.addPolyfill` 类型为以下几种之一：
+
+    - **`string`**
+
+        类型：`string`
+
+    - **`boolean`**
+
+        类型：`boolean`
 
 - **`optimization.extractCommon`**
 
@@ -258,6 +267,14 @@ const apiUrl = "http://foobar.com/api" + 'test'
     - **`array`**
 
         类型：`string[]`
+
+- **`optimization.highQualitySourceMap`**
+
+    类型：`boolean`
+
+    是否提供高质量的 source map。
+
+    builder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。
 
 ## **`devProxy`**
 
