@@ -3,7 +3,7 @@ import fs from 'fs'
 import path from 'path'
 import files from '../constants/files'
 import { extend, watchFile } from '.'
-import { getBuildConfigFilePath, abs } from './paths'
+import { getBuildConfigFilePath, abs, getBuildRoot } from './paths'
 import logger from './logger'
 import { Transform } from '../constants/transform'
 
@@ -147,6 +147,18 @@ const readConfig = (configFilePath: string) => {
   return configFileContent
 }
 
+/** check if extends target should be looked up from deps (`node_modules/`) */
+function isExtendsTargetFromDeps(
+  /** name of extends target */
+  name: string
+): boolean {
+  // 满足以下格式的 name 认为应该从 `node_modules/` 中查找
+  return (
+    /^build-config-/.test(name) // build-config-xxx
+    || /@[^/]+\/build-config(-|$|\/)/.test(name) // @xxx/build-config / @xxx/build-config-xxx
+  )
+}
+
 /** lookup extends target */
 function lookupExtendsTarget (
   /** name of extends target */
@@ -155,6 +167,22 @@ function lookupExtendsTarget (
   sourceConfigFilePath: string
 ): Promise<string> {
   logger.debug(`lookup extends target config: ${name}`)
+
+  if (isExtendsTargetFromDeps(name)) {
+    logger.debug(`lookup extends target in node_modules/: ${name}`)
+    try {
+      const resolveTarget = path.join(name, files.config)
+      logger.debug('resolve target:', resolveTarget)
+      const resolveOptions = { paths: [sourceConfigFilePath, getBuildRoot()] }
+      logger.debug('resolve options:', resolveOptions)
+      const resolvedPath = require.resolve(resolveTarget, resolveOptions)
+      logger.debug(`resolved extends target in node_modules/: ${resolvedPath}`)
+      return Promise.resolve(resolvedPath)
+    } catch (e) {
+      logger.debug('resolve error:', e)
+      return Promise.reject(new Error(`lookup ${name} in node_modules/ failed, you may forget to add it as deps of your project`))
+    }
+  }
 
   const presetConfigFilePath = path.resolve(__dirname, `../../preset-configs/${name}.json`)
   logger.debug(`try preset config: ${presetConfigFilePath}`)
@@ -177,9 +205,6 @@ function lookupExtendsTarget (
     logger.debug(`found local config with extension: ${localConfigFilePathWithExtension}`)
     return Promise.resolve(localConfigFilePathWithExtension)
   }
-
-  // TODO: 支持以 npm 包的方式发布 config
-  // 即，这里查找 preset config & local config 失败后，再去尝试 npm package
 
   const message = `lookup extends target config failed: ${name}`
   logger.debug(message)
