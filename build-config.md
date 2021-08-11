@@ -14,7 +14,7 @@ Build config 各个字段的定义。
 
 * 若该项值置为 ""，则不会基于任何已有配置进行扩展。
 
-* 除了内置的配置外`extends` 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+* 除了内置的配置外，`extends` 的对象也可以是是一个本地文件，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
 
 * `extends` 的对象也可以是一个 npm package，如 `"extends": "@qiniu/build-config"`，那么会尝试从项目的依赖中找到 `@qiniu/build-config` 包，解析并使用其中的 `build-config.json` 文件。
 
