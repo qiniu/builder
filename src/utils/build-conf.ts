@@ -159,6 +159,19 @@ function isExtendsTargetFromDeps(
   )
 }
 
+function tryResolve(name: string, paths: string[]): string | null {
+  logger.debug('resolve name:', name)
+  logger.debug('resolve paths:', paths)
+  try {
+    const result = require.resolve(name, { paths })
+    logger.debug(`resolve result: ${result}`)
+    return result
+  } catch (e) {
+    logger.debug('resolve error:', e)
+    return null
+  }
+}
+
 /** lookup extends target */
 function lookupExtendsTarget (
   /** name of extends target */
@@ -170,18 +183,15 @@ function lookupExtendsTarget (
 
   if (isExtendsTargetFromDeps(name)) {
     logger.debug(`lookup extends target in node_modules/: ${name}`)
-    try {
-      const resolveTarget = path.join(name, files.config)
-      logger.debug('resolve target:', resolveTarget)
-      const resolveOptions = { paths: [sourceConfigFilePath, getBuildRoot()] }
-      logger.debug('resolve options:', resolveOptions)
-      const resolvedPath = require.resolve(resolveTarget, resolveOptions)
-      logger.debug(`resolved extends target in node_modules/: ${resolvedPath}`)
-      return Promise.resolve(resolvedPath)
-    } catch (e) {
-      logger.debug('resolve error:', e)
+    const paths = [sourceConfigFilePath, getBuildRoot()] // 从这俩路径出发进行查找
+    const resolvedPath = ( // 分别尝试查找 `${name}/build-config.json` 以及 `name`
+      tryResolve(path.join(name, files.config), paths)
+      || tryResolve(name, paths)
+    )
+    if (resolvedPath == null) {
       return Promise.reject(new Error(`lookup ${name} in node_modules/ failed, you may forget to add it as deps of your project`))
     }
+    return Promise.resolve(resolvedPath)
   }
 
   const presetConfigFilePath = path.resolve(__dirname, `../../preset-configs/${name}.json`)
