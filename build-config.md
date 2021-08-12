@@ -10,11 +10,17 @@ Build config 各个字段的定义。
 
 类型：`string`
 
-作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。
+作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json)，目前可用的内置配置见 [preset-configs](https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs)。
 
 * 若该项值置为 ""，则不会基于任何已有配置进行扩展。
 
-* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+* 除了内置的配置外，`extends` 的对象也可以是是一个本地文件，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+
+* `extends` 的对象也可以是一个 npm package，如 `"extends": "@qiniu/build-config"`，那么会尝试从项目的依赖中找到 `@qiniu/build-config` 包，解析并使用其中的 `build-config.json` 文件。
+
+    为了避免名字的冲突，所有可以被 `extends` 的 npm package 都要求名称成 `build-config-xxx`，或者 `@xxx/build-config`，或者 `@xxx/build-config-yyy`；
+
+    你也可以进一步指定 npm package 中的子目录，如，对于 `"extends": "@qiniu/build-config/portal"`，builder 会尝试使用 `@qiniu/build-config` 包中 `portal/` 目录下的 `build-config.json` 文件。
 
 * 扩展时，假设 `A.json` extends `B.json`，
 

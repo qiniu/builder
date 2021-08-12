@@ -1,6 +1,0 @@
-{
-  "extends": "typescript-react",
-  "targets": {
-    "browsers": ["defaults, not ie 11"]
-  }
-}
