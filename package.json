@@ -64,5 +64,9 @@
     "@types/webpack-dev-server": "^3.11.1",
     "@types/yargs": "^15.0.9",
     "ts-node": "^9.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Front-End-Engineering-Cloud/builder.git"
   }
 }
