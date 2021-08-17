@@ -6,7 +6,7 @@
   },
   "scripts": {
     "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react",
-    "build": "rm -rf lib && tsc",
+    "build": "rm -rf lib && tsc && chmod +x lib/bin.js",
     "build-config-doc": "ts-node src/schema2md.ts",
     "prepublishOnly": "npm run build"
   },
