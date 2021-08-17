@@ -9,7 +9,7 @@ import { findBuildConfig } from './utils/build-conf'
 
 const packageInfo = require('../package.json')
 
-export default async function prepare(){
+export default async function prepare() {
   const buildConfig = await findBuildConfig()
   const builderVersionRange = buildConfig.engines && buildConfig.engines.builder
   if (typeof builderVersionRange === 'string') {

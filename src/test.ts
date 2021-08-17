@@ -4,10 +4,10 @@
  */
 
 import logger from './utils/logger'
-const logLifecycle = require('./utils').logLifecycle
+import { logLifecycle } from './utils'
 
 async function test() {
-  // TODO
+  throw new Error('Command test is not supported yet')
 }
 
-export default logLifecycle('Terve', test, logger)
+export default logLifecycle('Test', test, logger)
