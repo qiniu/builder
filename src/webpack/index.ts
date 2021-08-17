@@ -133,7 +133,7 @@ export async function getConfig(): Promise<Configuration> {
   return config
 }
 
-/** 获取 webpack 配置（dev server 用） */
+/** 获取 webpack 配置（dev server 用，不含 dev server 配置） */
 export async function getServeConfig() {
   const config = await getConfig()
   return appendPlugins(
