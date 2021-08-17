@@ -63,6 +63,20 @@ export function addTransforms(
   return config
 }
 
+/** 对 svgo 的配置 */
+export const svgoConfig = {
+  plugins: [{
+    name: 'preset-default',
+    params: {
+      overrides: {
+        // removeViewBox 会导致指定了 width & height 的 svg 文件的 viewBox 被删掉，
+        // 而删掉 viewBox 会导致 svg 不能在外部指定 css 宽高时正确地缩放内容
+        removeViewBox: false
+      }
+    }
+  }]
+}
+
 interface TransformStyleConfig {
   modules?: boolean
   options?: unknown
@@ -283,14 +297,16 @@ function addTransform(
     }
 
     case Transform.Svgr: {
+
+      const svgrOptions = (
+        getEnv() === Env.Prod && optimization.compressImage
+        ? { svgo: true, svgoConfig }
+        : { svgo: false }
+      )
+
       return appendRuleWithLoaders(config, {
         loader: '@svgr/webpack',
-        options: {
-          // 已知 svgo 的 removeViewBox 会导致指定了 width & height 的 svg 文件的 viewBox 被删掉，
-          // 而删掉 viewBox 会导致 svg 不能在外部指定 css 宽高时正确地缩放内容，故这里先把 svgo 干掉
-          // TODO: 小心地配置 svgo 对 svg 内容进行优化
-          svgo: false
-        }
+        options: svgrOptions
       })
     }
 
