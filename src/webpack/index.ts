@@ -25,6 +25,7 @@ export async function getConfig(): Promise<Configuration> {
   const buildConfig = await findBuildConfig()
 
   let config: Configuration = {
+    target: 'web', // TODO: 使用 `browserslist:...` 可能合适? 详情见 https://webpack.js.org/configuration/target/
     mode: getMode(),
     context: getBuildRoot(),
     resolve: {
