@@ -9,9 +9,10 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
+import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
-import { addTransforms } from './transform'
+import { addTransforms, svgoConfig } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
@@ -25,6 +26,7 @@ export async function getConfig(): Promise<Configuration> {
   const buildConfig = await findBuildConfig()
 
   let config: Configuration = {
+    target: 'web', // TODO: 使用 `browserslist:...` 可能合适? 详情见 https://webpack.js.org/configuration/target/
     mode: getMode(),
     context: getBuildRoot(),
     resolve: {
@@ -129,10 +131,25 @@ export async function getConfig(): Promise<Configuration> {
     config = appendPlugins(config, new BundleAnalyzerPlugin())
   }
 
+  if (getEnv() === Env.Prod && buildConfig.optimization.compressImage) {
+    config = appendPlugins(config, new ImageMinimizerPlugin({
+      minimizerOptions: {
+        plugins: [
+          ['mozjpeg', { progressive: true, quality: 65 }],
+          ['gifsicle', { interlaced: false }],
+          ['svgo', svgoConfig]
+          // 这里先不做 png 的压缩，因为 imagemin-pngquant 有可能会产生负优化（结果文件比源文件体积大），
+          // 而且目前不支持 option 来在产生负优化时直接使用源文件，相关 issue https://github.com/kornelski/pngquant/issues/338
+          // ['pngquant', { quality: [0.65, 0.9], speed: 4 }],
+        ]
+      }
+    }))
+  }
+
   return config
 }
 
-/** 获取 webpack 配置（dev server 用） */
+/** 获取 webpack 配置（dev server 用，不含 dev server 配置） */
 export async function getServeConfig() {
   const config = await getConfig()
   return appendPlugins(
