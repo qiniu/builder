@@ -246,12 +246,10 @@ function addTransform(
         transform.transformer === Transform.Tsx
       )
       const compilerOptions = {
-        // 这里设置为 ES2020（最新的规范能力），进一步的转换由 babel 处理
-        target: 'ES2020',
+        // 这里设置为 ESNext（最新的规范能力），进一步的转换由 babel 处理
+        target: 'ESNext',
         // enable tree-shaking，由 webpack 来做 module 格式的转换
-        module: 'ES2015',
-        // module 为 ES2015 时，moduleResolution 默认为 Classic，这里设置为 Node
-        moduleResolution: 'Node'
+        module: 'ESNext'
       }
       const tsLoaderOptions = {
         transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
