@@ -2,6 +2,8 @@
 
 set -o errexit
 
+npm run build
+
 sudo npm link
 
 sudo chown -R circleci samples

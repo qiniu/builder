@@ -17,6 +17,12 @@
   "transforms": {
     "js": "babel",
     "css": "css",
+    "m.css": {
+      "transformer": "css",
+      "config": {
+        "modules": true
+      }
+    },
     "less": {
       "transformer": "less",
       "config": {
@@ -25,11 +31,17 @@
         }
       }
     },
-    "styl": "stylus",
+    "m.less": {
+      "transformer": "less",
+      "config": {
+        "modules":true,
+        "options": {
+          "javascriptEnabled": true
+        }
+      }
+    },
     "tpl": "raw",
-    "svg@js": "svg-sprite",
-    "svg@css": "file",
-    "svg@less": "file",
+    "svg": "file",
     "png": "file",
     "gif": "file",
     "jpg": "file",
@@ -41,14 +53,15 @@
   },
   "envVariables": {},
   "targets": {
-    "browsers": ["last 2 versions"]
+    "browsers": ["defaults"]
   },
   "optimization": {
     "addPolyfill": true,
     "extractCommon": true,
-    "extractVendor": "",
+    "extractVendor": true,
     "compressImage": false,
-    "transformDeps": false
+    "transformDeps": false,
+    "highQualitySourceMap": false
   },
   "devProxy": {},
   "deploy": {

@@ -10,11 +10,17 @@ Build config 各个字段的定义。
 
 类型：`string`
 
-作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。
+作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json)，目前可用的内置配置见 [preset-configs](https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs)。
 
 * 若该项值置为 ""，则不会基于任何已有配置进行扩展。
 
-* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+* 除了内置的配置外，`extends` 的对象也可以是是一个本地文件，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。
+
+* `extends` 的对象也可以是一个 npm package，如 `"extends": "@qiniu/build-config"`，那么会尝试从项目的依赖中找到 `@qiniu/build-config` 包，解析并使用其中的 `build-config.json` 文件。
+
+    为了避免名字的冲突，所有可以被 `extends` 的 npm package 都要求名称成 `build-config-xxx`，或者 `@xxx/build-config`，或者 `@xxx/build-config-yyy`；
+
+    你也可以进一步指定 npm package 中的子目录，如，对于 `"extends": "@qiniu/build-config/portal"`，builder 会尝试使用 `@qiniu/build-config` 包中 `portal/` 目录下的 `build-config.json` 文件。
 
 * 扩展时，假设 `A.json` extends `B.json`，
 
@@ -200,16 +206,25 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 - **`optimization.addPolyfill`**
 
-    类型：`boolean` 或 `string`
-
     是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；
 
-    | value  | desc |
-    | ------------- | ------------- |
-    | `false`  | 不开启 `polyfill` |
-    | `true`  | 开启 `polyfill`，使用默认的方式 (`"global"`) 进行 `polyfill` |
-    | `"global"`  | 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用 |
-    | `"runtime"`  | 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库 |
+    * `false`: 不开启 `polyfill`
+
+    * `true`: 开启 `polyfill`，使用默认的方式 (`"global"`) 进行 `polyfill`
+
+    * `"global"`: 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用
+
+    * `"runtime"`: 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库
+
+    `optimization.addPolyfill` 类型为以下几种之一：
+
+    - **`string`**
+
+        类型：`string`
+
+    - **`boolean`**
+
+        类型：`boolean`
 
 - **`optimization.extractCommon`**
 
@@ -219,19 +234,21 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
 - **`optimization.extractVendor`**
 
-    类型：`string`
+    控制是否抽取固定依赖（vendor）到单独的文件中，而不会重复出现在每个 entry 的结果文件里。
 
-    控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；
+    使用方式为指定固定依赖的数组或者传 `boolean`，传指定的依赖时会所依赖的包都将打包进 vendor，指定 `true` 时则抽取所有 node_modules 下的依赖包。
 
-    该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。
+    一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor 的内容如：`["react", "moment", "lodash"]`
 
-    一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：
+    `optimization.extractVendor` 类型为以下几种之一：
 
-    ```javascript
-    import 'react'
-    import 'moment'
-    import 'lodash'
-    ```    
+    - **`boolean`**
+
+        类型：`boolean`
+
+    - **`array`**
+
+        类型：`string[]`
 
 - **`optimization.compressImage`**
 
@@ -256,6 +273,14 @@ const apiUrl = "http://foobar.com/api" + 'test'
     - **`array`**
 
         类型：`string[]`
+
+- **`optimization.highQualitySourceMap`**
+
+    类型：`boolean`
+
+    是否提供高质量的 source map。
+
+    builder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。
 
 ## **`devProxy`**
 

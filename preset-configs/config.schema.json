@@ -4,7 +4,7 @@
   "properties": {
     "extends": {
       "type": "string",
-      "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json )，目前可用的内置配置见 https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs 。\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\n* 也可以提供一个本地文件的路径，使用本地配置文件作为被扩展对象，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。\n* 扩展时，假设 `A.json` extends `B.json`，\n    * `A.json` 中，`{ ..., \"foo\": { \"bar\": \"a\" }, ... }`\n    * `B.json` 中，`{ ..., \"foo\": { \"baz\": \"b\" }, ... }`\n    则对配置中的每个字段存在两类行为：\n    1. **覆盖**：**默认行为**，即 `A.json` 中的 `foo` 的值覆盖了 `B.json` 中对应的值，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\" }`；\n    2. **合并**：即 `A.json` 中的 `foo` 的值与 `B.json` 中对应的值进行了合并操作，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\", \"baz\": \"b\" }`；"
+      "description": "作为基础进行扩展的配置信息名，不填写该字段会默认使用 [`default`](https://github.com/Front-End-Engineering-Cloud/builder/blob/master/preset-configs/default.json)，目前可用的内置配置见 [preset-configs](https://github.com/Front-End-Engineering-Cloud/builder/tree/master/preset-configs)。\n* 若该项值置为 \"\"，则不会基于任何已有配置进行扩展。\n* 除了内置的配置外，`extends` 的对象也可以是是一个本地文件，如：`./build-config.base.json`，相对路径会被相对当前配置文件的路径进行解析。\n* `extends` 的对象也可以是一个 npm package，如 `\"extends\": \"@qiniu/build-config\"`，那么会尝试从项目的依赖中找到 `@qiniu/build-config` 包，解析并使用其中的 `build-config.json` 文件。\n    为了避免名字的冲突，所有可以被 `extends` 的 npm package 都要求名称成 `build-config-xxx`，或者 `@xxx/build-config`，或者 `@xxx/build-config-yyy`；\n    你也可以进一步指定 npm package 中的子目录，如，对于 `\"extends\": \"@qiniu/build-config/portal\"`，builder 会尝试使用 `@qiniu/build-config` 包中 `portal/` 目录下的 `build-config.json` 文件。\n* 扩展时，假设 `A.json` extends `B.json`，\n    * `A.json` 中，`{ ..., \"foo\": { \"bar\": \"a\" }, ... }`\n    * `B.json` 中，`{ ..., \"foo\": { \"baz\": \"b\" }, ... }`\n    则对配置中的每个字段存在两类行为：\n    1. **覆盖**：**默认行为**，即 `A.json` 中的 `foo` 的值覆盖了 `B.json` 中对应的值，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\" }`；\n    2. **合并**：即 `A.json` 中的 `foo` 的值与 `B.json` 中对应的值进行了合并操作，最终配置的 `foo` 的值等于 `{ \"bar\": \"a\", \"baz\": \"b\" }`；"
     },
     "publicUrl": {
       "type": "string",
@@ -111,15 +111,20 @@
           }, {
             "type": "boolean"
           }],
-          "description": "是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；`false` 不开启 `polyfill`；`true` 使用默认的方式 `\"global\"` 进行 `polyfill`；`\"global\"` 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用；`\"runtime\"` 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
+          "description": "是否开启自动 polyfill 功能，以及开启何种形式的 polyfill；开启后会根据 `targets.browsers` 参数自动实现对应的 polyfill；\n* `false`: 不开启 `polyfill`\n* `true`: 开启 `polyfill`，使用默认的方式 (`\"global\"`) 进行 `polyfill`\n* `\"global\"`: 开启基于 `@babel/preset-env` 的 `polyfill`，polyfill 会被作为独立的包被页面前置引用，会污染全局内置对象，适合普通应用\n* `\"runtime\"`: 开启基于 `@babel/plugin-transform-runtime` 的 `polyfill`，生成辅助函数以替换特定方法，不会污染全局命名空间，适用于工具类库"
         },
         "extractCommon": {
           "type": "boolean",
           "description": "控制是否抽取 entries 间的公共内容到单独的文件中，在有多个 entry 时可以减少结果文件的总体积，`true` 启用，`false` 禁用"
         },
         "extractVendor": {
-          "type": "string",
-          "description": "控制抽取固定依赖（vendor）的行为，要求传入一个入口文件名（`entry`）以启用；\n该 entry 的内容将会被认为是固定依赖，被抽取到单独的文件中，而不会重复出现在每个 entry 的结果文件里。\n一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor entry 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor entry 的内容形如：\n```javascript\nimport 'react'\nimport 'moment'\nimport 'lodash'\n```"
+          "oneOf": [{
+            "type": "boolean"
+            }, {
+              "type": "array",
+              "items": { "type": "string" }
+          }],
+          "description": "控制是否抽取固定依赖（vendor）到单独的文件中，而不会重复出现在每个 entry 的结果文件里。\n使用方式为指定固定依赖的数组或者传 `boolean`，传指定的依赖时会所依赖的包都将打包进 vendor，指定 `true` 时则抽取所有 node_modules 下的依赖包。\n一方面它可以更精确地实现抽取公共内容的效果，另外一方面，在 vendor 内容不变的情况下，结果文件本身的 hash 不会改变，可以更充分地利用浏览器缓存。典型的 vendor 的内容如：`[\"react\", \"moment\", \"lodash\"]`"
         },
         "compressImage": {
           "type": "boolean",
@@ -133,6 +138,10 @@
             "items": { "type": "string" }
           }],
           "description": "是否对第三方依赖包（node_modules 中的内容）的 Javascript 内容进行转换（builder 默认会跳过对依赖包 Javascript 内容的转换，以提升构建效率）。\n这里传入 `true` 表示全部进行转换，`false` 则全部不转换；\n也可以传入包名列表来指定需要转换的第三方依赖包，如传入 `[ \"react\", \"mobx\" ]`，表示仅对包 react 与包 mobx 的 Javascript 内容进行转换"
+        },
+        "highQualitySourceMap": {
+          "type": "boolean",
+          "description": "是否提供高质量的 source map。\nbuilder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。"
         }
       }
     },
