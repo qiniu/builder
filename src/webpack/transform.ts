@@ -249,7 +249,9 @@ function addTransform(
         // 这里设置为 ESNext（最新的规范能力），进一步的转换由 babel 处理
         target: 'ESNext',
         // enable tree-shaking，由 webpack 来做 module 格式的转换
-        module: 'ESNext'
+        module: 'ESNext',
+        // module 为 ESNext 时，moduleResolution 默认为 Classic（虽然 TS 文档不是这么说的），这里明确指定为 Node
+        moduleResolution: 'Node'
       }
       const tsLoaderOptions = {
         transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
