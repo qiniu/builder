@@ -1,28 +1,8 @@
 {
   "extends": "esnext",
   "transforms": {
-    "js": {
-      "transformer": "jsx",
-      "config": {
-        "babelOptions": {
-          "plugins": [
-            ["@babel/plugin-proposal-decorators", { "legacy": true }],
-            "@babel/plugin-proposal-class-properties"
-          ]
-        }
-      }
-    },
-    "jsx": {
-      "transformer": "jsx",
-      "config": {
-        "babelOptions": {
-          "plugins": [
-            ["@babel/plugin-proposal-decorators", { "legacy": true }],
-            "@babel/plugin-proposal-class-properties"
-          ]
-        }
-      }
-    },
+    "js": "jsx",
+    "jsx": "jsx",
     "svg@js": "svgr",
     "svg@jsx": "svgr"
   }
