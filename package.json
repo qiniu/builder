@@ -1,6 +1,6 @@
 {
   "name": "fec-builder",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "bin": {
     "fec-builder": "./lib/bin.js"
   },
