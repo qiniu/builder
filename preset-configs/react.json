@@ -1,5 +1,5 @@
 {
-  "extends": "esnext",
+  "extends": "default",
   "transforms": {
     "js": "jsx",
     "jsx": "jsx",
