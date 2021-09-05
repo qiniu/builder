@@ -1,12 +1,12 @@
 {
   "name": "fec-builder",
-  "version": "2.0.1",
+  "version": "2.1.0",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "fec-builder",
-      "version": "2.0.1",
+      "version": "2.1.0",
       "dependencies": {
         "@babel/core": "^7.12.3",
         "@babel/plugin-proposal-class-properties": "^7.12.1",
@@ -44,7 +44,7 @@
         "ts-loader": "^9.2.4",
         "typescript": "~4.1.3",
         "walk": "^2.3.14",
-        "webpack": "^5.13.0",
+        "webpack": "^5.52.0",
         "webpack-bundle-analyzer": "^4.4.1",
         "webpack-dev-server": "^3.11.0",
         "webpackbar": "^5.0.0-3",
@@ -2497,6 +2497,14 @@
       },
       "engines": {
         "node": ">=0.4.0"
+      }
+    },
+    "node_modules/acorn-import-assertions": {
+      "version": "1.7.6",
+      "resolved": "https://registry.npmjs.org/acorn-import-assertions/-/acorn-import-assertions-1.7.6.tgz",
+      "integrity": "sha512-FlVvVFA1TX6l3lp8VjDnYYq7R1nyW6x3svAt4nDgrWQ9SBaSh9CnbwgSUTasgfNfOG5HlM1ehugCvM+hjo56LA==",
+      "peerDependencies": {
+        "acorn": "^8"
       }
     },
     "node_modules/acorn-walk": {
@@ -16957,9 +16965,9 @@
       }
     },
     "node_modules/webpack": {
-      "version": "5.46.0",
-      "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.46.0.tgz",
-      "integrity": "sha512-qxD0t/KTedJbpcXUmvMxY5PUvXDbF8LsThCzqomeGaDlCA6k998D8yYVwZMvO8sSM3BTEOaD4uzFniwpHaTIJw==",
+      "version": "5.52.0",
+      "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.52.0.tgz",
+      "integrity": "sha512-yRZOat8jWGwBwHpco3uKQhVU7HYaNunZiJ4AkAVQkPCUGoZk/tiIXiwG+8HIy/F+qsiZvSOa+GLQOj3q5RKRYg==",
       "dependencies": {
         "@types/eslint-scope": "^3.7.0",
         "@types/estree": "^0.0.50",
@@ -16967,6 +16975,7 @@
         "@webassemblyjs/wasm-edit": "1.11.1",
         "@webassemblyjs/wasm-parser": "1.11.1",
         "acorn": "^8.4.1",
+        "acorn-import-assertions": "^1.7.6",
         "browserslist": "^4.14.5",
         "chrome-trace-event": "^1.0.2",
         "enhanced-resolve": "^5.8.0",
@@ -16983,7 +16992,7 @@
         "tapable": "^2.1.1",
         "terser-webpack-plugin": "^5.1.3",
         "watchpack": "^2.2.0",
-        "webpack-sources": "^2.3.1"
+        "webpack-sources": "^3.2.0"
       },
       "bin": {
         "webpack": "bin/webpack.js"
@@ -17532,13 +17541,9 @@
       }
     },
     "node_modules/webpack-sources": {
-      "version": "2.3.1",
-      "resolved": "https://registry.npmjs.org/webpack-sources/-/webpack-sources-2.3.1.tgz",
-      "integrity": "sha512-y9EI9AO42JjEcrTJFOYmVywVZdKVUfOvDUPsJea5GIr1JOEGFVqwlY2K098fFoIjOkDzHn2AjRvM8dsBZu+gCA==",
-      "dependencies": {
-        "source-list-map": "^2.0.1",
-        "source-map": "^0.6.1"
-      },
+      "version": "3.2.0",
+      "resolved": "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.0.tgz",
+      "integrity": "sha512-fahN08Et7P9trej8xz/Z7eRu8ltyiygEo/hnRi9KqBUs80KeDcnf96ZJo++ewWd84fEf3xSX9bp4ZS9hbw0OBw==",
       "engines": {
         "node": ">=10.13.0"
       }
@@ -19743,6 +19748,12 @@
       "version": "8.0.4",
       "resolved": "https://registry.npmjs.org/acorn/-/acorn-8.0.4.tgz",
       "integrity": "sha512-XNP0PqF1XD19ZlLKvB7cMmnZswW4C/03pRHgirB30uSJTaS3A3V1/P4sS3HPvFmjoriPCJQs+JDSbm4bL1TxGQ=="
+    },
+    "acorn-import-assertions": {
+      "version": "1.7.6",
+      "resolved": "https://registry.npmjs.org/acorn-import-assertions/-/acorn-import-assertions-1.7.6.tgz",
+      "integrity": "sha512-FlVvVFA1TX6l3lp8VjDnYYq7R1nyW6x3svAt4nDgrWQ9SBaSh9CnbwgSUTasgfNfOG5HlM1ehugCvM+hjo56LA==",
+      "requires": {}
     },
     "acorn-walk": {
       "version": "8.1.0",
@@ -30713,9 +30724,9 @@
       }
     },
     "webpack": {
-      "version": "5.46.0",
-      "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.46.0.tgz",
-      "integrity": "sha512-qxD0t/KTedJbpcXUmvMxY5PUvXDbF8LsThCzqomeGaDlCA6k998D8yYVwZMvO8sSM3BTEOaD4uzFniwpHaTIJw==",
+      "version": "5.52.0",
+      "resolved": "https://registry.npmjs.org/webpack/-/webpack-5.52.0.tgz",
+      "integrity": "sha512-yRZOat8jWGwBwHpco3uKQhVU7HYaNunZiJ4AkAVQkPCUGoZk/tiIXiwG+8HIy/F+qsiZvSOa+GLQOj3q5RKRYg==",
       "requires": {
         "@types/eslint-scope": "^3.7.0",
         "@types/estree": "^0.0.50",
@@ -30723,6 +30734,7 @@
         "@webassemblyjs/wasm-edit": "1.11.1",
         "@webassemblyjs/wasm-parser": "1.11.1",
         "acorn": "^8.4.1",
+        "acorn-import-assertions": "^1.7.6",
         "browserslist": "^4.14.5",
         "chrome-trace-event": "^1.0.2",
         "enhanced-resolve": "^5.8.0",
@@ -30739,7 +30751,7 @@
         "tapable": "^2.1.1",
         "terser-webpack-plugin": "^5.1.3",
         "watchpack": "^2.2.0",
-        "webpack-sources": "^2.3.1"
+        "webpack-sources": "^3.2.0"
       },
       "dependencies": {
         "@types/json-schema": {
@@ -31176,13 +31188,9 @@
       }
     },
     "webpack-sources": {
-      "version": "2.3.1",
-      "resolved": "https://registry.npmjs.org/webpack-sources/-/webpack-sources-2.3.1.tgz",
-      "integrity": "sha512-y9EI9AO42JjEcrTJFOYmVywVZdKVUfOvDUPsJea5GIr1JOEGFVqwlY2K098fFoIjOkDzHn2AjRvM8dsBZu+gCA==",
-      "requires": {
-        "source-list-map": "^2.0.1",
-        "source-map": "^0.6.1"
-      }
+      "version": "3.2.0",
+      "resolved": "https://registry.npmjs.org/webpack-sources/-/webpack-sources-3.2.0.tgz",
+      "integrity": "sha512-fahN08Et7P9trej8xz/Z7eRu8ltyiygEo/hnRi9KqBUs80KeDcnf96ZJo++ewWd84fEf3xSX9bp4ZS9hbw0OBw=="
     },
     "webpackbar": {
       "version": "5.0.0-3",

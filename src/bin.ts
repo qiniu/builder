@@ -3,7 +3,7 @@
 import { setAutoFreeze } from 'immer'
 import yargs from 'yargs'
 
-import { setBuildRoot, setBuildConfigFilePath } from './utils/paths'
+import { setBuildRoot, setBuildConfigFilePath, setNeedCache } from './utils/paths'
 import { Env, setEnv } from './utils/build-env'
 import logger from './utils/logger'
 import prepare from './prepare'
@@ -46,6 +46,11 @@ const options: Record<string, yargs.Options> = {
   verbose: {
     type: 'boolean',
     desc: 'Output more info',
+    default: false
+  },
+  cache: {
+    type: 'boolean',
+    desc: 'Cache the generated webpack modules and chunks to filesystem for improve build speed. ',
     default: false
   }
 }
@@ -117,6 +122,10 @@ function applyArgv(argv: yargs.Arguments) {
     } else {
       setEnv(argv.BUILD_ENV as Env)
     }
+  }
+
+  if (argv.cache) {
+    setNeedCache()
   }
 }
 
