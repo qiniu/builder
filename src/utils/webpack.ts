@@ -3,6 +3,7 @@ import path from 'path'
 import { Configuration, WebpackPluginInstance, Chunk, RuleSetRule, RuleSetConditionAbsolute } from 'webpack'
 import chunks from '../constants/chunks'
 import { Optimization } from './build-conf'
+import { getCachePath } from './paths'
 
 /** 向配置中追加 plugin */
 export function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
@@ -199,7 +200,8 @@ export function addDefaultExtension(config: Configuration, extension: string) {
 export function enableFilesystemCache(config: Configuration): Configuration {
   return produce(config, newConfig => {
     newConfig.cache = {
-      type: 'filesystem'
+      type: 'filesystem',
+      cacheDirectory: getCachePath()
     }
   })
 }
