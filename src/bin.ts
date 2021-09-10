@@ -48,7 +48,7 @@ const options: Record<string, yargs.Options> = {
     desc: 'Output more info',
     default: false
   },
-  cache: {
+  'unstable-cache': {
     type: 'boolean',
     desc: 'Cache the generated webpack modules and chunks to filesystem for improve build speed. ',
     default: false
@@ -124,7 +124,7 @@ function applyArgv(argv: yargs.Arguments) {
     }
   }
 
-  if (argv.cache) {
+  if (argv['unstable-cache']) {
     setNeedCache()
   }
 }
