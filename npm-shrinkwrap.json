@@ -1,12 +1,12 @@
 {
   "name": "fec-builder",
-  "version": "2.1.0",
+  "version": "2.1.0-beta.1",
   "lockfileVersion": 2,
   "requires": true,
   "packages": {
     "": {
       "name": "fec-builder",
-      "version": "2.1.0",
+      "version": "2.1.0-beta.1",
       "dependencies": {
         "@babel/core": "^7.12.3",
         "@babel/plugin-proposal-class-properties": "^7.12.1",
@@ -28,7 +28,7 @@
         "imagemin-gifsicle": "^7.0.0",
         "imagemin-mozjpeg": "^9.0.0",
         "imagemin-svgo": "^9.0.0",
-        "immer": "^8.0.3",
+        "immer": "^9.0.6",
         "less": "^3.12.2",
         "less-loader": "^7.1.0",
         "lodash": "^4.17.20",
@@ -8375,9 +8375,9 @@
       }
     },
     "node_modules/immer": {
-      "version": "8.0.3",
-      "resolved": "https://registry.npmjs.org/immer/-/immer-8.0.3.tgz",
-      "integrity": "sha512-UqLcFkrCZPmb0Lgs+TcaSa/mCAWrL7EcGB+7dHq7RzLkVQCevaRPL9+DZZ/bInuRAkamBoNKkG/OMIW91QFxOQ==",
+      "version": "9.0.6",
+      "resolved": "https://registry.npmjs.org/immer/-/immer-9.0.6.tgz",
+      "integrity": "sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ==",
       "funding": {
         "type": "opencollective",
         "url": "https://opencollective.com/immer"
@@ -24250,9 +24250,9 @@
       }
     },
     "immer": {
-      "version": "8.0.3",
-      "resolved": "https://registry.npmjs.org/immer/-/immer-8.0.3.tgz",
-      "integrity": "sha512-UqLcFkrCZPmb0Lgs+TcaSa/mCAWrL7EcGB+7dHq7RzLkVQCevaRPL9+DZZ/bInuRAkamBoNKkG/OMIW91QFxOQ=="
+      "version": "9.0.6",
+      "resolved": "https://registry.npmjs.org/immer/-/immer-9.0.6.tgz",
+      "integrity": "sha512-G95ivKpy+EvVAnAab4fVa4YGYn24J1SpEktnJX7JJ45Bd7xqME/SCplFzYFmTbrkwZbQ4xJK1xMTUYBkN6pWsQ=="
     },
     "import-fresh": {
       "version": "3.2.2",
