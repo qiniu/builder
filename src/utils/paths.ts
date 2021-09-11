@@ -56,3 +56,19 @@ export function getDistPath(conf: BuildConfig) {
 export function getTestDistPath(conf: BuildConfig) {
   return path.join(getDistPath(conf), '.test')
 }
+
+/** get webpack cache path */
+export function getCachePath() {
+  return abs('node_modules/.cache/webpack')
+}
+
+/** whether need filesystem cache */
+let cache = false
+
+export function getNeedCache() {
+  return cache
+}
+
+export function setNeedCache() {
+  cache = true
+}

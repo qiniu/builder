@@ -10,13 +10,13 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
-import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
+import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath, getNeedCache } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
 import { addTransforms, svgoConfig } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
-import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig } from '../utils/webpack'
+import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
@@ -24,6 +24,8 @@ const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 /** 获取 webpack 配置（构建用） */
 export async function getConfig(): Promise<Configuration> {
   const buildConfig = await findBuildConfig()
+  const isProd = getEnv() === Env.Prod
+  const isDev = getEnv() === Env.Dev
 
   let config: Configuration = {
     target: 'web', // TODO: 使用 `browserslist:...` 可能合适? 详情见 https://webpack.js.org/configuration/target/
@@ -54,7 +56,7 @@ export async function getConfig(): Promise<Configuration> {
       chunkFilename: 'static/[id]-[chunkhash].js',
       assetModuleFilename: 'static/[name]-[contenthash][ext]',
       publicPath: (
-        getEnv() === Env.Prod
+        isProd
         ? buildConfig.publicUrl
         : getPathFromUrl(buildConfig.publicUrl)
       ),
@@ -81,13 +83,13 @@ export async function getConfig(): Promise<Configuration> {
 
   let baseChunks: string[] = []
 
-  if (getEnv() === Env.Prod) {
+  if (isProd) {
     const result = parseOptimizationConfig(buildConfig.optimization)
     baseChunks = result.baseChunks
     config = appendCacheGroups(config, result.cacheGroups)
   }
 
-  if (getEnv() === Env.Dev) {
+  if (isDev) {
     config = processSourceMap(config, buildConfig.optimization.highQualitySourceMap)
   }
 
@@ -120,7 +122,7 @@ export async function getConfig(): Promise<Configuration> {
     new WebpackBarPlugin({ color: 'green' })
   )
 
-  if (getEnv() === Env.Prod) {
+  if (isProd) {
     config = appendPlugins(config, new MiniCssExtractPlugin({
       filename: 'static/[name]-[contenthash].css',
       chunkFilename: 'static/[id]-[chunkhash].css'
@@ -131,7 +133,7 @@ export async function getConfig(): Promise<Configuration> {
     config = appendPlugins(config, new BundleAnalyzerPlugin())
   }
 
-  if (getEnv() === Env.Prod && buildConfig.optimization.compressImage) {
+  if (isProd && buildConfig.optimization.compressImage) {
     config = appendPlugins(config, new ImageMinimizerPlugin({
       minimizerOptions: {
         plugins: [
@@ -144,6 +146,10 @@ export async function getConfig(): Promise<Configuration> {
         ]
       }
     }))
+  }
+
+  if (getNeedCache()) {
+    config = enableFilesystemCache(config)
   }
 
   return config

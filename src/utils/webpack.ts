@@ -3,6 +3,7 @@ import path from 'path'
 import { Configuration, WebpackPluginInstance, Chunk, RuleSetRule, RuleSetConditionAbsolute } from 'webpack'
 import chunks from '../constants/chunks'
 import { Optimization } from './build-conf'
+import { getCachePath } from './paths'
 
 /** 向配置中追加 plugin */
 export function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
@@ -108,7 +109,7 @@ export function parseOptimizationConfig(optimization: Optimization): {
 
       cacheGroups[chunks.vendor] = {
         name: chunks.vendor,
-        chunks: 'all',
+        chunks: 'initial',
         priority: -10,
         test: function(module: { resource?: string }): boolean {
           const resource = module.resource
@@ -131,7 +132,7 @@ export function parseOptimizationConfig(optimization: Optimization): {
     baseChunks.push(chunks.common)
     cacheGroups[chunks.common] = {
       name: chunks.common,
-      chunks: 'all',
+      chunks: 'initial',
       minChunks: 2,
       priority: -20
     }
@@ -191,6 +192,16 @@ export function addDefaultExtension(config: Configuration, extension: string) {
     const extensions = resolve.extensions = resolve.extensions || []
     if (!extensions.includes(extension)) {
       extensions.push(extension)
+    }
+  })
+}
+
+/** 开启文件缓存 */
+export function enableFilesystemCache(config: Configuration): Configuration {
+  return produce(config, newConfig => {
+    newConfig.cache = {
+      type: 'filesystem',
+      cacheDirectory: getCachePath()
     }
   })
 }
