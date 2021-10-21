@@ -4,6 +4,7 @@ import { Configuration, WebpackPluginInstance, Chunk, RuleSetRule, RuleSetCondit
 import chunks from '../constants/chunks'
 import { Optimization } from './build-conf'
 import { getCachePath } from './paths'
+import logger from './logger'
 
 /** 向配置中追加 plugin */
 export function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
@@ -41,13 +42,15 @@ export function adaptLoader({ loader, options }: LoaderInfo): LoaderInfo {
   return loaderObj
 }
 
+const sourcemapParseFailedWarningPattern = /Failed to parse source map from/
+
 /** 配置 source map */
-export function processSourceMap(previousConfig: Configuration, highQuality: boolean) {
-  return produce(previousConfig, (config: Configuration) => {
+export function processSourceMap(config: Configuration, highQuality: boolean) {
+  config = produce(config, (newConfig: Configuration) => {
     // 使用 cheap-module-source-map 而不是 eval-cheap-module-source-map 或 eval-source-map
     // 具体原因见 https://github.com/Front-End-Engineering-Cloud/builder/pull/139#discussion_r676475522
-    config.devtool = highQuality ? 'cheap-module-source-map' : 'eval';
-    config.module!.rules!.push({
+    newConfig.devtool = highQuality ? 'cheap-module-source-map' : 'eval';
+    newConfig.module!.rules!.push({
       test: /node_modules\/.*\.js$/,
       enforce: 'pre',
       use: [{
@@ -60,8 +63,16 @@ export function processSourceMap(previousConfig: Configuration, highQuality: boo
           }
         }
       }].map(adaptLoader)
-    });
-  });
+    })
+  })
+  if (highQuality) {
+    // 第三方依赖的 source map 信息残缺导致 parse 失败是很常见的事情，
+    // 最常见的原因是生成的 sourcemap 未将源码 inline，而发布的内容里也没有包含源码，
+    // 详见 https://www.typescriptlang.org/tsconfig/#inlineSources
+    // 这里忽略相关 warning，避免污染浏览器 console
+    config = ignoreWarning(config, sourcemapParseFailedWarningPattern)
+  }
+  return config
 }
 
 export interface SplitChunksCacheGroup {
@@ -202,6 +213,17 @@ export function enableFilesystemCache(config: Configuration): Configuration {
     newConfig.cache = {
       type: 'filesystem',
       cacheDirectory: getCachePath()
+    }
+  })
+}
+
+/** 指定 pattern 忽略 warning */
+export function ignoreWarning(config: Configuration, pattern: RegExp): Configuration {
+  return produce(config, newConfig => {
+    newConfig.ignoreWarnings ??= []
+    if (!newConfig.ignoreWarnings.includes(pattern)) {
+      logger.debug('append warningsFilter:', pattern)
+      newConfig.ignoreWarnings.push(pattern)
     }
   })
 }

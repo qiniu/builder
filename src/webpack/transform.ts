@@ -8,8 +8,7 @@ import {
   AddPolyfill, shouldAddRuntimePolyfill
 } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
-import logger from '../utils/logger'
-import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension } from '../utils/webpack'
+import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension, ignoreWarning } from '../utils/webpack'
 
 // ts-loader 开启 transpileOnly 后会出的 warning
 const tsTranspileOnlyWarningPattern = /export .* was not found in/
@@ -273,19 +272,7 @@ function addTransform(
       if (tsLoaderOptions.transpileOnly) {
         // 干掉因为开启 transpileOnly 导致的 warning
         // 详情见 https://github.com/TypeStrong/ts-loader#transpileonly
-        config = produce(config, newConfig => {
-          newConfig.stats ??= {}
-          if (typeof(newConfig.stats) === 'boolean' || typeof(newConfig.stats) === 'string') {
-            throw new Error("Expect config.stats to be object.")
-          }
-          const originFilter = newConfig.stats.warningsFilter ?? []
-          const warningsFilter = Array.isArray(originFilter) ? originFilter : [originFilter]
-          if (!warningsFilter.includes(tsTranspileOnlyWarningPattern)) {
-            logger.debug('append warningsFilter:', tsTranspileOnlyWarningPattern)
-            warningsFilter.push(tsTranspileOnlyWarningPattern)
-            newConfig.stats.warningsFilter = warningsFilter
-          }
-        })
+        config = ignoreWarning(config, tsTranspileOnlyWarningPattern)
       }
       return appendRuleWithLoaders(
         config,
