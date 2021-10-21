@@ -71,6 +71,8 @@ export function getPathFromUrl(
   /** if with slash at begining & ending */
   withSlash = true
 ) {
+  // 支持一下 `./` 形式的 url，暂不考虑 `../` 的情况
+  targetUrl = targetUrl.replace(/^\.\//, '\/')
   const parsed = parseUrl(targetUrl)
   const pathWithoutSlash = (parsed.pathname || '').replace(/^\/|\/$/g, '')
   return (
