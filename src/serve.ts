@@ -75,10 +75,17 @@ async function runDevServer(port: number) {
   const compiler = webpack(webpackConfig)
   const server = new WebpackDevServer(compiler, devServerConfig)
 
+  await new Promise<void>(resolve => {
+    compiler.hooks.done.tap('DoneHook', () => {
+      resolve()
+    })
+  })
+
   const host = '0.0.0.0'
   server.listen(port, host, () => {
     logger.info(`Server started on ${host}:${port}`)
   })
+
   return () => new Promise<void>(resolve => {
     server.close(resolve)
   })
