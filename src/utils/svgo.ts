@@ -9,9 +9,10 @@ import { createHash } from 'crypto'
 // 以避免不同 SVG 文件同时被 inline 到 DOM 中时产生的定义冲突
 const prefixIdsConfig = {
   // https://github.com/svg/svgo/blob/v1.3.2/plugins/prefixIds.js#L126
-  prefix: (_node: any, info: any) => {
-    // `info.path` 值是 svg 文件的绝对路径
-    const hash = createHash('sha1').update(info.path).digest('base64') // TODO: maybe with cache?
+  prefix: (_node: any, extra: any) => {
+    const path = extra && extra.path // svg 文件的绝对路径
+    if (!path) return false
+    const hash = createHash('sha1').update(path).digest('base64') // TODO: maybe with cache?
     return hash.replace(/[^\w]/g, '').slice(0, 10)
   }
 }
