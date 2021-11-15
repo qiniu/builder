@@ -12,11 +12,12 @@ import WebpackBarPlugin from 'webpackbar'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
 import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath, getNeedCache } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
-import { addTransforms, svgoConfig } from './transform'
+import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
 import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
+import { svgoConfigForImagemin } from '../utils/svgo'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
@@ -139,7 +140,7 @@ export async function getConfig(): Promise<Configuration> {
         plugins: [
           ['mozjpeg', { progressive: true, quality: 65 }],
           ['gifsicle', { interlaced: false }],
-          ['svgo', svgoConfig]
+          ['svgo', svgoConfigForImagemin]
           // 这里先不做 png 的压缩，因为 imagemin-pngquant 有可能会产生负优化（结果文件比源文件体积大），
           // 而且目前不支持 option 来在产生负优化时直接使用源文件，相关 issue https://github.com/kornelski/pngquant/issues/338
           // ['pngquant', { quality: [0.65, 0.9], speed: 4 }],
@@ -185,7 +186,7 @@ function getStaticDirCopyPlugin(buildConfig: BuildConfig) {
     return new CopyPlugin({
       patterns: [{ from: staticPath, to: 'static', toType: 'dir' }]
     })
-  } catch (e) {
-    logger.warn('Copy staticDir content failed:', e.message)
+  } catch (e: unknown) {
+    logger.warn('Copy staticDir content failed:', e && (e as any).message)
   }
 }

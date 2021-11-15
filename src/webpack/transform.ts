@@ -3,6 +3,7 @@ import { Configuration, RuleSetRule } from 'webpack'
 import postcssPresetEnv from 'postcss-preset-env'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { Transform } from '../constants/transform'
+import { getSvgoConfigForSvgr } from '../utils/svgo'
 import {
   BuildConfig, TransformObject, shouldAddGlobalPolyfill,
   AddPolyfill, shouldAddRuntimePolyfill
@@ -60,20 +61,6 @@ export function addTransforms(
   })
 
   return config
-}
-
-/** 对 svgo 的配置 */
-export const svgoConfig = {
-  plugins: [{
-    name: 'preset-default',
-    params: {
-      overrides: {
-        // removeViewBox 会导致指定了 width & height 的 svg 文件的 viewBox 被删掉，
-        // 而删掉 viewBox 会导致 svg 不能在外部指定 css 宽高时正确地缩放内容
-        removeViewBox: false
-      }
-    }
-  }]
 }
 
 interface TransformStyleConfig {
@@ -296,15 +283,12 @@ function addTransform(
 
     case Transform.Svgr: {
 
-      const svgrOptions = (
-        getEnv() === Env.Prod && optimization.compressImage
-        ? { svgo: true, svgoConfig }
-        : { svgo: false }
-      )
+      const shouldCompressSvg = getEnv() === Env.Prod && optimization.compressImage
+      const svgoConfig = getSvgoConfigForSvgr(shouldCompressSvg)
 
       return appendRuleWithLoaders(config, {
         loader: '@svgr/webpack',
-        options: svgrOptions
+        options: { svgo: true, svgoConfig }
       })
     }
 
