@@ -88,7 +88,7 @@
     },
     "envVariables": {
       "type": "object",
-      "description": "注入到代码中的环境变量，在扩展时会覆盖原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
+      "description": "注入到代码中的环境变量，在扩展时会合并原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
     },
     "targets": {
       "type": "object",
@@ -154,7 +154,7 @@
     },
     "deploy": {
       "type": "object",
-      "description": "部署配置，在扩展时会合并原值，要求是一个 object，包含两个字段：`target` 及 `config`",
+      "description": "部署配置，在扩展时会覆盖原值，要求是一个 object，包含两个字段：`target` 及 `config`",
       "properties": {
         "target": { "type": "string", "enum": ["qiniu"], "description": "部署目标" },
         "config": {
@@ -169,7 +169,7 @@
     },
     "engines": {
       "type": "object",
-      "description": "配置对构建环境的要求，在扩展时会覆盖原值。目前支持字段：`builder`",
+      "description": "配置对构建环境的要求，在扩展时会合并原值。目前支持字段：`builder`",
       "properties": {
         "builder": {
           "type": "string",

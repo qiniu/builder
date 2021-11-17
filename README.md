@@ -76,7 +76,7 @@ v1.4.0 前的 Changelog：
 
 ##### 1.3.7
 
-支持省略项目目录下的 postcss.config.js 文件
+支持省略项目目录下的 postcss.config.js 文件
 
 ##### 1.3.6
 
