@@ -173,7 +173,7 @@ Build config 各个字段的定义。
 则代码中：
 
 ```js
-const apiUrl = API + 'test'
+const apiUrl = API_PREFIX + 'test'
 ```
 
 会被转换为：

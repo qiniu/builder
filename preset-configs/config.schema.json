@@ -88,7 +88,7 @@
     },
     "envVariables": {
       "type": "object",
-      "description": "注入到代码中的环境变量，在扩展时会合并原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
+      "description": "注入到代码中的环境变量，在扩展时会合并原值。如配置：\n```\n\"API_PREFIX\": \"http://foobar.com/api\"\n```\n则代码中：\n```js\nconst apiUrl = API_PREFIX + 'test'\n```\n会被转换为：\n```js\nconst apiUrl = \"http://foobar.com/api\" + 'test'\n```"
     },
     "targets": {
       "type": "object",
