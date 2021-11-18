@@ -6,13 +6,7 @@ import yargs from 'yargs'
 import { setBuildRoot, setBuildConfigFilePath, setNeedCache } from './utils/paths'
 import { Env, setEnv } from './utils/build-env'
 import logger from './utils/logger'
-import prepare from './prepare'
-import clean from './clean'
-import generate from './generate'
-import upload from './upload'
-import serve from './serve'
 import { setNeedAnalyze } from './utils/build-conf'
-import test from './test'
 
 // 禁掉 auto freeze，否则有的插件改数据时会异常，
 // 比如 postcss-loader 会去 delete options 上的 plugins 字段；
@@ -64,40 +58,51 @@ interface Command {
 const commands: Record<string, Command> = {
   clean: {
     desc: 'Clean result file',
-    handler: clean
+    async handler() {
+      // By `require` in `handler` instead of `import` at the top, modules will be lazily loaded.
+      // When executing one command, builder does not need to load unnecessary modules, so we get performance improvement.
+      // P.S. We always overestimate the speed of module loading in Node.js
+      await require('./clean').default()
+    }
   },
   generate: {
     desc: 'Generate result file',
-    handler: generate
+    async handler() {
+      await require('./generate').default()
+    }
   },
   upload: {
     desc: 'Upload result file',
-    handler: upload
+    async handler() {
+      await require('./upload').default()
+    }
   },
   test: {
     desc: 'Run unit test cases',
-    handler: test
+    async handler() {
+      await require('./test').default()
+    }
   },
   build: {
     desc: 'Clean, generate & upload result file',
     async handler() {
-      await clean()
-      await generate()
-      await upload()
+      await require('./clean').default()
+      await require('./generate').default()
+      await require('./upload').default()
     }
   },
   serve: {
     isDefault: true,
     desc: 'Launch the dev server',
-    handler(args) {
-      return serve(args.PORT as number)
+    async handler(args) {
+      await require('./serve').default(args.PORT as number)
     }
   },
   analyze: {
     desc: 'Visually analyze bundle dependencies',
     async handler() {
       setNeedAnalyze(true)
-      await generate()
+      await require('./generate').default()
     }
   }
 }
@@ -151,7 +156,7 @@ Object.entries(commands).forEach(([name, { desc, handler, isDefault }]) => {
     applyArgv(argv)
 
     try {
-      await prepare()
+      await require('./prepare').default()
       await handler(argv)
     } catch(e) {
       handleError(e)
