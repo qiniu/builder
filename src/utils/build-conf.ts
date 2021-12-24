@@ -76,7 +76,7 @@ export type PagesInput = Record<string, PageInput>
 export type Pages = Record<string, Page>
 
 export interface Resolve {
-  /** Alias map, same as https://webpack.js.org/configuration/resolve/#resolvealias */
+  /** 别名映射表，key 为要匹配的模块或路径，value 为（被实际使用的）目标路径 */
   alias: Record<string, string>
 }
 
