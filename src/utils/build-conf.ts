@@ -75,6 +75,11 @@ export type PagesInput = Record<string, PageInput>
 
 export type Pages = Record<string, Page>
 
+export interface Resolve {
+  /** Alias map, same as https://webpack.js.org/configuration/resolve/#resolvealias */
+  alias: Record<string, string>
+}
+
 export interface TransformObject {
   transformer: Transform
   config?: unknown
@@ -110,6 +115,7 @@ export interface BuildConfigInput {
   distDir?: string
   entries?: Entries
   pages?: PagesInput
+  resolve?: Resolve
   transforms?: TransformsInput
   /** 注入到代码中的环境变量 */
   envVariables?: EnvVariables,
@@ -123,12 +129,14 @@ export interface BuildConfigInput {
 
 export interface BuildConfig extends Required<BuildConfigInput> {
   pages: Pages
+  resolve: Resolve
   transforms: Transforms
 }
 
 /** merge two config content */
 function mergeConfig(cfg1: BuildConfigInput, cfg2: BuildConfigInput): BuildConfigInput {
   return extend(cfg1, cfg2, {
+    resolve: extend(cfg1.resolve, cfg2.resolve) as Resolve,
     transforms: extend(cfg1.transforms, cfg2.transforms) as TransformsInput,
     envVariables: extend(cfg1.envVariables, cfg2.envVariables),
     optimization: extend(cfg1.optimization, cfg2.optimization) as Optimization,
@@ -265,7 +273,7 @@ function normalizeTransforms(input: TransformsInput): Transforms {
 
 function normalizeConfig({
   extends: _extends, publicUrl: _publicUrl, srcDir, staticDir, distDir, entries, pages: _pages,
-  transforms: _transforms, envVariables, optimization, devProxy,
+  resolve, transforms: _transforms, envVariables, optimization, devProxy,
   deploy, targets, test, engines
 }: BuildConfigInput): BuildConfig {
   if (_extends == null) throw new Error('Invalid value of field extends')
@@ -275,6 +283,7 @@ function normalizeConfig({
   if (distDir == null) throw new Error('Invalid value of field distDir')
   if (entries == null) throw new Error('Invalid value of field entries')
   if (_pages == null) throw new Error('Invalid value of field pages')
+  if (resolve == null) throw new Error('Invalid value of field resolve')
   if (_transforms == null) throw new Error('Invalid value of field transforms')
   if (envVariables == null) throw new Error('Invalid value of field envVariables')
   if (optimization == null) throw new Error('Invalid value of field optimization')
@@ -288,7 +297,7 @@ function normalizeConfig({
   const transforms = normalizeTransforms(_transforms)
   return {
     extends: _extends, publicUrl, srcDir, staticDir, distDir, entries, pages,
-    transforms, envVariables, optimization, devProxy,
+    resolve, transforms, envVariables, optimization, devProxy,
     deploy, targets, test, engines
   }
 }

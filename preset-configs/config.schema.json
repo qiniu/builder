@@ -34,18 +34,18 @@
     },
     "pages": {
       "type": "object",
-      "description": "页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `\"index\"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`",
+      "description": "页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `\"index\"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`。",
       "patternProperties": {
         ".*": {
           "type": "object",
-          "description": "一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`",
+          "description": "一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`。",
           "properties": {
             "template": {
               "type": "string",
-              "description": "页面的模板文件相对于项目根目录的路径，支持 ejs"
+              "description": "页面的模板文件相对于项目根目录的路径，支持 ejs。"
             },
             "entries": {
-              "description": "页面上的入口文件列表\n* 在只有一个入口文件的情况下，可以直接传入一个字符串，即该入口文件名（如 \"index\"）；\n* 也可以传入一个数组，数组每一项为一个入口文件名（如 `[\"sidebar\", \"index\"]`）",
+              "description": "页面上的入口文件列表\n* 在只有一个入口文件的情况下，可以直接传入一个字符串，即该入口文件名（如 \"index\"）；\n* 也可以传入一个数组，数组每一项为一个入口文件名（如 `[\"sidebar\", \"index\"]`）。",
               "oneOf": [{
                 "type": "string"
               }, {
@@ -56,6 +56,22 @@
             "path": {
               "type": "string",
               "description": "在应用中该页面的路径正则（如 `\"\"`、`\"^\\/financial\\/\"`），dev server 在请求匹配对应 path 时会返回该页面的内容作为响应。"
+            }
+          }
+        }
+      }
+    },
+    "resolve": {
+      "type": "object",
+      "description": "对于模块解析行为的配置，在扩展时会合并原值。",
+      "properties": {
+        "alias": {
+          "type": "object",
+          "description": "配置别名以控制对特定模块或路径的解析行为；如配置 `{ \"foo\": \"src/foo\" }`，则模块 `foo` 会被解析到 `<项目根目录>/src/foo`，模块 `foo/bar` 会被解析到 `<项目根目录>/src/foo/bar`",
+          "patternProperties": {
+            ".*": {
+              "type": "string",
+              "description": "解析目标的路径（相对于项目根目录），如 `\"src/foo\"`。"
             }
           }
         }
