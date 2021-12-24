@@ -76,7 +76,7 @@ Build config 各个字段的定义。
 
 类型：`object`
 
-页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `"index"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`
+页面，在扩展时会覆盖原值。要求是一个 object，key 为页面名（如 `"index"`），value 为一个 object，包含三个字段：`template`, `entries`, `path`。
 
 `pages` 的字段描述如下：
 
@@ -84,7 +84,7 @@ Build config 各个字段的定义。
 
     类型：`object`
 
-    一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`
+    一个 object 表示一个页面，包含三个字段：`template`, `entries`, `path`。
 
     `pages.(.*)` 的字段描述如下：
 
@@ -92,7 +92,7 @@ Build config 各个字段的定义。
 
         类型：`string`
 
-        页面的模板文件相对于项目根目录的路径，支持 ejs
+        页面的模板文件相对于项目根目录的路径，支持 ejs。
 
     - **`pages.(.*).entries`**
 
@@ -100,7 +100,7 @@ Build config 各个字段的定义。
 
         * 在只有一个入口文件的情况下，可以直接传入一个字符串，即该入口文件名（如 "index"）；
 
-        * 也可以传入一个数组，数组每一项为一个入口文件名（如 `["sidebar", "index"]`）
+        * 也可以传入一个数组，数组每一项为一个入口文件名（如 `["sidebar", "index"]`）。
 
         `pages.(.*).entries` 类型为以下几种之一：
 
@@ -117,6 +117,28 @@ Build config 各个字段的定义。
         类型：`string`
 
         在应用中该页面的路径正则（如 `""`、`"^\/financial\/"`），dev server 在请求匹配对应 path 时会返回该页面的内容作为响应。
+
+## **`resolve`**
+
+类型：`object`
+
+对于模块解析行为的配置，在扩展时会合并原值。
+
+`resolve` 的字段描述如下：
+
+- **`resolve.alias`**
+
+    类型：`object`
+
+    配置别名以控制对特定模块或路径的解析行为；如配置 `{ "foo": "src/foo" }`，则模块 `foo` 会被解析到 `<项目根目录>/src/foo`，模块 `foo/bar` 会被解析到 `<项目根目录>/src/foo/bar`
+
+    `resolve.alias` 的字段描述如下：
+
+    - **`resolve.alias.(.*)`**
+
+        类型：`string`
+
+        解析目标的路径（相对于项目根目录），如 `"src/foo"`。
 
 ## **`transforms`**
 

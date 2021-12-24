@@ -28,6 +28,11 @@ export async function getConfig(): Promise<Configuration> {
   const isProd = getEnv() === Env.Prod
   const isDev = getEnv() === Env.Dev
 
+  const resolveAlias = mapValues(
+    buildConfig.resolve.alias,
+    path => abs(path)
+  )
+
   let config: Configuration = {
     target: 'web', // TODO: 使用 `browserslist:...` 可能合适? 详情见 https://webpack.js.org/configuration/target/
     mode: getMode(),
@@ -40,7 +45,8 @@ export async function getConfig(): Promise<Configuration> {
         'node_modules',
         nodeModulesOfBuilder,
         abs('node_modules')
-      ]
+      ],
+      alias: resolveAlias
     },
     resolveLoader: {
       modules: [
