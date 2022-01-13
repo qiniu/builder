@@ -10,7 +10,7 @@ import CssMinimizerPlugin from 'css-minimizer-webpack-plugin'
 import { BundleAnalyzerPlugin } from 'webpack-bundle-analyzer'
 import WebpackBarPlugin from 'webpackbar'
 import ImageMinimizerPlugin from 'image-minimizer-webpack-plugin'
-import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath, getNeedCache } from '../utils/paths'
+import { getBuildRoot, abs, getStaticPath, getDistPath, getSrcPath } from '../utils/paths'
 import { BuildConfig, findBuildConfig, getNeedAnalyze } from '../utils/build-conf'
 import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
@@ -155,7 +155,8 @@ export async function getConfig(): Promise<Configuration> {
     }))
   }
 
-  if (getNeedCache()) {
+  const { enableCache } = buildConfig.optimization
+  if (enableCache === true || Array.isArray(enableCache) && enableCache.includes(getEnv())) {
     config = enableFilesystemCache(config)
   }
 

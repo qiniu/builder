@@ -304,6 +304,26 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     builder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。
 
+- **`optimization.enableCache`**
+
+    是否启用文件系统缓存，用于提升二次启动的打包速度，对于大型的前端仓库提升效果尤其明显。
+
+    这里传入 `true` 表示所有环境均启用，`false` 则不启用；
+
+    也可以指定需要启用的环境列表，如传入 `["development"]`，表示仅在开发环境启用文件缓存。
+
+    `optimization.enableCache` 类型为以下几种之一：
+
+    - **`boolean`**
+
+        类型：`boolean`
+
+    - **`array`**
+
+        类型：`string[]`
+
+        指定要启用的环境列表，可选值有 `"development" | "production" | "test"`
+
 ## **`devProxy`**
 
 类型：`object`

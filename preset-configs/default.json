@@ -64,7 +64,8 @@
     "extractVendor": true,
     "compressImage": false,
     "transformDeps": false,
-    "highQualitySourceMap": false
+    "highQualitySourceMap": false,
+    "enableCache": ["development"]
   },
   "devProxy": {},
   "deploy": {
