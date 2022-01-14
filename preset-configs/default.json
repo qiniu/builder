@@ -65,7 +65,7 @@
     "compressImage": false,
     "transformDeps": false,
     "highQualitySourceMap": false,
-    "enableCache": ["development"]
+    "filesystemCache": true
   },
   "devProxy": {},
   "deploy": {

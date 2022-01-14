@@ -155,8 +155,7 @@ export async function getConfig(): Promise<Configuration> {
     }))
   }
 
-  const { enableCache } = buildConfig.optimization
-  if (enableCache === true || Array.isArray(enableCache) && enableCache.includes(getEnv())) {
+  if (isDev && buildConfig.optimization.filesystemCache) {
     config = enableFilesystemCache(config)
   }
 

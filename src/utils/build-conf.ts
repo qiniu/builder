@@ -6,7 +6,6 @@ import { extend, watchFile } from '.'
 import { getBuildConfigFilePath, abs, getBuildRoot } from './paths'
 import logger from './logger'
 import { Transform } from '../constants/transform'
-import { Env } from './build-env'
 
 export interface Engines {
   /** required builder version range */
@@ -55,7 +54,7 @@ export interface Optimization {
   /** 是否提供高质量的 source map */
   highQualitySourceMap: boolean
   /** 是否启用文件系统缓存 */
-  enableCache: boolean | Env[]
+  filesystemCache: boolean
 }
 
 export interface EnvVariables {
