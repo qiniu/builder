@@ -304,6 +304,14 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     builder 默认提供粗粒度的 source map 以提升构建效率，效果上只是简单地将打包后代码按模块分开；开启 `highQualitySourceMap` 后，builder 会提供到源代码的映射，第三方依赖包自带的 source map 信息（如果有）也会被消费，以便为第三方库提供基于源代码的调试体验。
 
+- **`optimization.filesystemCache`**
+
+    类型：`boolean`
+
+    是否启用文件系统缓存，用于提升二次启动的打包速度，对于大型的前端仓库提升效果尤其明显。
+
+    这里传入 `true` 表示启用文件系统缓存，`false` 则不启用。
+
 ## **`devProxy`**
 
 类型：`object`

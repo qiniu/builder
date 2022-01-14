@@ -53,6 +53,8 @@ export interface Optimization {
   addPolyfill: AddPolyfill
   /** 是否提供高质量的 source map */
   highQualitySourceMap: boolean
+  /** 是否启用文件系统缓存 */
+  filesystemCache: boolean
 }
 
 export interface EnvVariables {
