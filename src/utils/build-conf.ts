@@ -55,6 +55,8 @@ export interface Optimization {
   highQualitySourceMap: boolean
   /** 是否启用文件系统缓存 */
   filesystemCache: boolean
+  /** 是否开启 react-refresh-webpack-plugin 的错误提示 */
+  errorOverlay: boolean
 }
 
 export interface EnvVariables {
