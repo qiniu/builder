@@ -162,6 +162,10 @@
         "filesystemCache": {
           "type": "boolean",
           "description": "是否启用文件系统缓存，用于提升二次启动的打包速度，对于大型的前端仓库提升效果尤其明显。\n这里传入 `true` 表示启用文件系统缓存，`false` 则不启用。"
+        },
+        "errorOverlay": {
+          "type": "boolean",
+          "description": "是否开启 `react-refresh-webpack-plugin` 的错误提示。 \n`true` 表示开启，`false` 表示关闭，默认关闭。"
         }
       }
     },

@@ -312,6 +312,14 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     这里传入 `true` 表示启用文件系统缓存，`false` 则不启用。
 
+- **`optimization.errorOverlay`**
+
+    类型：`boolean`
+
+    是否开启 `react-refresh-webpack-plugin` 的错误提示。 
+
+    `true` 表示开启，`false` 表示关闭，默认关闭。
+
 ## **`devProxy`**
 
 类型：`object`
