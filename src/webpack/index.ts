@@ -164,10 +164,14 @@ export async function getConfig(): Promise<Configuration> {
 
 /** 获取 webpack 配置（dev server 用，不含 dev server 配置） */
 export async function getServeConfig() {
+  const buildConfig = await findBuildConfig()
+  const { errorOverlay } = buildConfig.optimization
   const config = await getConfig()
   return appendPlugins(
     config,
-    new ReactFastRefreshPlugin()
+    new ReactFastRefreshPlugin({
+      overlay: errorOverlay
+    })
   )
 }
 
