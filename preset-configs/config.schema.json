@@ -165,7 +165,7 @@
         },
         "errorOverlay": {
           "type": "boolean",
-          "description": "是否开启 `react-refresh-webpack-plugin` 的错误提示。 \n`true` 表示开启，`false` 表示关闭，默认关闭。"
+          "description": "是否开启 `react-refresh-webpack-plugin` 的错误提示。 \n`true` 表示开启，`false` 表示关闭，默认开启。"
         }
       }
     },

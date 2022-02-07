@@ -318,7 +318,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     是否开启 `react-refresh-webpack-plugin` 的错误提示。 
 
-    `true` 表示开启，`false` 表示关闭，默认关闭。
+    `true` 表示开启，`false` 表示关闭，默认开启。
 
 ## **`devProxy`**
 
