@@ -67,6 +67,47 @@ VSCode 中可以通过安装插件 [fec-builder-helper](https://marketplace.visu
 
 	同 `ts` 的 `transpileOnlyWhenDev` 配置
 
+### Contributing
+
+##### 1. Fork 并 clone 到本地
+
+```shell
+git clone --recurse-submodules <URL of your forked repo>
+```
+
+注意这里 clone 时需要指定 `--recurse-submodules`，以确保 repo 中的 `samples/` 内容可以被正确地拉取。
+
+##### 2. 安装依赖
+
+注意这里需要使用 npm —— builder 使用 npm shrinkwrap file 来锁定依赖，因此使用 yarn 或别的不支持 npm shrinkwrap 的包管理安装依赖可能会引入问题。
+
+```shell
+npm i
+```
+
+##### 3. 本地执行 builder
+
+```shell
+npm run dev
+```
+
+通过 npm script `dev`，我们会使用当前的 builder 代码，基于 `samples/typescript-react` 项目启动开发服务器（监听 80 端口）。
+
+每次修改 builder 本身的代码后，需要重新执行命令以运行最新的代码。
+
+##### 4. 指定项目或命令
+
+参考 npm script `dev` 的内容（`ts-node ./src/bin.ts -r ./samples/typescript-react`），我们可以通过直接执行 `ts-node` 来指定项目的目录或 builder 的命令，如
+
+```shell
+npx ts-node ./src/bin.ts generate -r ./samples/hello-world
+```
+
+相当于在 `./samples/hello-world` 目录下执行
+
+```shell
+fec-builder generate
+```
 
 ### CHANGELOG
 
@@ -131,25 +172,3 @@ debug babel 配置
 ##### 1.0.0
 
 可用
-
-### 常见问题
-
-##### CPU 占用率异常
-
-如发现 builder 的 npm 包执行出现 cpu 占用极高的情况（不编译时都 90%+），很可能是依赖 fsevents 没有正确安装，可以去 fec-builder 包的安装目录（一般是 `/usr/local/lib/node_modules/fec-builder`）下执行：
-
-```shell
-npm i fsevents@1.0.17
-```
-
-待安装成功后重新运行 fec-builder 即可
-
-##### 使用 Typescript 时没有 [Tree Shaking](https://webpack.js.org/guides/tree-shaking/) 的效果
-
-Tree Shaking 功能的生效需要由 Webpack 来处理 ES6 的 module 格式，所以在 Webpack 之前（loader 中）对 ES6 module 进行转换（如转换为 CommonJS 格式）的话，会导致构建没有 Tree Shaking 的效果。如果你在使用 Typescript，很可能是配置 Typescript 输出了 CommonJS 的结果。
-
-修正做法：配置项目根目录下的 `tsconfig.json`，配置其中 `compilerOptions` 中的 `module` 值为 `ES6` 即可；或者不对 `compilerOptions.module` 进行配置，直接配置 `compilerOptions.target` 为 `ES6` 或更高（`ES2016`, `ES2017` 或 `ESNext`）亦可。
-
-##### Error: EACCES, mkdir '/usr/local/lib/node_modules/fec-builder/node_modules/node-sass'
-
-参考 https://github.com/sass/node-sass/issues/1098
