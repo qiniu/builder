@@ -16,7 +16,7 @@ import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
-import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
+import { appendPlugins, processSourceMapForDevServer, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
 import { svgoConfigForImagemin } from '../utils/svgo'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
@@ -69,15 +69,15 @@ export async function getConfig(): Promise<Configuration> {
       ),
       environment: {
         // 这里控制 webpack 本身的运行时代码（而不是业务代码），
-        // 对于语言 feature 先全部配合不支持，以确保 webpack 会产出兼容性最好的代码；
+        // 在生产环境，对于语言 feature 先全部配置不支持，以确保 webpack 会产出兼容性最好的代码；
         // TODO: 后续考虑通过使用 build config 中的 targets.browsers 来挨个判断是否支持
-        arrowFunction: false,
-        bigIntLiteral: false,
-        const: false,
-        destructuring: false,
-        dynamicImport: false,
-        forOf: false,
-        module: false
+        arrowFunction: isDev,
+        bigIntLiteral: isDev,
+        const: isDev,
+        destructuring: isDev,
+        dynamicImport: isDev,
+        forOf: isDev,
+        module: isDev
       }
     },
     optimization: {
@@ -85,7 +85,8 @@ export async function getConfig(): Promise<Configuration> {
         '...',
         new CssMinimizerPlugin()
       ]
-    }
+    },
+    devtool: false
   }
 
   let baseChunks: string[] = []
@@ -94,10 +95,6 @@ export async function getConfig(): Promise<Configuration> {
     const result = parseOptimizationConfig(buildConfig.optimization)
     baseChunks = result.baseChunks
     config = appendCacheGroups(config, result.cacheGroups)
-  }
-
-  if (isDev) {
-    config = processSourceMap(config, buildConfig.optimization.highQualitySourceMap)
   }
 
   config = addTransforms(config, buildConfig)
@@ -155,24 +152,30 @@ export async function getConfig(): Promise<Configuration> {
     }))
   }
 
-  if (isDev && buildConfig.optimization.filesystemCache) {
-    config = enableFilesystemCache(config)
-  }
-
   return config
 }
 
-/** 获取 webpack 配置（dev server 用，不含 dev server 配置） */
-export async function getServeConfig() {
+/** 获取用于 dev server 的 webpack 配置（但不含对 dev server 本身的配置）*/
+export async function getConfigForDevServer() {
+
+  let config = await getConfig()
   const buildConfig = await findBuildConfig()
-  const { errorOverlay } = buildConfig.optimization
-  const config = await getConfig()
-  return appendPlugins(
+  const { filesystemCache, highQualitySourceMap, errorOverlay } = buildConfig.optimization
+
+  if (filesystemCache) {
+    config = enableFilesystemCache(config)
+  }
+
+  config = processSourceMapForDevServer(config, highQualitySourceMap)
+
+  config = appendPlugins(
     config,
     new ReactFastRefreshPlugin({
       overlay: errorOverlay
     })
   )
+
+  return config
 }
 
 /** 获取合适的 webpack mode */

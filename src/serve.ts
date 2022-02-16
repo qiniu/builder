@@ -10,10 +10,11 @@ import WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
 import { getPageFilename, getPathFromUrl, logLifecycle, watchFile } from './utils'
-import { getServeConfig } from './webpack'
+import { getConfigForDevServer } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
 import { abs } from './utils/paths'
+import { Env, setEnv } from './utils/build-env'
 
 // 业务项目的配置文件，变更时需要重启 server
 const projectConfigFiles = [
@@ -21,6 +22,10 @@ const projectConfigFiles = [
 ]
 
 async function serve(port: number) {
+  // 对于 dev server，非 Dev 的 env 取值是没有意义的，
+  // 因此这里强制指定为 env: Dev，避免出现令人困惑的行为
+  setEnv(Env.Dev)
+
   let stopDevServer = await runDevServer(port)
 
   async function restartDevServer() {
@@ -52,7 +57,7 @@ async function serve(port: number) {
 
 async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
-  const webpackConfig = await getServeConfig()
+  const webpackConfig = await getConfigForDevServer()
   logger.debug('webpack config:', webpackConfig)
 
   const devServerConfig: WebpackDevServer.Configuration = {
