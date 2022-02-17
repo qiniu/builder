@@ -45,7 +45,7 @@ export function adaptLoader({ loader, options }: LoaderInfo): LoaderInfo {
 const sourcemapParseFailedWarningPattern = /Failed to parse source map from/
 
 /** 配置 source map */
-export function processSourceMap(config: Configuration, highQuality: boolean) {
+export function processSourceMapForDevServer(config: Configuration, highQuality: boolean) {
   config = produce(config, (newConfig: Configuration) => {
     // 使用 cheap-module-source-map 而不是 eval-cheap-module-source-map 或 eval-source-map
     // 具体原因见 https://github.com/Front-End-Engineering-Cloud/builder/pull/139#discussion_r676475522

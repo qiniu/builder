@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+import produce from 'immer'
 import fs from 'fs'
 import path from 'path'
 import { Configuration, DefinePlugin } from 'webpack'
@@ -16,7 +17,7 @@ import { addTransforms } from './transform'
 import { Env, getEnv } from '../utils/build-env'
 import logger from '../utils/logger'
 import { getPathFromUrl, getPageFilename } from '../utils'
-import { appendPlugins, processSourceMap, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
+import { appendPlugins, processSourceMapForDevServer, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
 import { svgoConfigForImagemin } from '../utils/svgo'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
@@ -62,22 +63,21 @@ export async function getConfig(): Promise<Configuration> {
       filename: 'static/[name]-[contenthash].js',
       chunkFilename: 'static/[id]-[chunkhash].js',
       assetModuleFilename: 'static/[name]-[contenthash][ext]',
-      publicPath: (
-        isProd
-        ? buildConfig.publicUrl
-        : getPathFromUrl(buildConfig.publicUrl)
-      ),
+      publicPath: buildConfig.publicUrl,
       environment: {
         // 这里控制 webpack 本身的运行时代码（而不是业务代码），
-        // 对于语言 feature 先全部配合不支持，以确保 webpack 会产出兼容性最好的代码；
+        // 在生产环境，对于语言 feature 先全部配置不支持，以确保 webpack 会产出兼容性最好的代码；
         // TODO: 后续考虑通过使用 build config 中的 targets.browsers 来挨个判断是否支持
-        arrowFunction: false,
-        bigIntLiteral: false,
+        arrowFunction: isDev,
+        bigIntLiteral: isDev,
+        // 当前版本的 webpack（v5.52.0）对 const 的使用有点问题，这里如果开启 const，开发环境会报错误：
+        // > cannot access '__webpack_default_export__' before initialization
+        // 预期后边的 webpack 版本会修复这个问题，这里先关掉；升级 webpack 后 check 下这里，再打开
         const: false,
-        destructuring: false,
-        dynamicImport: false,
-        forOf: false,
-        module: false
+        destructuring: isDev,
+        dynamicImport: isDev,
+        forOf: isDev,
+        module: isDev
       }
     },
     optimization: {
@@ -85,7 +85,8 @@ export async function getConfig(): Promise<Configuration> {
         '...',
         new CssMinimizerPlugin()
       ]
-    }
+    },
+    devtool: false
   }
 
   let baseChunks: string[] = []
@@ -94,10 +95,6 @@ export async function getConfig(): Promise<Configuration> {
     const result = parseOptimizationConfig(buildConfig.optimization)
     baseChunks = result.baseChunks
     config = appendCacheGroups(config, result.cacheGroups)
-  }
-
-  if (isDev) {
-    config = processSourceMap(config, buildConfig.optimization.highQualitySourceMap)
   }
 
   config = addTransforms(config, buildConfig)
@@ -155,24 +152,40 @@ export async function getConfig(): Promise<Configuration> {
     }))
   }
 
-  if (isDev && buildConfig.optimization.filesystemCache) {
-    config = enableFilesystemCache(config)
-  }
-
   return config
 }
 
-/** 获取 webpack 配置（dev server 用，不含 dev server 配置） */
-export async function getServeConfig() {
+/** 获取用于 dev server 的 webpack 配置（但不含对 dev server 本身的配置）*/
+export async function getConfigForDevServer() {
+
+  let config = await getConfig()
   const buildConfig = await findBuildConfig()
-  const { errorOverlay } = buildConfig.optimization
-  const config = await getConfig()
-  return appendPlugins(
-    config,
-    new ReactFastRefreshPlugin({
-      overlay: errorOverlay
-    })
-  )
+  const { filesystemCache, highQualitySourceMap, errorOverlay } = buildConfig.optimization
+  const isDev = getEnv() === Env.Dev
+
+  // 只保留 publicPath 中的 path，确保静态资源请求与页面走相同的 host（即本地 dev server）
+  config = produce(config, newConfig => {
+    newConfig.output!.publicPath = getPathFromUrl(buildConfig.publicUrl)
+  })
+
+  if (isDev && filesystemCache) {
+    config = enableFilesystemCache(config)
+  }
+
+  if (isDev) {
+    config = processSourceMapForDevServer(config, highQualitySourceMap)
+  }
+
+  if (isDev) {
+    config = appendPlugins(
+      config,
+      new ReactFastRefreshPlugin({
+        overlay: errorOverlay
+      })
+    )
+  }
+
+  return config
 }
 
 /** 获取合适的 webpack mode */

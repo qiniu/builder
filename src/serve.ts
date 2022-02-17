@@ -10,7 +10,7 @@ import WebpackDevServer from 'webpack-dev-server'
 import { Config as ProxyConfig } from 'http-proxy-middleware'
 import logger from './utils/logger'
 import { getPageFilename, getPathFromUrl, logLifecycle, watchFile } from './utils'
-import { getServeConfig } from './webpack'
+import { getConfigForDevServer } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
 import { abs } from './utils/paths'
@@ -52,7 +52,7 @@ async function serve(port: number) {
 
 async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
-  const webpackConfig = await getServeConfig()
+  const webpackConfig = await getConfigForDevServer()
   logger.debug('webpack config:', webpackConfig)
 
   const devServerConfig: WebpackDevServer.Configuration = {
