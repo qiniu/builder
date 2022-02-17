@@ -1,4 +1,5 @@
 import { mapValues } from 'lodash'
+import produce from 'immer'
 import fs from 'fs'
 import path from 'path'
 import { Configuration, DefinePlugin } from 'webpack'
@@ -62,11 +63,7 @@ export async function getConfig(): Promise<Configuration> {
       filename: 'static/[name]-[contenthash].js',
       chunkFilename: 'static/[id]-[chunkhash].js',
       assetModuleFilename: 'static/[name]-[contenthash][ext]',
-      publicPath: (
-        isProd
-        ? buildConfig.publicUrl
-        : getPathFromUrl(buildConfig.publicUrl)
-      ),
+      publicPath: buildConfig.publicUrl,
       environment: {
         // 这里控制 webpack 本身的运行时代码（而不是业务代码），
         // 在生产环境，对于语言 feature 先全部配置不支持，以确保 webpack 会产出兼容性最好的代码；
@@ -161,19 +158,29 @@ export async function getConfigForDevServer() {
   let config = await getConfig()
   const buildConfig = await findBuildConfig()
   const { filesystemCache, highQualitySourceMap, errorOverlay } = buildConfig.optimization
+  const isDev = getEnv() === Env.Dev
 
-  if (filesystemCache) {
+  // 只保留 publicPath 中的 path，确保静态资源请求与页面走相同的 host（即本地 dev server）
+  config = produce(config, newConfig => {
+    newConfig.output!.publicPath = getPathFromUrl(buildConfig.publicUrl)
+  })
+
+  if (isDev && filesystemCache) {
     config = enableFilesystemCache(config)
   }
 
-  config = processSourceMapForDevServer(config, highQualitySourceMap)
+  if (isDev) {
+    config = processSourceMapForDevServer(config, highQualitySourceMap)
+  }
 
-  config = appendPlugins(
-    config,
-    new ReactFastRefreshPlugin({
-      overlay: errorOverlay
-    })
-  )
+  if (isDev) {
+    config = appendPlugins(
+      config,
+      new ReactFastRefreshPlugin({
+        overlay: errorOverlay
+      })
+    )
+  }
 
   return config
 }

@@ -14,7 +14,6 @@ import { getConfigForDevServer } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
 import { abs } from './utils/paths'
-import { Env, setEnv } from './utils/build-env'
 
 // 业务项目的配置文件，变更时需要重启 server
 const projectConfigFiles = [
@@ -22,10 +21,6 @@ const projectConfigFiles = [
 ]
 
 async function serve(port: number) {
-  // 对于 dev server，非 Dev 的 env 取值是没有意义的，
-  // 因此这里强制指定为 env: Dev，避免出现令人困惑的行为
-  setEnv(Env.Dev)
-
   let stopDevServer = await runDevServer(port)
 
   async function restartDevServer() {
