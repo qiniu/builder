@@ -70,7 +70,10 @@ export async function getConfig(): Promise<Configuration> {
         // TODO: 后续考虑通过使用 build config 中的 targets.browsers 来挨个判断是否支持
         arrowFunction: isDev,
         bigIntLiteral: isDev,
-        const: isDev,
+        // 当前版本的 webpack（v5.52.0）对 const 的使用有点问题，这里如果开启 const，开发环境会报错误：
+        // > cannot access '__webpack_default_export__' before initialization
+        // 预期后边的 webpack 版本会修复这个问题，这里先关掉；升级 webpack 后 check 下这里，再打开
+        const: false,
         destructuring: isDev,
         dynamicImport: isDev,
         forOf: isDev,
