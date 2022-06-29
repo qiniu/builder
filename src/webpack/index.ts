@@ -21,7 +21,7 @@ import { appendPlugins, processSourceMapForDevServer, appendCacheGroups, parseOp
 import { svgoConfigForImagemin } from '../utils/svgo'
 
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
-export const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
+const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 
 /** 获取 webpack 配置（构建用） */
 export async function getConfig(): Promise<Configuration> {
