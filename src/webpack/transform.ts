@@ -11,7 +11,6 @@ import {
 import { Env, getEnv } from '../utils/build-env'
 import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension, ignoreWarning } from '../utils/webpack'
 import { abs } from '../utils/paths'
-import { nodeModulesOfBuilder } from '.'
 
 // ts-loader 开启 transpileOnly 后会出的 warning
 const tsTranspileOnlyWarningPattern = /export .* was not found in/
@@ -262,7 +261,7 @@ function addTransform(
         allowTsInNodeModules: true,
         compiler: transformConfig.useProjectTypeScript ?
           require.resolve('typescript', {
-            paths: [abs('node_modules'), nodeModulesOfBuilder]
+            paths: [abs('node_modules')]
           }) :
           'typescript'
       }

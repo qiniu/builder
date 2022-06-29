@@ -61,11 +61,19 @@ VSCode 中可以通过安装插件 [fec-builder-helper](https://marketplace.visu
 
 	对于 ts 的转换，builder 会默认在开发模式跳过类型检查，提高构建效率，避免过严的限制；这个行为可以通过配置 `transpileOnlyWhenDev` 为 `false` 禁用，即，在开发时也进行类型检查
 
+* `useProjectTypeScript: boolean = false`
+
+	builder 默认使用内置的 typescript 进行类型检查，为了避免 typescript 升级导致的冲突和影响，可以开启该选项从而使用项目里的 typescript 进行类型检查
+
 ##### `tsx`
 
 * `transpileOnlyWhenDev: boolean = true`
 
 	同 `ts` 的 `transpileOnlyWhenDev` 配置
+
+* `useProjectTypeScript: boolean = false`
+
+	同 `ts` 的 `useProjectTypeScript` 配置
 
 ### Contributing
 
