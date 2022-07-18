@@ -57,6 +57,8 @@ export interface Optimization {
   filesystemCache: boolean
   /** 是否开启 react-refresh-webpack-plugin 的错误提示 */
   errorOverlay: boolean
+  /** 是否使用 swc 进行转换 */
+  swc: boolean
 }
 
 export interface EnvVariables {
