@@ -8,6 +8,7 @@ import { BuildConfig, TransformObject } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension } from '../utils/webpack'
 import { addBabelTsTransform, makeBabelLoaderOptions, TransformBabelConfig, TransformBabelJsxConfig } from './babel'
+import { makeSwcLoaderOptions } from './swc'
 
 export interface Condition {
   /** 需要处理的资源 */
@@ -180,6 +181,14 @@ function addTransform(
 
     case Transform.Jsx: {
       config = markDefaultExtension(config)
+
+      if (swcEnabled) {
+        return appendRuleWithLoaders(config, {
+          loader: 'swc-loader',
+          options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, true)
+        })
+      }
+
       const transformConfig = (transform.config || {}) as TransformBabelJsxConfig
       return appendRuleWithLoaders(config, {
         loader: 'babel-loader',
@@ -195,7 +204,15 @@ function addTransform(
     case Transform.Ts:
     case Transform.Tsx: {
       config = markDefaultExtension(config)
-      addBabelTsTransform(config, buildConfig, transform, transform.transformer === Transform.Tsx, appendRuleWithLoaders)
+
+      if (swcEnabled) {
+        return appendRuleWithLoaders(config, {
+          loader: 'swc-loader',
+          options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, transform.transformer === Transform.Tsx, true)
+        })
+      }
+
+      return addBabelTsTransform(config, buildConfig, transform, transform.transformer === Transform.Tsx, appendRuleWithLoaders)
     }
 
     case Transform.Raw: {
