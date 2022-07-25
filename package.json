@@ -1,11 +1,11 @@
 {
   "name": "fec-builder",
-  "version": "2.4.0",
+  "version": "2.5.0",
   "bin": {
     "fec-builder": "./lib/bin.js"
   },
   "scripts": {
-    "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react -p 8080",
+    "dev": "ts-node ./src/bin.ts -r ./samples/typescript-react",
     "build": "rm -rf lib && tsc && chmod +x lib/bin.js",
     "build-config-doc": "ts-node src/schema2md.ts",
     "prepublishOnly": "npm run build"

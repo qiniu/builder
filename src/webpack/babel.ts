@@ -5,6 +5,7 @@ import {
 } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 import { ignoreWarning, LoaderInfo } from '../utils/webpack'
+import { abs } from '../utils/paths'
 
 
 type BabelPreset = string | [string, ...unknown[]]
@@ -23,10 +24,12 @@ export type TransformBabelJsxConfig = {
   babelOptions?: BabelOptions
 }
 
-export type TransformTsConfig = {
+type TransformTsConfig = {
   // 默认开发模式跳过类型检查，提高构建效率，另，避免过严的限制
   transpileOnlyWhenDev?: boolean
   babelOptions?: BabelOptions
+  // 是否使用项目里的 typescript 库进行类型检查和编译
+  useProjectTypeScript?: boolean
 }
 
 // ts-loader 开启 transpileOnly 后会出的 warning
@@ -144,6 +147,7 @@ export function addBabelTsTransform(
 ) {
   const transformConfig: Required<TransformTsConfig> = {
     transpileOnlyWhenDev: true,
+    useProjectTypeScript: false,
     babelOptions: {},
     ...(transform.config as TransformTsConfig)
   }
@@ -176,7 +180,12 @@ export function addBabelTsTransform(
     transpileOnly: getEnv() === Env.Dev && transformConfig.transpileOnlyWhenDev,
     compilerOptions,
     // 方便项目直接把内部依赖（portal-base / fe-core 等）的源码 link 进来一起构建调试
-    allowTsInNodeModules: true
+    allowTsInNodeModules: true,
+    compiler: transformConfig.useProjectTypeScript ?
+      require.resolve('typescript', {
+        paths: [abs('node_modules')]
+      }) :
+      'typescript'
   }
   if (tsLoaderOptions.transpileOnly) {
     // 干掉因为开启 transpileOnly 导致的 warning
