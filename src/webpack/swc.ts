@@ -1,4 +1,6 @@
 import browserslist from 'browserslist'
+import { Options } from '@swc/core'
+
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
 
 export function makeSwcLoaderOptions(
@@ -10,7 +12,7 @@ export function makeSwcLoaderOptions(
   withReact = false,
   /** 是否 ts 语法 */
   isTsSyntax = false
-) {
+): Options {
   return {
     jsc: {
       parser: {
@@ -21,7 +23,8 @@ export function makeSwcLoaderOptions(
       },
       transform: {
         legacyDecorator: true,
-        decoratorMetadata: true
+        decoratorMetadata: true,
+        useDefineForClassFields: true
       }
     },
     env: {
