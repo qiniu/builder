@@ -25,7 +25,8 @@ export function makeSwcLoaderOptions(
         legacyDecorator: true,
         decoratorMetadata: true,
         useDefineForClassFields: true
-      }
+      },
+      externalHelpers: true
     },
     env: {
       targets: browserslist(targets),
