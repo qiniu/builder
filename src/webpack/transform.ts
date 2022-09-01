@@ -5,10 +5,10 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { isEmpty } from 'lodash'
 import { Transform } from '../constants/transform'
 import { getSvgoConfigForSvgr } from '../utils/svgo'
-import { BuildConfig, TransformObject } from '../utils/build-conf'
+import { BuildConfig, Optimization, TransformObject } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension } from '../utils/webpack'
-import { addBabelTsTransform, makeBabelLoaderOptions, TransformBabelConfig } from './babel'
+import { addBabelTsTransform, makeBabelLoaderOptions, TransformBabelConfig, TransformBabelJsxConfig } from './babel'
 import { makeSwcLoaderOptions } from './swc'
 import logger from '../utils/logger'
 
@@ -66,6 +66,16 @@ interface TransformStyleConfig {
   options?: unknown
 }
 
+function checkSwcEnabled(transform: TransformObject, optimization: Optimization) {
+  const babelOptions = (transform.config as any)?.babelOptions || {}
+  const hasBabelOptions = !isEmpty(babelOptions)
+  if (optimization.swc && hasBabelOptions) {
+    logger.warn('Babel Options is not supported with swc enabled. Now switch to Babel.')
+  }
+
+  return optimization.swc && !hasBabelOptions
+}
+
 function addTransform(
   /** 当前 webpack 配置 */
   config: Configuration,
@@ -84,12 +94,6 @@ function addTransform(
   const extension = resource.include
 
   const excludePatterns = resource.exclude.map(makeExtensionPattern)
-  const babelOptions = (transform.config as any)?.babelOptions || {}
-  if (optimization.swc && !isEmpty(babelOptions)) {
-    logger.warn('Babel Options is not supported with swc enabled. Now switch to Babel.')
-  }
-
-  const swcEnabled = optimization.swc && isEmpty(babelOptions)
 
   // 针对后缀为 js 的 transform，控制范围（不对依赖做转换）
   if (extension === 'js') {
@@ -189,17 +193,18 @@ function addTransform(
     case Transform.Jsx: {
       config = markDefaultExtension(config)
 
-      if (swcEnabled) {
+      if (checkSwcEnabled(transform, optimization)) {
         return appendRuleWithLoaders(config, {
           loader: 'swc-loader',
           options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, true)
         })
       }
 
+      const transformConfig = (transform.config || {}) as TransformBabelJsxConfig
       return appendRuleWithLoaders(config, {
         loader: 'babel-loader',
         options: makeBabelLoaderOptions(
-          babelOptions,
+          transformConfig.babelOptions || {},
           targets.browsers,
           optimization.addPolyfill,
           true
@@ -212,7 +217,7 @@ function addTransform(
       config = markDefaultExtension(config)
       const withReact = transform.transformer === Transform.Tsx
 
-      if (swcEnabled) {
+      if (checkSwcEnabled(transform, optimization)) {
         return appendRuleWithLoaders(config, {
           loader: 'swc-loader',
           options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, withReact, true)
