@@ -2,13 +2,15 @@ import produce from 'immer'
 import { Configuration, RuleSetRule } from 'webpack'
 import postcssPresetEnv from 'postcss-preset-env'
 import MiniCssExtractPlugin from 'mini-css-extract-plugin'
+import { isEmpty } from 'lodash'
 import { Transform } from '../constants/transform'
 import { getSvgoConfigForSvgr } from '../utils/svgo'
 import { BuildConfig, TransformObject } from '../utils/build-conf'
 import { Env, getEnv } from '../utils/build-env'
 import { LoaderInfo, adaptLoader, makeRule, addDefaultExtension } from '../utils/webpack'
-import { addBabelTsTransform, makeBabelLoaderOptions, TransformBabelConfig, TransformBabelJsxConfig } from './babel'
+import { addBabelTsTransform, makeBabelLoaderOptions, TransformBabelConfig } from './babel'
 import { makeSwcLoaderOptions } from './swc'
+import logger from '../utils/logger'
 
 export interface Condition {
   /** 需要处理的资源 */
@@ -82,7 +84,12 @@ function addTransform(
   const extension = resource.include
 
   const excludePatterns = resource.exclude.map(makeExtensionPattern)
-  const swcEnabled = optimization.swc
+  const babelOptions = (transform.config as any)?.babelOptions || {}
+  if (optimization.swc && !isEmpty(babelOptions)) {
+    logger.warn('Babel Options is not supported with swc enabled. Now switch to Babel.')
+  }
+
+  const swcEnabled = optimization.swc && isEmpty(babelOptions)
 
   // 针对后缀为 js 的 transform，控制范围（不对依赖做转换）
   if (extension === 'js') {
@@ -189,11 +196,10 @@ function addTransform(
         })
       }
 
-      const transformConfig = (transform.config || {}) as TransformBabelJsxConfig
       return appendRuleWithLoaders(config, {
         loader: 'babel-loader',
         options: makeBabelLoaderOptions(
-          transformConfig.babelOptions || {},
+          babelOptions,
           targets.browsers,
           optimization.addPolyfill,
           true
@@ -204,15 +210,16 @@ function addTransform(
     case Transform.Ts:
     case Transform.Tsx: {
       config = markDefaultExtension(config)
+      const withReact = transform.transformer === Transform.Tsx
 
       if (swcEnabled) {
         return appendRuleWithLoaders(config, {
           loader: 'swc-loader',
-          options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, transform.transformer === Transform.Tsx, true)
+          options: makeSwcLoaderOptions(targets.browsers, optimization.addPolyfill, withReact, true)
         })
       }
 
-      return addBabelTsTransform(config, buildConfig, transform, transform.transformer === Transform.Tsx, appendRuleWithLoaders)
+      return addBabelTsTransform(config, buildConfig, transform, withReact, appendRuleWithLoaders)
     }
 
     case Transform.Raw: {
