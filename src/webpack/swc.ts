@@ -36,7 +36,8 @@ export function makeSwcLoaderOptions(
         && {
           // https://swc.rs/docs/configuration/supported-browsers#mode
           mode: 'usage',
-          coreJs: '3'
+          coreJs: '3',
+          shippedProposals: true
         }
       )
     }
