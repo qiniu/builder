@@ -1,7 +1,59 @@
+import fs from 'fs'
 import browserslist from 'browserslist'
-import { Options } from '@swc/core'
+import { Options as SwcOptions } from '@swc/core'
+import { CompilerOptions } from 'typescript'
+import { merge } from 'lodash'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
+import { abs } from '../utils/paths'
+
+/** read and parse tsconfig.json */
+function readTsConfig() {
+  const filePath = abs('tsconfig.json')
+
+  if (fs.existsSync(filePath)) {
+    const rawContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+    const jsonContent = JSON.parse(rawContent)
+    return jsonContent?.compilerOptions as CompilerOptions
+  }
+
+  return null
+}
+
+/** swc 不会读取 tsconfig.json 的配置，这里手动转成 swc 的配置 */
+/** 参考自 https://github.com/Songkeys/tsconfig-to-swcconfig/blob/62e7f585882443bd27beb5b2e05a680f18070198/src/index.ts */
+function convertTsConfig(options: CompilerOptions): SwcOptions {
+  const {
+    importHelpers = false,
+    experimentalDecorators = false,
+    emitDecoratorMetadata = false,
+    jsxFactory = 'React.createElement',
+    jsxFragmentFactory = 'React.Fragment',
+    jsxImportSource = 'react',
+    paths,
+    baseUrl
+  } = options
+
+  return {
+    jsc: {
+      externalHelpers: importHelpers,
+      parser: {
+        syntax: 'typescript',
+        decorators: experimentalDecorators
+      },
+      transform: {
+        decoratorMetadata: emitDecoratorMetadata,
+        react: {
+          pragma: jsxFactory,
+          pragmaFrag: jsxFragmentFactory,
+          importSource: jsxImportSource,
+        },
+      },
+      paths,
+      baseUrl
+    }
+  }
+}
 
 export function makeSwcLoaderOptions(
   /** https://swc.rs/docs/configuration/supported-browsers#targets */
@@ -12,8 +64,8 @@ export function makeSwcLoaderOptions(
   withReact = false,
   /** 是否 ts 语法 */
   isTsSyntax = false
-): Options {
-  return {
+): SwcOptions {
+  const swcOptions: SwcOptions = {
     jsc: {
       parser: {
         syntax: isTsSyntax ? 'typescript' : 'ecmascript',
@@ -42,4 +94,14 @@ export function makeSwcLoaderOptions(
       )
     }
   }
+
+  if (isTsSyntax) {
+    const compilerOptions = readTsConfig()
+
+    if (compilerOptions != null) {
+      return merge(swcOptions, convertTsConfig(compilerOptions))
+    }
+  }
+
+  return swcOptions
 }
