@@ -2,13 +2,13 @@ import fs from 'fs'
 import browserslist from 'browserslist'
 import { Options as SwcOptions } from '@swc/core'
 import { CompilerOptions } from 'typescript'
-import { merge } from 'lodash'
+import { mergeWith } from 'lodash'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
 import { abs } from '../utils/paths'
 
-/** read and parse tsconfig.json */
-function readTsConfig() {
+/** 读取 tsconfig.json 文件获取 compilerOptions 配置 */
+function getTsCompilerOptions() {
   const filePath = abs('tsconfig.json')
 
   if (fs.existsSync(filePath)) {
@@ -22,7 +22,7 @@ function readTsConfig() {
 
 /** swc 不会读取 tsconfig.json 的配置，这里手动转成 swc 的配置 */
 /** 参考自 https://github.com/Songkeys/tsconfig-to-swcconfig/blob/62e7f585882443bd27beb5b2e05a680f18070198/src/index.ts */
-function convertTsConfig(options: CompilerOptions): SwcOptions {
+function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
   const {
     importHelpers = false,
     experimentalDecorators = false,
@@ -96,10 +96,14 @@ export function makeSwcLoaderOptions(
   }
 
   if (isTsSyntax) {
-    const compilerOptions = readTsConfig()
+    const compilerOptions = getTsCompilerOptions()
 
     if (compilerOptions != null) {
-      return merge(swcOptions, convertTsConfig(compilerOptions))
+      return mergeWith(swcOptions, transformTsCompilerOptions(compilerOptions), (_srcValue, targetValue) => {
+        if (Array.isArray(targetValue)) {
+          return targetValue
+        }
+      })
     }
   }
 
