@@ -17,6 +17,8 @@
         "@babel/runtime-corejs3": "^7.12.5",
         "@pmmmwh/react-refresh-webpack-plugin": "^0.4.3",
         "@svgr/webpack": "^5.5.0",
+        "@swc/core": "^1.3.14",
+        "@swc/helpers": "^0.4.12",
         "babel-loader": "^8.2.1",
         "copy-webpack-plugin": "^6.3.1",
         "core-js": "^3.7.0",
@@ -41,6 +43,7 @@
         "semver": "^7.3.2",
         "source-map-loader": "^3.0.0",
         "style-loader": "^2.0.0",
+        "swc-loader": "^0.2.3",
         "ts-loader": "^9.2.4",
         "typescript": "~4.1.3",
         "walk": "^2.3.14",
@@ -1802,6 +1805,192 @@
         "node": ">=8.9.0"
       }
     },
+    "node_modules/@swc/core": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core/-/core-1.3.14.tgz",
+      "integrity": "sha512-LpTTrXOGS7vnbR/rHrAux7GykUWbyVmI5NbICl9iF9yeqFdGm6JjaGBhbanmG8zrQL5aFx2kMxxb92V9D1KUiw==",
+      "hasInstallScript": true,
+      "bin": {
+        "swcx": "run_swcx.js"
+      },
+      "engines": {
+        "node": ">=10"
+      },
+      "funding": {
+        "type": "opencollective",
+        "url": "https://opencollective.com/swc"
+      },
+      "optionalDependencies": {
+        "@swc/core-darwin-arm64": "1.3.14",
+        "@swc/core-darwin-x64": "1.3.14",
+        "@swc/core-linux-arm-gnueabihf": "1.3.14",
+        "@swc/core-linux-arm64-gnu": "1.3.14",
+        "@swc/core-linux-arm64-musl": "1.3.14",
+        "@swc/core-linux-x64-gnu": "1.3.14",
+        "@swc/core-linux-x64-musl": "1.3.14",
+        "@swc/core-win32-arm64-msvc": "1.3.14",
+        "@swc/core-win32-ia32-msvc": "1.3.14",
+        "@swc/core-win32-x64-msvc": "1.3.14"
+      }
+    },
+    "node_modules/@swc/core-darwin-arm64": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.3.14.tgz",
+      "integrity": "sha512-QFuUq3341uOCrJMIWGuo+CmRC5qZoM2lUo7o2lmv1FO1Dh9njTG85pLD83vz6y4j/F034DBGzvRgSti/Bsoccw==",
+      "cpu": [
+        "arm64"
+      ],
+      "optional": true,
+      "os": [
+        "darwin"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-darwin-x64": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.3.14.tgz",
+      "integrity": "sha512-fpAjbjXimJBmxCumRB8zjEtPc0lGUi9Uvu92XH6ww6AyXvg7KQmua5P2R9tnzAm6NwTCXKkgS86cgKysAbbObw==",
+      "cpu": [
+        "x64"
+      ],
+      "optional": true,
+      "os": [
+        "darwin"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-linux-arm-gnueabihf": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.3.14.tgz",
+      "integrity": "sha512-3XSFlgIyDPS+x2c0IFr0AGj4NUbrWGKbkkUCpmAURII0n3YoDsYw8Ux73I8MkWxTTwDGkou8qQOXyA28kAUM4w==",
+      "cpu": [
+        "arm"
+      ],
+      "optional": true,
+      "os": [
+        "linux"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-linux-arm64-gnu": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.3.14.tgz",
+      "integrity": "sha512-r3fToDRYX76NEptAjvDg5aGrbitOgqooV37RpSTIGYd/CSNuin4cpCNFdca/Vh5lnNfal7mqdGDbG7gMruARtw==",
+      "cpu": [
+        "arm64"
+      ],
+      "optional": true,
+      "os": [
+        "linux"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-linux-arm64-musl": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.3.14.tgz",
+      "integrity": "sha512-IivEUC+3HNSsQNCfaCDzev2CpsvWpgFReitCmj0PKIdXFRsTi78jtJiraLWnYy956j4wwZbKN0OFGkS2ekKAVg==",
+      "cpu": [
+        "arm64"
+      ],
+      "optional": true,
+      "os": [
+        "linux"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-linux-x64-gnu": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.3.14.tgz",
+      "integrity": "sha512-HtwwA1Z0tE2z9fgaR5ehgY5ULbnVLHj3tayyWhIElF4EWsi6aQfCyn/oCZAcjoPKfEnJiSNBYt5gMmfK8l4mJA==",
+      "cpu": [
+        "x64"
+      ],
+      "optional": true,
+      "os": [
+        "linux"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-linux-x64-musl": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.3.14.tgz",
+      "integrity": "sha512-RPXilkTD8IVgpou4TNuqZJOB7kMrVJ7sm7GgHF4v1eV3xdIyvy4w5FWjXZRdwMW6iunLgQEckuOmVx0I4mrdNg==",
+      "cpu": [
+        "x64"
+      ],
+      "optional": true,
+      "os": [
+        "linux"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-win32-arm64-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.3.14.tgz",
+      "integrity": "sha512-H8Ka/ahJRs84hQCHC5ndORujbLBmi1mv+Z/m4CXpOaEX7TmeAo8nA17rrRckNvVkud9fghsKQGjkBQvJ0v7mRw==",
+      "cpu": [
+        "arm64"
+      ],
+      "optional": true,
+      "os": [
+        "win32"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-win32-ia32-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.3.14.tgz",
+      "integrity": "sha512-H3ZmDXrVxrqBzzCFodwYfcXfTHE0xGNLJlLGzJ4haV6RBM3ZYIvRzDtPivDzic/VQncmPj1WpLoEDfx/7KNC8Q==",
+      "cpu": [
+        "ia32"
+      ],
+      "optional": true,
+      "os": [
+        "win32"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/core-win32-x64-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.3.14.tgz",
+      "integrity": "sha512-/D1lhWF/DQi2M7b6jWL35NmTY0mRJ5mwTXdmjqNNWOZ8h8TXQo1A3/FDFnfIIcRUeSNdF7IeB3xInT3BI34E1w==",
+      "cpu": [
+        "x64"
+      ],
+      "optional": true,
+      "os": [
+        "win32"
+      ],
+      "engines": {
+        "node": ">=10"
+      }
+    },
+    "node_modules/@swc/helpers": {
+      "version": "0.4.12",
+      "resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.4.12.tgz",
+      "integrity": "sha512-R6RmwS9Dld5lNvwKlPn62+piU+WDG1sMfsnfJioXCciyko/gZ0DQ4Mqglhq1iGU1nQ/RcGkAwfMH+elMSkJH3Q==",
+      "dependencies": {
+        "tslib": "^2.4.0"
+      }
+    },
     "node_modules/@tootallnate/once": {
       "version": "1.1.2",
       "resolved": "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz",
@@ -2950,11 +3139,6 @@
       "engines": {
         "node": ">=4"
       }
-    },
-    "node_modules/ast-types/node_modules/tslib": {
-      "version": "2.2.0",
-      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.2.0.tgz",
-      "integrity": "sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w=="
     },
     "node_modules/async": {
       "version": "2.6.3",
@@ -16025,6 +16209,15 @@
         "domelementtype": "1"
       }
     },
+    "node_modules/swc-loader": {
+      "version": "0.2.3",
+      "resolved": "https://registry.npmjs.org/swc-loader/-/swc-loader-0.2.3.tgz",
+      "integrity": "sha512-D1p6XXURfSPleZZA/Lipb3A8pZ17fP4NObZvFCDjK/OKljroqDpPmsBdTraWhVBqUNpcWBQY1imWdoPScRlQ7A==",
+      "peerDependencies": {
+        "@swc/core": "^1.2.147",
+        "webpack": ">=2"
+      }
+    },
     "node_modules/tapable": {
       "version": "2.2.0",
       "resolved": "https://registry.npmjs.org/tapable/-/tapable-2.2.0.tgz",
@@ -16485,9 +16678,9 @@
       }
     },
     "node_modules/tslib": {
-      "version": "2.3.0",
-      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz",
-      "integrity": "sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg=="
+      "version": "2.4.0",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz",
+      "integrity": "sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ=="
     },
     "node_modules/tunnel-agent": {
       "version": "0.6.0",
@@ -19114,6 +19307,91 @@
         }
       }
     },
+    "@swc/core": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core/-/core-1.3.14.tgz",
+      "integrity": "sha512-LpTTrXOGS7vnbR/rHrAux7GykUWbyVmI5NbICl9iF9yeqFdGm6JjaGBhbanmG8zrQL5aFx2kMxxb92V9D1KUiw==",
+      "requires": {
+        "@swc/core-darwin-arm64": "1.3.14",
+        "@swc/core-darwin-x64": "1.3.14",
+        "@swc/core-linux-arm-gnueabihf": "1.3.14",
+        "@swc/core-linux-arm64-gnu": "1.3.14",
+        "@swc/core-linux-arm64-musl": "1.3.14",
+        "@swc/core-linux-x64-gnu": "1.3.14",
+        "@swc/core-linux-x64-musl": "1.3.14",
+        "@swc/core-win32-arm64-msvc": "1.3.14",
+        "@swc/core-win32-ia32-msvc": "1.3.14",
+        "@swc/core-win32-x64-msvc": "1.3.14"
+      }
+    },
+    "@swc/core-darwin-arm64": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-darwin-arm64/-/core-darwin-arm64-1.3.14.tgz",
+      "integrity": "sha512-QFuUq3341uOCrJMIWGuo+CmRC5qZoM2lUo7o2lmv1FO1Dh9njTG85pLD83vz6y4j/F034DBGzvRgSti/Bsoccw==",
+      "optional": true
+    },
+    "@swc/core-darwin-x64": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-darwin-x64/-/core-darwin-x64-1.3.14.tgz",
+      "integrity": "sha512-fpAjbjXimJBmxCumRB8zjEtPc0lGUi9Uvu92XH6ww6AyXvg7KQmua5P2R9tnzAm6NwTCXKkgS86cgKysAbbObw==",
+      "optional": true
+    },
+    "@swc/core-linux-arm-gnueabihf": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm-gnueabihf/-/core-linux-arm-gnueabihf-1.3.14.tgz",
+      "integrity": "sha512-3XSFlgIyDPS+x2c0IFr0AGj4NUbrWGKbkkUCpmAURII0n3YoDsYw8Ux73I8MkWxTTwDGkou8qQOXyA28kAUM4w==",
+      "optional": true
+    },
+    "@swc/core-linux-arm64-gnu": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm64-gnu/-/core-linux-arm64-gnu-1.3.14.tgz",
+      "integrity": "sha512-r3fToDRYX76NEptAjvDg5aGrbitOgqooV37RpSTIGYd/CSNuin4cpCNFdca/Vh5lnNfal7mqdGDbG7gMruARtw==",
+      "optional": true
+    },
+    "@swc/core-linux-arm64-musl": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-arm64-musl/-/core-linux-arm64-musl-1.3.14.tgz",
+      "integrity": "sha512-IivEUC+3HNSsQNCfaCDzev2CpsvWpgFReitCmj0PKIdXFRsTi78jtJiraLWnYy956j4wwZbKN0OFGkS2ekKAVg==",
+      "optional": true
+    },
+    "@swc/core-linux-x64-gnu": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-x64-gnu/-/core-linux-x64-gnu-1.3.14.tgz",
+      "integrity": "sha512-HtwwA1Z0tE2z9fgaR5ehgY5ULbnVLHj3tayyWhIElF4EWsi6aQfCyn/oCZAcjoPKfEnJiSNBYt5gMmfK8l4mJA==",
+      "optional": true
+    },
+    "@swc/core-linux-x64-musl": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-linux-x64-musl/-/core-linux-x64-musl-1.3.14.tgz",
+      "integrity": "sha512-RPXilkTD8IVgpou4TNuqZJOB7kMrVJ7sm7GgHF4v1eV3xdIyvy4w5FWjXZRdwMW6iunLgQEckuOmVx0I4mrdNg==",
+      "optional": true
+    },
+    "@swc/core-win32-arm64-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-arm64-msvc/-/core-win32-arm64-msvc-1.3.14.tgz",
+      "integrity": "sha512-H8Ka/ahJRs84hQCHC5ndORujbLBmi1mv+Z/m4CXpOaEX7TmeAo8nA17rrRckNvVkud9fghsKQGjkBQvJ0v7mRw==",
+      "optional": true
+    },
+    "@swc/core-win32-ia32-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-ia32-msvc/-/core-win32-ia32-msvc-1.3.14.tgz",
+      "integrity": "sha512-H3ZmDXrVxrqBzzCFodwYfcXfTHE0xGNLJlLGzJ4haV6RBM3ZYIvRzDtPivDzic/VQncmPj1WpLoEDfx/7KNC8Q==",
+      "optional": true
+    },
+    "@swc/core-win32-x64-msvc": {
+      "version": "1.3.14",
+      "resolved": "https://registry.npmjs.org/@swc/core-win32-x64-msvc/-/core-win32-x64-msvc-1.3.14.tgz",
+      "integrity": "sha512-/D1lhWF/DQi2M7b6jWL35NmTY0mRJ5mwTXdmjqNNWOZ8h8TXQo1A3/FDFnfIIcRUeSNdF7IeB3xInT3BI34E1w==",
+      "optional": true
+    },
+    "@swc/helpers": {
+      "version": "0.4.12",
+      "resolved": "https://registry.npmjs.org/@swc/helpers/-/helpers-0.4.12.tgz",
+      "integrity": "sha512-R6RmwS9Dld5lNvwKlPn62+piU+WDG1sMfsnfJioXCciyko/gZ0DQ4Mqglhq1iGU1nQ/RcGkAwfMH+elMSkJH3Q==",
+      "requires": {
+        "tslib": "^2.4.0"
+      }
+    },
     "@tootallnate/once": {
       "version": "1.1.2",
       "resolved": "https://registry.npmjs.org/@tootallnate/once/-/once-1.1.2.tgz",
@@ -20080,13 +20358,6 @@
       "integrity": "sha512-x1FCFnFifvYDDzTaLII71vG5uvDwgtmDTEVWAxrgeiR8VjMONcCXJx7E+USjDtHlwFmt9MysbqgF9b9Vjr6w+w==",
       "requires": {
         "tslib": "^2.0.1"
-      },
-      "dependencies": {
-        "tslib": {
-          "version": "2.2.0",
-          "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.2.0.tgz",
-          "integrity": "sha512-gS9GVHRU+RGn5KQM2rllAlR3dU6m7AcpJKdtH8gFvQiC4Otgk98XnmMU+nZenHt/+VhnBPWwgrJsyrdcw6i23w=="
-        }
       }
     },
     "async": {
@@ -29995,6 +30266,12 @@
         }
       }
     },
+    "swc-loader": {
+      "version": "0.2.3",
+      "resolved": "https://registry.npmjs.org/swc-loader/-/swc-loader-0.2.3.tgz",
+      "integrity": "sha512-D1p6XXURfSPleZZA/Lipb3A8pZ17fP4NObZvFCDjK/OKljroqDpPmsBdTraWhVBqUNpcWBQY1imWdoPScRlQ7A==",
+      "requires": {}
+    },
     "tapable": {
       "version": "2.2.0",
       "resolved": "https://registry.npmjs.org/tapable/-/tapable-2.2.0.tgz",
@@ -30341,9 +30618,9 @@
       }
     },
     "tslib": {
-      "version": "2.3.0",
-      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.3.0.tgz",
-      "integrity": "sha512-N82ooyxVNm6h1riLCoyS9e3fuJ3AMG2zIZs2Gd1ATcSFjSA23Q0fzjjZeh0jbJvWVDZ0cJT8yaNNaaXHzueNjg=="
+      "version": "2.4.0",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.4.0.tgz",
+      "integrity": "sha512-d6xOpEDfsi2CZVlPQzGeux8XMwLT9hssAsaPYExaQMuYskwb+x1x7J371tWlbBdWHroy99KnVB6qIkUbs5X3UQ=="
     },
     "tunnel-agent": {
       "version": "0.6.0",
