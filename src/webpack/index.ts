@@ -2,7 +2,7 @@ import { mapValues } from 'lodash'
 import produce from 'immer'
 import fs from 'fs'
 import path from 'path'
-import { Configuration, DefinePlugin } from 'webpack'
+import { Configuration, DefinePlugin, container } from 'webpack'
 import HtmlPlugin from 'html-webpack-plugin'
 import CopyPlugin from 'copy-webpack-plugin'
 import ReactFastRefreshPlugin from '@pmmmwh/react-refresh-webpack-plugin'
@@ -20,6 +20,7 @@ import { getPathFromUrl, getPageFilename } from '../utils'
 import { appendPlugins, processSourceMapForDevServer, appendCacheGroups, parseOptimizationConfig, enableFilesystemCache } from '../utils/webpack'
 import { svgoConfigForImagemin } from '../utils/svgo'
 
+const ModuleFederationPlugin = container.ModuleFederationPlugin
 const dirnameOfBuilder = path.resolve(__dirname, '../..')
 const nodeModulesOfBuilder = path.resolve(dirnameOfBuilder, 'node_modules')
 
@@ -123,7 +124,8 @@ export async function getConfig(): Promise<Configuration> {
     ...htmlPlugins,
     definePlugin,
     staticDirCopyPlugin,
-    new WebpackBarPlugin({ color: 'green' })
+    new WebpackBarPlugin({ color: 'green' }),
+    buildConfig.federation != null ? new ModuleFederationPlugin(buildConfig.federation) : null
   )
 
   if (isProd) {
@@ -156,16 +158,16 @@ export async function getConfig(): Promise<Configuration> {
 }
 
 /** 获取用于 dev server 的 webpack 配置（但不含对 dev server 本身的配置）*/
-export async function getConfigForDevServer() {
+export async function getConfigForDevServer(port: number) {
 
   let config = await getConfig()
   const buildConfig = await findBuildConfig()
   const { filesystemCache, highQualitySourceMap, errorOverlay } = buildConfig.optimization
   const isDev = getEnv() === Env.Dev
 
-  // 只保留 publicPath 中的 path，确保静态资源请求与页面走相同的 host（即本地 dev server）
+  // 本地开发时自动推断（考虑开启 module federation 后作为 remote app 的 module 加载）
   config = produce(config, newConfig => {
-    newConfig.output!.publicPath = getPathFromUrl(buildConfig.publicUrl)
+    newConfig.output!.publicPath = `//localhost:${port}${getPathFromUrl(buildConfig.publicUrl)}`
   })
 
   if (isDev && filesystemCache) {
