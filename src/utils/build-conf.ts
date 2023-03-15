@@ -131,6 +131,7 @@ export interface BuildConfigInput {
   targets?: Targets
   test?: TestConfig
   engines?: Engines
+  federation?: any
 }
 
 export interface BuildConfig extends Required<BuildConfigInput> {
@@ -280,7 +281,7 @@ function normalizeTransforms(input: TransformsInput): Transforms {
 function normalizeConfig({
   extends: _extends, publicUrl: _publicUrl, srcDir, staticDir, distDir, entries, pages: _pages,
   resolve, transforms: _transforms, envVariables, optimization, devProxy,
-  deploy, targets, test, engines
+  deploy, targets, test, engines, federation
 }: BuildConfigInput): BuildConfig {
   if (_extends == null) throw new Error('Invalid value of field extends')
   if (_publicUrl == null) throw new Error('Invalid value of field publicUrl')
@@ -298,13 +299,14 @@ function normalizeConfig({
   if (targets == null) throw new Error('Invalid value of field targets')
   if (test == null) throw new Error('Invalid value of field test')
   if (engines == null) throw new Error('Invalid value of field engines')
+  if (federation == null) throw new Error('Invalid value of field federation')
   const publicUrl = _publicUrl.replace(/\/?$/, '/')
   const pages = normalizePages(_pages)
   const transforms = normalizeTransforms(_transforms)
   return {
     extends: _extends, publicUrl, srcDir, staticDir, distDir, entries, pages,
     resolve, transforms, envVariables, optimization, devProxy,
-    deploy, targets, test, engines
+    deploy, targets, test, engines, federation
   }
 }
 

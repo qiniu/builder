@@ -52,7 +52,7 @@ async function serve(port: number) {
 
 async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
-  const webpackConfig = await getConfigForDevServer()
+  const webpackConfig = await getConfigForDevServer(port)
   logger.debug('webpack config:', webpackConfig)
 
   const devServerConfig: WebpackDevServer.Configuration = {
@@ -65,7 +65,6 @@ async function runDevServer(port: number) {
     // 这里之所以要求使用页面的 window.location 信息，是因为 builder 在容器中 serve 时端口会被转发，
     // 即可能配置 port 为 80，在（宿主机）浏览器中通过 8080 端口访问
     public: '0.0.0.0:0',
-    publicPath: getPathFromUrl(buildConfig.publicUrl),
     stats: 'errors-only',
     proxy: getProxyConfig(buildConfig.devProxy),
     historyApiFallback: {
