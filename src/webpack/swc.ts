@@ -13,6 +13,7 @@ function getTsCompilerOptions() {
 
   if (fs.existsSync(filePath)) {
     const rawContent = fs.readFileSync(filePath, { encoding: 'utf8' })
+    // 移除文件内容的注释且转换成 object
     const jsonContent = JSON.parse(rawContent.replace(/\/\/.*$|\/\*[\s\S]*?\*\//mg, ''))
     return jsonContent?.compilerOptions as CompilerOptions
   }
