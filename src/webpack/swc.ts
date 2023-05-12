@@ -13,7 +13,7 @@ function getTsCompilerOptions() {
 
   if (fs.existsSync(filePath)) {
     const rawContent = fs.readFileSync(filePath, { encoding: 'utf8' })
-    const jsonContent = JSON.parse(rawContent)
+    const jsonContent = JSON.parse(rawContent.replace(/\/\/.*$|\/\*[\s\S]*?\*\//mg, ''))
     return jsonContent?.compilerOptions as CompilerOptions
   }
 
