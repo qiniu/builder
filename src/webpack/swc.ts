@@ -99,7 +99,7 @@ export function makeSwcLoaderOptions(
     const compilerOptions = getTsCompilerOptions()
 
     if (compilerOptions != null) {
-      return mergeWith(swcOptions, transformTsCompilerOptions(compilerOptions), (_srcValue, targetValue) => {
+      return mergeWith(swcOptions, transformTsCompilerOptions(compilerOptions), (_, targetValue) => {
         if (Array.isArray(targetValue)) {
           return targetValue
         }
