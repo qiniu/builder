@@ -1,29 +1,28 @@
-import fs from 'fs'
 import browserslist from 'browserslist'
 import { Options as SwcOptions } from '@swc/core'
 import { CompilerOptions } from 'typescript'
 import { mergeWith } from 'lodash'
+import { getTSOptions } from 'tsconfig-to-swcconfig/dist/utils'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
-import { abs } from '../utils/paths'
+import { getBuildRoot } from '../utils/paths'
 
 /** 读取 tsconfig.json 文件获取 compilerOptions 配置 */
-function getTsCompilerOptions() {
-  const filePath = abs('tsconfig.json')
+let getTsCompilerOptions = (() => {
+  let result: CompilerOptions | null = null
 
-  if (fs.existsSync(filePath)) {
-    const rawContent = fs.readFileSync(filePath, { encoding: 'utf8' })
-    // 移除文件内容的注释且转换成 object
-    const jsonContent = JSON.parse(rawContent.replace(/\/\/.*$|\/\*[\s\S]*?\*\//mg, ''))
-    return jsonContent?.compilerOptions as CompilerOptions
+  return () => {
+    if (result == null) {
+      result = getTSOptions('tsconfig.json', getBuildRoot())
+    }
+
+    return result
   }
-
-  return null
-}
+})()
 
 /** swc 不会读取 tsconfig.json 的配置，这里手动转成 swc 的配置 */
 /** 参考自 https://github.com/Songkeys/tsconfig-to-swcconfig/blob/62e7f585882443bd27beb5b2e05a680f18070198/src/index.ts */
-function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
+function transformTsCompilerOptions(options: CompilerOptions | null): SwcOptions {
   const {
     importHelpers = false,
     experimentalDecorators = false,
@@ -33,7 +32,7 @@ function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
     jsxImportSource = 'react',
     paths,
     baseUrl
-  } = options
+  } = options ?? {}
 
   return {
     jsc: {
