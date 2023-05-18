@@ -1,28 +1,58 @@
+import fs from 'fs'
+import path from 'path'
 import browserslist from 'browserslist'
 import { Options as SwcOptions } from '@swc/core'
 import { CompilerOptions } from 'typescript'
 import { mergeWith } from 'lodash'
-import { getTSOptions } from 'tsconfig-to-swcconfig/dist/utils'
+import { parse } from 'jsonc-parser'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
 import { getBuildRoot } from '../utils/paths'
 
 /** 读取 tsconfig.json 文件获取 compilerOptions 配置 */
-let getTsCompilerOptions = (() => {
-  let result: CompilerOptions | null = null
+function getTsCompilerOptions(): CompilerOptions | null {
+  const { compilerOptions } = loadTsConfig('tsconfig.json') ?? {}
+  return compilerOptions ?? null
+}
 
-  return () => {
-    if (result == null) {
-      result = getTSOptions('tsconfig.json', getBuildRoot())
-    }
+function loadTsConfig(filename: string, tsConfig?: any): any {
+  let data = resolveTsConfig(filename) ?? {}
 
-    return result
+  if (!data) return tsConfig
+
+  if (tsConfig) {
+    data = mergeWith(data, tsConfig, (_, targetValue) => {
+      if (Array.isArray(targetValue)) {
+        return targetValue
+      }
+    })
   }
-})()
+
+  let extendsName = data.extends
+  if (!extendsName) return data
+
+  delete data.extends
+  if (!extendsName.endsWith('.json')) {
+    extendsName += '.json'
+  }
+
+  return loadTsConfig(extendsName, data)
+}
+
+function resolveTsConfig(filename: string) {
+  const filePath = path.resolve(getBuildRoot(), filename)
+
+  if (fs.existsSync(filePath)) {
+    const content = fs.readFileSync(filePath, { encoding: 'utf8' })
+    return parse(content)
+  }
+
+  return null
+}
 
 /** swc 不会读取 tsconfig.json 的配置，这里手动转成 swc 的配置 */
 /** 参考自 https://github.com/Songkeys/tsconfig-to-swcconfig/blob/62e7f585882443bd27beb5b2e05a680f18070198/src/index.ts */
-function transformTsCompilerOptions(options: CompilerOptions | null): SwcOptions {
+function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
   const {
     importHelpers = false,
     experimentalDecorators = false,
@@ -32,7 +62,7 @@ function transformTsCompilerOptions(options: CompilerOptions | null): SwcOptions
     jsxImportSource = 'react',
     paths,
     baseUrl
-  } = options ?? {}
+  } = options
 
   return {
     jsc: {
