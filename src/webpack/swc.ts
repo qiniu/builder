@@ -52,7 +52,7 @@ function resolveTsConfig(filename: string) {
 
 /** swc 不会读取 tsconfig.json 的配置，这里手动转成 swc 的配置 */
 /** 参考自 https://github.com/Songkeys/tsconfig-to-swcconfig/blob/62e7f585882443bd27beb5b2e05a680f18070198/src/index.ts */
-function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
+function transformTsCompilerOptions(options: CompilerOptions | null): SwcOptions {
   const {
     importHelpers = false,
     experimentalDecorators = false,
@@ -62,7 +62,7 @@ function transformTsCompilerOptions(options: CompilerOptions): SwcOptions {
     jsxImportSource = 'react',
     paths,
     baseUrl
-  } = options
+  } = options ?? {}
 
   return {
     jsc: {
