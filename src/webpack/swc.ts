@@ -18,8 +18,6 @@ function getTsCompilerOptions(): CompilerOptions | null {
 function loadTsConfig(filename: string, tsConfig?: any): any {
   let data = resolveTsConfig(filename) ?? {}
 
-  if (!data) return tsConfig
-
   if (tsConfig) {
     data = mergeWith(data, tsConfig, (_, targetValue) => {
       if (Array.isArray(targetValue)) {
