@@ -19,7 +19,7 @@ function loadTsConfig(filename: string, tsConfig?: any): any {
   let data = resolveTsConfig(filename) ?? {}
 
   if (tsConfig) {
-    data = mergeWith(data, tsConfig, (_, targetValue) => {
+    data = mergeWith(data, tsConfig, (_srcValue, targetValue) => {
       if (Array.isArray(targetValue)) {
         return targetValue
       }
@@ -127,7 +127,7 @@ export function makeSwcLoaderOptions(
     const compilerOptions = getTsCompilerOptions()
 
     if (compilerOptions != null) {
-      return mergeWith(swcOptions, transformTsCompilerOptions(compilerOptions), (_, targetValue) => {
+      return mergeWith(swcOptions, transformTsCompilerOptions(compilerOptions), (_srcValue, targetValue) => {
         if (Array.isArray(targetValue)) {
           return targetValue
         }
