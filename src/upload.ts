@@ -122,7 +122,16 @@ async function upload() {
   const deployConfig = buildConfig.deploy.config
   const distPath = getDistPath(buildConfig)
   const prefix = getPathFromUrl(buildConfig.publicUrl, false)
-  const mac = new qiniu.auth.digest.Mac(deployConfig.accessKey, deployConfig.secretKey)
+  const accessKey = deployConfig.accessKey || process.env.FEC_BUILDER_ACCESS_KEY
+  const secretKey = deployConfig.secretKey || process.env.FEC_BUILDER_SECRET_KEY
+  const bucket = deployConfig.bucket || process.env.FEC_BUILDER_BUCKET
+
+  if (!accessKey || !secretKey || !bucket) {
+    logger.error('[UPLOAD] deploy config cannot be empty, exit 2')
+    process.exit(2)
+  }
+
+  const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
   const files = await getAllFiles(distPath)
 
   const concurrentLimit = 50
@@ -135,7 +144,7 @@ async function upload() {
       return logger.info(`[IGNORE] ${filePath}`)
     }
 
-    await uploadFile(filePath, deployConfig.bucket, key, mac)
+    await uploadFile(filePath, bucket, key, mac)
     logger.info(`[UPLOAD] ${filePath} -> ${key}`)
   }, concurrentLimit)
 

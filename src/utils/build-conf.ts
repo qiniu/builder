@@ -100,9 +100,9 @@ export type DevProxy = Record<string, string>
 export interface QiniuDeploy {
   target: 'qiniu'
   config: {
-    accessKey: string
-    secretKey: string
-    bucket: string
+    accessKey?: string
+    secretKey?: string
+    bucket?: string
   }
 }
 
