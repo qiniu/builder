@@ -122,9 +122,9 @@ async function upload() {
   const deployConfig = buildConfig.deploy.config
   const distPath = getDistPath(buildConfig)
   const prefix = getPathFromUrl(buildConfig.publicUrl, false)
-  const accessKey = deployConfig.accessKey || process.env.FEC_BUILDER_ACCESS_KEY
-  const secretKey = deployConfig.secretKey || process.env.FEC_BUILDER_SECRET_KEY
-  const bucket = deployConfig.bucket || process.env.FEC_BUILDER_BUCKET
+  const accessKey = deployConfig?.accessKey || process.env.FEC_BUILDER_ACCESS_KEY
+  const secretKey = deployConfig?.secretKey || process.env.FEC_BUILDER_SECRET_KEY
+  const bucket = deployConfig?.bucket || process.env.FEC_BUILDER_BUCKET
 
   if (!accessKey || !secretKey || !bucket) {
     logger.error('[UPLOAD] deploy config cannot be empty, exit 2')
