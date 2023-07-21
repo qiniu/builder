@@ -374,15 +374,15 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     ```json
     {
-      "AccessKey": "xxx",
-      "SecretKey": "yyy",
+      "accessKey": "xxx",
+      "secretKey": "yyy",
       "bucket": "zzz"
     }
     ```    
 
-    表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
+    表示使用 `xxx`、`yyy` 分别作为 accessKey 与 secretKey，上传到名为 `zzz` 的 bucket。
 
-    你也可以通过设置环境变量 `FEC_BUILDER_ACCESS_KEY`、`FEC_BUILDER_SECRET_KEY`、`FEC_BUILDER_BUCKET` 来配置，两种方式都设置时优先取 build-config.json 的值
+    也可以通过设置环境变量来配置，环境变量名为 `BUILD_DEPLOY_QINIU_CONFIG`，值的格式要求是 json 字符串，两种方式都设置时优先取 build-config.json 的值
 
 ## **`test`**
 

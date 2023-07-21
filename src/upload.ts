@@ -10,6 +10,7 @@ import logger from './utils/logger'
 import { findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'
 import { getPathFromUrl } from './utils'
+import { mergeWith } from 'lodash'
 
 const logLifecycle = require('./utils').logLifecycle
 
@@ -119,12 +120,27 @@ async function uploadFile(localFile: string, bucket: string, key: string, mac: q
 
 async function upload() {
   const buildConfig = await findBuildConfig()
-  const deployConfig = buildConfig.deploy.config
+  const { deploy, publicUrl } = buildConfig
   const distPath = getDistPath(buildConfig)
-  const prefix = getPathFromUrl(buildConfig.publicUrl, false)
-  const accessKey = deployConfig?.accessKey || process.env.FEC_BUILDER_ACCESS_KEY
-  const secretKey = deployConfig?.secretKey || process.env.FEC_BUILDER_SECRET_KEY
-  const bucket = deployConfig?.bucket || process.env.FEC_BUILDER_BUCKET
+  const prefix = getPathFromUrl(publicUrl, false)
+
+  // 给 `target` 设置默认值是为了兼容历史配置文件中可能没有值的场景
+  const envKey = `BUILD_DEPLOY_${(deploy.target || 'qiniu').toUpperCase()}_CONFIG`
+  const envConfig = process.env[envKey]
+  let deployConfig = deploy.config
+
+  if (envConfig) {
+    try {
+      // 优先取配置文件的非空值
+      deployConfig = mergeWith({}, deployConfig, JSON.parse(envConfig), (srcVal, targetVal) => {
+        return !srcVal && targetVal ? targetVal : srcVal
+      })
+    } catch (e) {
+      logger.error(`[UPLOAD] parse env ${envKey} failed:`, e)
+      throw e
+    }
+  }
+  const { accessKey, secretKey, bucket } = deployConfig ?? {}
 
   if (!accessKey || !secretKey || !bucket) {
     logger.error('[UPLOAD] deploy config cannot be empty, exit 2')
