@@ -6,11 +6,11 @@
 import path from 'path'
 import walk from 'walk'
 import qiniu from 'qiniu'
+import { mergeWith } from 'lodash'
 import logger from './utils/logger'
 import { findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'
 import { getPathFromUrl } from './utils'
-import { mergeWith } from 'lodash'
 
 const logLifecycle = require('./utils').logLifecycle
 
@@ -131,7 +131,7 @@ async function upload() {
 
   if (envConfig) {
     try {
-      // 优先取配置文件的非空值
+      // 优先取配置文件中的非空值
       deployConfig = mergeWith({}, deployConfig, JSON.parse(envConfig), (srcVal, targetVal) => {
         return !srcVal && targetVal ? targetVal : srcVal
       })
