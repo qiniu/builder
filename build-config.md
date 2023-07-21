@@ -382,7 +382,17 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     表示使用 `xxx`、`yyy` 分别作为 accessKey 与 secretKey，上传到名为 `zzz` 的 bucket。
 
-    也可以通过设置环境变量来配置，环境变量名为 `BUILD_DEPLOY_QINIU_CONFIG`，值的格式要求是 json 字符串，两种方式都设置时优先取 build-config.json 的值
+    也可以通过环境变量的形式来配置，例如：
+
+    ```json
+    {
+      "accessKey": "{{process.env.BUILD_DEPLOY_ACCESS_KEY}}",
+      "secretKey": "{{process.env.BUILD_DEPLOY_SECRET_KEY}}",
+      "bucket": "zzz"
+    }
+    ```    
+
+    表示使用环境变量 `BUILD_DEPLOY_ACCESS_KEY`、`BUILD_DEPLOY_SECRET_KEY` 的值分别作为 accessKey 与 secretKey，上传到名为 `zzz` 的 bucket。
 
 ## **`test`**
 

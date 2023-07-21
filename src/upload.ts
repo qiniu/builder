@@ -6,7 +6,7 @@
 import path from 'path'
 import walk from 'walk'
 import qiniu from 'qiniu'
-import { mergeWith } from 'lodash'
+import Mustache from 'mustache'
 import logger from './utils/logger'
 import { Deploy, findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'
@@ -119,24 +119,17 @@ async function uploadFile(localFile: string, bucket: string, key: string, mac: q
 }
 
 function getDeployConfig(deploy: Deploy) {
-  // 给 `target` 设置默认值是为了兼容历史配置文件中可能没有值的场景
-  const envKey = `BUILD_DEPLOY_${(deploy.target || 'qiniu').toUpperCase()}_CONFIG`
-  const envConfig = process.env[envKey]
-  let deployConfig = deploy.config
-
-  if (envConfig) {
-    try {
-      // 优先取配置文件中的非空值
-      deployConfig = mergeWith({}, deployConfig, JSON.parse(envConfig), (srcVal, targetVal) => {
-        return !srcVal && targetVal ? targetVal : srcVal
-      })
-    } catch (e) {
-      logger.error(`[UPLOAD] parse env ${envKey} failed:`, e)
-      throw e
+  const { config } = deploy
+  const model = {
+    process: {
+      env: process.env
     }
   }
 
-  return deployConfig
+  return (Object.keys(config) as Array<keyof Deploy['config']>).reduce((prev, curr) => {
+    prev[curr] = Mustache.render(config[curr], model)
+    return prev
+  }, {} as Deploy['config'])
 }
 
 async function upload() {
@@ -144,12 +137,7 @@ async function upload() {
   const { deploy, publicUrl } = buildConfig
   const distPath = getDistPath(buildConfig)
   const prefix = getPathFromUrl(publicUrl, false)
-  const { accessKey, secretKey, bucket } = getDeployConfig(deploy) ?? {}
-
-  if (!accessKey || !secretKey || !bucket) {
-    logger.error('[UPLOAD] deploy config cannot be empty, exit 2')
-    process.exit(2)
-  }
+  const { accessKey, secretKey, bucket } = getDeployConfig(deploy)
 
   const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
   const files = await getAllFiles(distPath)
