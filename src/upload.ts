@@ -8,7 +8,7 @@ import walk from 'walk'
 import qiniu from 'qiniu'
 import { mergeWith } from 'lodash'
 import logger from './utils/logger'
-import { findBuildConfig } from './utils/build-conf'
+import { Deploy, findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'
 import { getPathFromUrl } from './utils'
 
@@ -118,12 +118,7 @@ async function uploadFile(localFile: string, bucket: string, key: string, mac: q
   return runWithRetry(putFile, 3)
 }
 
-async function upload() {
-  const buildConfig = await findBuildConfig()
-  const { deploy, publicUrl } = buildConfig
-  const distPath = getDistPath(buildConfig)
-  const prefix = getPathFromUrl(publicUrl, false)
-
+function getDeployConfig(deploy: Deploy) {
   // 给 `target` 设置默认值是为了兼容历史配置文件中可能没有值的场景
   const envKey = `BUILD_DEPLOY_${(deploy.target || 'qiniu').toUpperCase()}_CONFIG`
   const envConfig = process.env[envKey]
@@ -140,7 +135,16 @@ async function upload() {
       throw e
     }
   }
-  const { accessKey, secretKey, bucket } = deployConfig ?? {}
+
+  return deployConfig
+}
+
+async function upload() {
+  const buildConfig = await findBuildConfig()
+  const { deploy, publicUrl } = buildConfig
+  const distPath = getDistPath(buildConfig)
+  const prefix = getPathFromUrl(publicUrl, false)
+  const { accessKey, secretKey, bucket } = getDeployConfig(deploy) ?? {}
 
   if (!accessKey || !secretKey || !bucket) {
     logger.error('[UPLOAD] deploy config cannot be empty, exit 2')
