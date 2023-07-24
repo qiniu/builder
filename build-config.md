@@ -291,13 +291,25 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     ```json
     {
-      "AccessKey": "xxx",
-      "SecretKey": "yyy",
+      "accessKey": "xxx",
+      "secretKey": "yyy",
       "bucket": "zzz"
     }
     ```    
 
-    表示使用 `xxx`、`yyy` 分别作为 AccessKey 与 SecretKey，上传到名为 `zzz` 的 bucket。
+    表示使用 `xxx`、`yyy` 分别作为 accessKey 与 secretKey，上传到名为 `zzz` 的 bucket。
+
+    也可以通过环境变量的形式来配置，例如：
+
+    ```json
+    {
+       "accessKey": "{{process.env.BUILD_DEPLOY_ACCESS_KEY}}",
+       "secretKey": "{{process.env.BUILD_DEPLOY_SECRET_KEY}}",
+       "bucket": "zzz"
+    }
+    ```    
+
+    表示使用环境变量 `BUILD_DEPLOY_ACCESS_KEY`、`BUILD_DEPLOY_SECRET_KEY` 的值分别作为 accessKey 与 secretKey，上传到名为 `zzz` 的 bucket。
 
 ## **`test`**
 
