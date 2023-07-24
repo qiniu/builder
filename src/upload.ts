@@ -6,8 +6,9 @@
 import path from 'path'
 import walk from 'walk'
 import qiniu from 'qiniu'
+import Mustache from 'mustache'
 import logger from './utils/logger'
-import { findBuildConfig } from './utils/build-conf'
+import { Deploy, findBuildConfig } from './utils/build-conf'
 import { getDistPath } from './utils/paths'
 import { getPathFromUrl } from './utils'
 
@@ -117,12 +118,28 @@ async function uploadFile(localFile: string, bucket: string, key: string, mac: q
   return runWithRetry(putFile, 3)
 }
 
+function getDeployConfig(deploy: Deploy) {
+  const { config } = deploy
+  const model = {
+    process: {
+      env: process.env
+    }
+  }
+
+  return (Object.keys(config) as Array<keyof Deploy['config']>).reduce((prev, curr) => {
+    prev[curr] = Mustache.render(config[curr], model)
+    return prev
+  }, {} as Deploy['config'])
+}
+
 async function upload() {
   const buildConfig = await findBuildConfig()
-  const deployConfig = buildConfig.deploy.config
+  const { deploy, publicUrl } = buildConfig
   const distPath = getDistPath(buildConfig)
-  const prefix = getPathFromUrl(buildConfig.publicUrl, false)
-  const mac = new qiniu.auth.digest.Mac(deployConfig.accessKey, deployConfig.secretKey)
+  const prefix = getPathFromUrl(publicUrl, false)
+  const { accessKey, secretKey, bucket } = getDeployConfig(deploy)
+
+  const mac = new qiniu.auth.digest.Mac(accessKey, secretKey)
   const files = await getAllFiles(distPath)
 
   const concurrentLimit = 50
@@ -135,7 +152,7 @@ async function upload() {
       return logger.info(`[IGNORE] ${filePath}`)
     }
 
-    await uploadFile(filePath, deployConfig.bucket, key, mac)
+    await uploadFile(filePath, bucket, key, mac)
     logger.info(`[UPLOAD] ${filePath} -> ${key}`)
   }, concurrentLimit)
 

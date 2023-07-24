@@ -73,8 +73,8 @@
   "deploy": {
     "target": "qiniu",
     "config": {
-      "AccessKey": "",
-      "SecretKey": "",
+      "accessKey": "",
+      "secretKey": "",
       "bucket": ""
     }
   },
