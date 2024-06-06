@@ -83,7 +83,7 @@ async function runDevServer(port: number) {
   })
 
   server.listen(port, host, () => {
-    logger.info(`Server started on http://${host}:${port}`)
+    logger.info(`Server started on http://localhost:${port}`)
   })
 
   return () => new Promise<void>(resolve => {
