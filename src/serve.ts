@@ -54,7 +54,8 @@ async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
   const webpackConfig = await getConfigForDevServer()
   logger.debug('webpack config:', webpackConfig)
-
+  
+  const host = '0.0.0.0'
   const devServerConfig: WebpackDevServer.Configuration = {
     hotOnly: true,
     // 方便开发调试
@@ -64,7 +65,7 @@ async function runDevServer(port: number) {
     // 从而正确地建立 hot module replace 依赖的 ws 链接及其它请求，逻辑见：
     // 这里之所以要求使用页面的 window.location 信息，是因为 builder 在容器中 serve 时端口会被转发，
     // 即可能配置 port 为 80，在（宿主机）浏览器中通过 8080 端口访问
-    public: '0.0.0.0:0',
+    public: `${host}:0`,
     publicPath: getPathFromUrl(buildConfig.publicUrl),
     stats: 'errors-only',
     proxy: getProxyConfig(buildConfig.devProxy),
@@ -81,9 +82,8 @@ async function runDevServer(port: number) {
     })
   })
 
-  const host = '0.0.0.0'
   server.listen(port, host, () => {
-    logger.info(`Server started on ${host}:${port}`)
+    logger.info(`Server started on http://${host}:${port}`)
   })
 
   return () => new Promise<void>(resolve => {
