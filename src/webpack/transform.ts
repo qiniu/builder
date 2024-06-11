@@ -147,6 +147,7 @@ function addTransform(
         options: {
           // https://github.com/webpack-contrib/css-loader/issues/228#issuecomment-312885975
           importLoaders: transform.transformer === Transform.Css ? 1 : 0,
+          esModule: false,
           modules: (
             transformConfig.modules
             ? { localIdentName: '[local]_[hash:base64:5]' }
