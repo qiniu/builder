@@ -7,7 +7,7 @@ import { mergeWith } from 'lodash'
 import { parse } from 'jsonc-parser'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
-import { getBuildRoot } from '../utils/paths'
+import { abs, getBuildRoot } from '../utils/paths'
 
 /** 读取 tsconfig.json 文件获取 compilerOptions 配置 */
 function getTsCompilerOptions(): CompilerOptions | null {
@@ -78,7 +78,7 @@ function transformTsCompilerOptions(options: CompilerOptions | null): SwcOptions
         },
       },
       paths,
-      baseUrl
+      ...(baseUrl && { baseUrl: abs(baseUrl) })
     }
   }
 }
