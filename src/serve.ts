@@ -13,6 +13,7 @@ import { getPageFilename, getPathFromUrl, logLifecycle, watchFile } from './util
 import { getConfigForDevServer } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
 import { entries, mapValues } from 'lodash'
+import colors from 'picocolors'
 import { abs } from './utils/paths'
 
 // 业务项目的配置文件，变更时需要重启 server
@@ -83,7 +84,7 @@ async function runDevServer(port: number) {
   })
 
   server.listen(port, host, () => {
-    logger.info(`Server started on http://localhost:${port}`)
+    logger.info(`Server started on ${colors.cyan(`http://localhost:${port}`)}`)
   })
 
   return () => new Promise<void>(resolve => {
