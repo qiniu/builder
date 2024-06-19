@@ -338,7 +338,7 @@ const apiUrl = "http://foobar.com/api" + 'test'
 
     * `browserslist` 在 `swc` 中的行为相较 `babel` 有所差异，以配置的 `extends @qiniu/build-config/portal` 为例，使用 `swc` 后 `bundle` 中会包含 `let` `const` `async` `await` `箭头函数` 语法
 
-    `true` 表示开启，`false` 表示关闭，默认关闭。
+    `true` 表示开启，`false` 表示关闭，默认开启。
 
 ## **`devProxy`**
 

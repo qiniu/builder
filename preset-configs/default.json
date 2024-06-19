@@ -67,7 +67,7 @@
     "highQualitySourceMap": false,
     "filesystemCache": true,
     "errorOverlay": true,
-    "swc": false
+    "swc": true
   },
   "devProxy": {},
   "deploy": {

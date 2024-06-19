@@ -169,7 +169,7 @@
         },
         "swc": {
           "type": "boolean",
-          "description": "是否使用 `swc` 替换 `babel-loader`、`ts-loader`，开启 `swc` 时需注意以下几点：\n* 如果自定义 `transforms` 的配置中包含 `babelOptions`，`swc` 将不会开启\n* `swc` 不会读取项目中的 `tsconfig.json` 配置，`fec-builder` 会将 `tsconfig.json` [部分的 `compilerOptions` 配置](https://github.com/Front-End-Engineering-Cloud/builder/pull/167/commits/1679c2ba46c7c2e5babdd9fb29c1202dce8a6da9#diff-83d272b0300573209dc5e33e57e9ac300c837e0327f36ea67cef9a685a06becbR25) 转换后传给 `swc`\n* `swc` 不支持 `ts` 的类型检查，导致 `transpileOnlyWhenDev` 开关无效，如果需要在打包中校验类型可在打包构建步骤中加入 `tsc --noEmit` 来做类型检查\n* `swc` 不支持使用项目中 `typescript` 进行编译，导致 `useProjectTypeScript` 开关无效\n* `swc` 不支持 `JSX` 中的 `spread operator` 语法\n* `browserslist` 在 `swc` 中的行为相较 `babel` 有所差异，以配置的 `extends @qiniu/build-config/portal` 为例，使用 `swc` 后 `bundle` 中会包含 `let` `const` `async` `await` `箭头函数` 语法\n`true` 表示开启，`false` 表示关闭，默认关闭。"
+          "description": "是否使用 `swc` 替换 `babel-loader`、`ts-loader`，开启 `swc` 时需注意以下几点：\n* 如果自定义 `transforms` 的配置中包含 `babelOptions`，`swc` 将不会开启\n* `swc` 不会读取项目中的 `tsconfig.json` 配置，`fec-builder` 会将 `tsconfig.json` [部分的 `compilerOptions` 配置](https://github.com/Front-End-Engineering-Cloud/builder/pull/167/commits/1679c2ba46c7c2e5babdd9fb29c1202dce8a6da9#diff-83d272b0300573209dc5e33e57e9ac300c837e0327f36ea67cef9a685a06becbR25) 转换后传给 `swc`\n* `swc` 不支持 `ts` 的类型检查，导致 `transpileOnlyWhenDev` 开关无效，如果需要在打包中校验类型可在打包构建步骤中加入 `tsc --noEmit` 来做类型检查\n* `swc` 不支持使用项目中 `typescript` 进行编译，导致 `useProjectTypeScript` 开关无效\n* `swc` 不支持 `JSX` 中的 `spread operator` 语法\n* `browserslist` 在 `swc` 中的行为相较 `babel` 有所差异，以配置的 `extends @qiniu/build-config/portal` 为例，使用 `swc` 后 `bundle` 中会包含 `let` `const` `async` `await` `箭头函数` 语法\n`true` 表示开启，`false` 表示关闭，默认开启。"
         }
       }
     },
