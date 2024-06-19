@@ -1,12 +1,12 @@
+version: 2.1
+
 workflows:
-    version: 2.1
     build:
         jobs:
             - build_node_18
             - build_node_20
-            - build_node_20
+            - build_node_22
 
-version: 2.1
 jobs:
     base: &base
         working_directory: ~/workspace
@@ -38,7 +38,7 @@ jobs:
         docker:
             - image: cimg/node:20.14.0
 
-    build_node_20:
+    build_node_22:
         <<: *base
         docker:
             - image: cimg/node:22.2.0
