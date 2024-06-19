@@ -12,7 +12,7 @@
     "lint": "tsc --noEmit"
   },
   "engines": {
-    "node": ">=20"
+    "node": ">=18"
   },
   "dependencies": {
     "@babel/core": "^7.24.7",

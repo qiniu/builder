@@ -112,29 +112,25 @@ export function parseOptimizationConfig(optimization: Optimization): {
   const baseChunks: string[] = []
   const cacheGroups: SplitChunksCacheGroups = {}
 
-  if (extractVendor) {
-    if (typeof extractVendor === 'string') {
-      throw new Error('BREAKING CHANGE: extractVendor 已不再支持该用法，使用方式请参考帮助文档！')
-    } else if (typeof extractVendor === 'boolean' || extractVendor.length > 0) {
-      baseChunks.push(chunks.vendor)
+  if (extractVendor && (typeof extractVendor === 'boolean' || extractVendor.length > 0)) {
+    baseChunks.push(chunks.vendor)
 
-      cacheGroups[chunks.vendor] = {
-        name: chunks.vendor,
-        chunks: 'initial',
-        priority: -10,
-        test: function(module: { resource?: string }): boolean {
-          const resource = module.resource
-          if (!resource) return false
+    cacheGroups[chunks.vendor] = {
+      name: chunks.vendor,
+      chunks: 'initial',
+      priority: -10,
+      test: function(module: { resource?: string }): boolean {
+        const resource = module.resource
+        if (!resource) return false
 
-          const nodeModulesPath = path.join(path.sep, 'node_modules', path.sep)
-          if (typeof extractVendor === 'boolean') {
-            return resource.includes(nodeModulesPath)
-          }
-
-          return extractVendor.some(packageName => {
-            return resource.includes(path.join(nodeModulesPath, packageName, path.sep))
-          })
+        const nodeModulesPath = path.join(path.sep, 'node_modules', path.sep)
+        if (typeof extractVendor === 'boolean') {
+          return resource.includes(nodeModulesPath)
         }
+
+        return extractVendor.some(packageName => {
+          return resource.includes(path.join(nodeModulesPath, packageName, path.sep))
+        })
       }
     }
   }
