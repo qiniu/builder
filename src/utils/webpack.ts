@@ -114,7 +114,6 @@ export function parseOptimizationConfig(optimization: Optimization): {
 
   if (extractVendor && (typeof extractVendor === 'boolean' || extractVendor.length > 0)) {
     baseChunks.push(chunks.vendor)
-
     cacheGroups[chunks.vendor] = {
       name: chunks.vendor,
       chunks: 'initial',
