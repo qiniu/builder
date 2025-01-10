@@ -1,17 +1,17 @@
+version: 2.1
+
 workflows:
-    version: 2
     build:
         jobs:
-            - build_node_12
-            - build_node_14
-            - build_node_16
+            - build_node_18
+            - build_node_20
+            - build_node_22
 
-version: 2
 jobs:
     base: &base
         working_directory: ~/workspace
         docker:
-            - image: cimg/node:12.18.2
+            - image: cimg/node:18.20.3
         steps:
             - checkout
             - restore_cache:
@@ -28,17 +28,17 @@ jobs:
                 paths:
                     - "node_modules"
 
-    build_node_12:
+    build_node_18:
         <<: *base
         docker:
-        - image: cimg/node:12.18.2
+            - image: cimg/node:18.20.3
 
-    build_node_14:
+    build_node_20:
         <<: *base
         docker:
-        - image: cimg/node:14.17.0
+            - image: cimg/node:20.14.0
 
-    build_node_16:
+    build_node_22:
         <<: *base
         docker:
-        - image: cimg/node:16.1.0
+            - image: cimg/node:22.2.0
