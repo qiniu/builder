@@ -8,6 +8,8 @@ import { Env, setEnv } from './utils/build-env'
 import logger from './utils/logger'
 import { setNeedAnalyze } from './utils/build-conf'
 
+const packageInfo = require('../package.json')
+
 // 禁掉 auto freeze，否则有的插件改数据时会异常，
 // 比如 postcss-loader 会去 delete options 上的 plugins 字段；
 // 详情见 https://immerjs.github.io/immer/docs/freezing
@@ -155,8 +157,8 @@ Object.entries(commands).forEach(([name, { desc, handler, isDefault }]) => {
   })
 })
 
-// enable --version
-parser.version()
+parser
+  .version(packageInfo.version).alias('v', 'version') // enable --version
   .help('h').alias('h', 'help')
   .locale('en')
   .argv
