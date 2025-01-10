@@ -39,7 +39,7 @@
         "log4js": "^6.9.1",
         "mini-css-extract-plugin": "^2.9.0",
         "mustache": "^4.2.0",
-        "picocolors": "^1.0.1",
+        "picocolors": "^1.1.1",
         "postcss-loader": "^8.1.1",
         "postcss-preset-env": "~9.5.14",
         "qiniu": "^7.3.2",
@@ -11458,9 +11458,9 @@
       "integrity": "sha1-elfrVQpng/kRUzH89GY9XI4AelA="
     },
     "node_modules/picocolors": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.0.1.tgz",
-      "integrity": "sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew=="
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
     },
     "node_modules/picomatch": {
       "version": "2.3.1",
@@ -24230,9 +24230,9 @@
       "integrity": "sha1-elfrVQpng/kRUzH89GY9XI4AelA="
     },
     "picocolors": {
-      "version": "1.0.1",
-      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.0.1.tgz",
-      "integrity": "sha512-anP1Z8qwhkbmu7MFP5iTt+wQKXgwzf7zTyGlcdzabySa9vd0Xt392U0rVmz9poOaBj0uHJKyyo9/upk0HrEQew=="
+      "version": "1.1.1",
+      "resolved": "https://registry.npmjs.org/picocolors/-/picocolors-1.1.1.tgz",
+      "integrity": "sha512-xceH2snhtb5M9liqDsmEw56le376mTZkEX/jEb/RxNFyegNul7eNslCXP9FDj/Lcu0X8KEyMceP2ntpaHrDEVA=="
     },
     "picomatch": {
       "version": "2.3.1",

@@ -45,7 +45,7 @@
     "log4js": "^6.9.1",
     "mini-css-extract-plugin": "^2.9.0",
     "mustache": "^4.2.0",
-    "picocolors": "^1.0.1",
+    "picocolors": "^1.1.1",
     "postcss-loader": "^8.1.1",
     "postcss-preset-env": "~9.5.14",
     "qiniu": "^7.3.2",

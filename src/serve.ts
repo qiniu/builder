@@ -55,7 +55,7 @@ async function runDevServer(port: number) {
   const buildConfig = await findBuildConfig()
   const webpackConfig = await getConfigForDevServer()
   logger.debug('webpack config:', webpackConfig)
-  
+
   const host = '0.0.0.0'
   const devServerConfig: WebpackDevServer.Configuration = {
     hotOnly: true,

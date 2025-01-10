@@ -4,5 +4,6 @@
  */
 
 export default {
-  config: 'build-config.json'
+  config: 'build-config.json',
+  prepareScript: 'build-prepare.sh'
 }
