@@ -3,18 +3,19 @@
  * @author nighca <nighca@live.cn>
  */
 
-import webpack from 'webpack'
 import logger from './utils/logger'
+import { loadRspackCore } from './utils/rspack-esm'
 import { logLifecycle } from './utils'
 import { getConfig } from './webpack'
 
 async function generate() {
+  const { rspack } = await loadRspackCore()
   const config = await getConfig()
 
-  logger.debug('webpack config:', config)
+  logger.debug('rspack config:', config)
 
   return new Promise<void>((resolve, reject) => {
-    webpack(config, (err, stats) => {
+    rspack(config, (err, stats) => {
       if (err) {
         reject(err)
         return

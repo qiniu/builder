@@ -1,5 +1,5 @@
 import produce from 'immer'
-import { Configuration } from 'webpack'
+import { type RspackOptions } from '@rspack/core'
 import {
   shouldAddGlobalPolyfill, AddPolyfill, shouldAddRuntimePolyfill, BuildConfig, TransformObject
 } from '../utils/build-conf'
@@ -155,15 +155,15 @@ const compilerOptions = {
 }
 
 export function addBabelTsTransform(
-  /** 当前 webpack 配置 */
-  config: Configuration,
+  /** 当前 rspack 配置 */
+  config: RspackOptions,
   /** 构建配置 build config */
   { targets, optimization }: BuildConfig,
   /** transform 信息 */
   transform: TransformObject,
   /** 是否 react 项目 */
   withReact: boolean,
-  appendRuleWithLoaders: (previousConfig: Configuration, ...loaders: LoaderInfo[]) => Configuration
+  appendRuleWithLoaders: (previousConfig: RspackOptions, ...loaders: LoaderInfo[]) => RspackOptions
 ) {
   const transformConfig: Required<TransformTsConfig> = {
     transpileOnlyWhenDev: true,

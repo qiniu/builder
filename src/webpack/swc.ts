@@ -7,6 +7,7 @@ import { mergeWith } from 'lodash'
 import { parse } from 'jsonc-parser'
 
 import { shouldAddGlobalPolyfill, AddPolyfill } from '../utils/build-conf'
+import { Env, getEnv } from '../utils/build-env'
 import { abs, getBuildRoot } from '../utils/paths'
 
 /** 读取 tsconfig.json 文件获取 compilerOptions 配置 */
@@ -93,6 +94,8 @@ export function makeSwcLoaderOptions(
   /** 是否 ts 语法 */
   isTsSyntax = false
 ): SwcOptions {
+  const isDev = getEnv() === Env.Dev
+
   const swcOptions: SwcOptions = {
     jsc: {
       parser: {
@@ -104,7 +107,14 @@ export function makeSwcLoaderOptions(
       transform: {
         legacyDecorator: true,
         decoratorMetadata: true,
-        useDefineForClassFields: true
+        useDefineForClassFields: true,
+        ...(withReact && {
+          react: {
+            runtime: 'automatic',
+            development: isDev,
+            refresh: isDev
+          }
+        })
       },
       externalHelpers: true
     },

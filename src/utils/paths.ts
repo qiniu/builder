@@ -57,7 +57,7 @@ export function getTestDistPath(conf: BuildConfig) {
   return path.join(getDistPath(conf), '.test')
 }
 
-/** get webpack cache path */
+/** get rspack cache path */
 export function getCachePath() {
-  return abs('node_modules/.cache/webpack')
+  return abs('node_modules/.cache/rspack')
 }

@@ -6,14 +6,14 @@
 import fs from 'fs'
 import os from 'os'
 import url from 'url'
-import webpack from 'webpack'
-import WebpackDevServer from 'webpack-dev-server'
-import { Config as ProxyConfig } from 'http-proxy-middleware'
+import type { DevServer } from '@rspack/core'
+import { loadRspackCore, loadRspackDevServer } from './utils/rspack-esm'
+import type { ClientRequest, IncomingMessage } from 'http'
 import logger from './utils/logger'
 import { getPageFilename, getPathFromUrl, logLifecycle, watchFile } from './utils'
 import { getConfigForDevServer } from './webpack'
 import { BuildConfig, DevProxy, findBuildConfig, watchBuildConfig } from './utils/build-conf'
-import { entries, mapValues } from 'lodash'
+import { entries } from 'lodash'
 import colors from 'picocolors'
 import { abs } from './utils/paths'
 
@@ -53,101 +53,144 @@ async function serve(port: number) {
 }
 
 async function runDevServer(port: number) {
+  const [{ rspack }, { RspackDevServer }] = await Promise.all([
+    loadRspackCore(),
+    loadRspackDevServer()
+  ])
   const buildConfig = await findBuildConfig()
-  const webpackConfig = await getConfigForDevServer()
-  logger.debug('webpack config:', webpackConfig)
+  const rspackConfig = await getConfigForDevServer()
+  logger.debug('rspack config:', rspackConfig)
 
   const host = '0.0.0.0'
-  const devServerConfig: WebpackDevServer.Configuration = {
-    hotOnly: true,
+  const devServerConfig: DevServer = {
+    host,
+    port,
+    hot: 'only',
     // 方便开发调试
-    disableHostCheck: true,
-    // devServer 中的 public 字段会被拿去计算得到 hot module replace 相关请求的 URI
-    // 这里用 0.0.0.0:0 可以让插到页面的 client 脚本自动依据 window.location 去获得 host
-    // 从而正确地建立 hot module replace 依赖的 ws 链接及其它请求，逻辑见：
-    // 这里之所以要求使用页面的 window.location 信息，是因为 builder 在容器中 serve 时端口会被转发，
-    // 即可能配置 port 为 80，在（宿主机）浏览器中通过 8080 端口访问
-    public: `${host}:0`,
-    publicPath: getPathFromUrl(buildConfig.publicUrl),
-    stats: 'errors-only',
-    proxy: getProxyConfig(buildConfig.devProxy),
+    allowedHosts: 'all',
+    // 让插到页面的 client 脚本自动依据 window.location 去获得 host，
+    // 从而正确地建立 hot module replace 依赖的 ws 链接及其它请求。
+    // builder 在容器中 serve 时端口会被转发，即可能配置 port 为 80，
+    // 在（宿主机）浏览器中通过 8080 端口访问
+    client: {
+      webSocketURL: 'auto://0.0.0.0:0/ws',
+      overlay: buildConfig.optimization.errorOverlay,
+      logging: 'none'
+    },
+    devMiddleware: {
+      publicPath: getPathFromUrl(buildConfig.publicUrl),
+      stats: 'errors-only'
+    },
+    proxy: getProxyConfig(buildConfig.devProxy ?? {}),
     historyApiFallback: {
       rewrites: getHistoryApiFallbackRewrites(buildConfig)
     }
   }
-  const compiler = webpack(webpackConfig)
-  const server = new WebpackDevServer(compiler, devServerConfig)
+  const compiler = rspack(rspackConfig)
+  const server = new RspackDevServer(devServerConfig, compiler)
 
-  await new Promise<void>(resolve => {
+  const firstCompileDone = new Promise<void>(resolve => {
     compiler.hooks.done.tap('DoneHook', () => {
       resolve()
     })
   })
 
-  server.listen(port, host, () => {
-    const localUrl = `http://localhost:${port}`
-    const networkUrls = getNetworkUrls(port)
-    const arrow = colors.green('➜')
-    const messages = [
-      `${arrow}  ${colors.bold('Local:')}   ${colors.cyan(localUrl)}`,
-      ...networkUrls.map(networkUrl => (
-        `${arrow}  ${colors.bold('Network:')} ${colors.cyan(networkUrl)}`
-      ))
-    ]
-
-    logger.info(`Server started:\n\n${messages.join('\n')}`)
+  await new Promise<void>((resolve, reject) => {
+    server.startCallback((err: Error | undefined) => {
+      if (err) {
+        reject(err)
+        return
+      }
+      resolve()
+    })
   })
 
+  await firstCompileDone
+
+  const localUrl = `http://localhost:${port}`
+  const networkUrls = getNetworkUrls(port)
+  const arrow = colors.green('➜')
+  const messages = [
+    `${arrow}  ${colors.bold('Local:')}   ${colors.cyan(localUrl)}`,
+    ...networkUrls.map(networkUrl => (
+      `${arrow}  ${colors.bold('Network:')} ${colors.cyan(networkUrl)}`
+    ))
+  ]
+  logger.info(`Server started:\n\n${messages.join('\n')}`)
+
   return () => new Promise<void>(resolve => {
-    server.close(resolve)
+    server.stopCallback(() => {
+      resolve()
+    })
   })
 }
 
 export default logLifecycle('Serve', serve, logger)
 
-const defaultProxyConfig: ProxyConfig = {
+interface ProxyEntryOptions {
+  changeOrigin: boolean
+  logger: Pick<Console, 'info' | 'warn' | 'error'>
+  on: {
+    proxyReq(proxyReq: ClientRequest): void
+    proxyRes(proxyRes: IncomingMessage): void
+  }
+}
+
+/** http-proxy-middleware v4：关闭每条代理请求的 [HPM] 日志 */
+const silentProxyLogger: Pick<Console, 'info' | 'warn' | 'error'> = {
+  info() {},
+  warn() {},
+  error: (...args) => console.error(...args)
+}
+
+const defaultProxyConfig: ProxyEntryOptions = {
 
   changeOrigin: true,
+  logger: silentProxyLogger,
 
-  onProxyReq(proxyReq) {
-    // add header `X-Real-IP`
-    const origin = proxyReq.getHeader('origin') as (string | undefined)
-    if (origin) {
-      proxyReq.setHeader(
-        "X-Real-IP",
-        url.parse(origin).hostname!
-      )
-    }
-
-    // fix `referer` to avoid csrf detect
-    const referer = proxyReq.getHeader('referer') as (string | undefined)
-    if (referer) {
-      proxyReq.setHeader(
-        'referer',
-        referer.replace(
-          url.parse(referer).host!,
-          proxyReq.getHeader('host') as string
+  on: {
+    proxyReq(proxyReq) {
+      // add header `X-Real-IP`
+      const origin = proxyReq.getHeader('origin') as (string | undefined)
+      if (origin) {
+        proxyReq.setHeader(
+          "X-Real-IP",
+          url.parse(origin).hostname!
         )
-      )
-    }
-  },
+      }
 
-  onProxyRes(proxyRes) {
-    // 干掉 set-cookie 中的 secure 设置，因为本地开发 server 是 http 的
-    // TODO: 考虑支持 https dev server？
-    if (proxyRes.headers['set-cookie']) {
-      proxyRes.headers['set-cookie'] = proxyRes.headers['set-cookie'].map(
-        cookie => cookie.replace('; Secure', '')
-      )
+      // fix `referer` to avoid csrf detect
+      const referer = proxyReq.getHeader('referer') as (string | undefined)
+      if (referer) {
+        proxyReq.setHeader(
+          'referer',
+          referer.replace(
+            url.parse(referer).host!,
+            proxyReq.getHeader('host') as string
+          )
+        )
+      }
+    },
+
+    proxyRes(proxyRes) {
+      // 干掉 set-cookie 中的 secure 设置，因为本地开发 server 是 http 的
+      // TODO: 考虑支持 https dev server？
+      const setCookie = proxyRes.headers['set-cookie']
+      if (setCookie) {
+        proxyRes.headers['set-cookie'] = setCookie.map(
+          (cookie: string) => cookie.replace('; Secure', '')
+        )
+      }
     }
   }
 
 }
 
-function getProxyConfig(devProxy: DevProxy) {
-  return mapValues(devProxy, target => ({
-    ...defaultProxyConfig,
-    target
+function getProxyConfig(devProxy: DevProxy): NonNullable<DevServer['proxy']> {
+  return Object.entries(devProxy).map(([context, target]) => ({
+    context: [context],
+    target,
+    ...defaultProxyConfig
   }))
 }
 

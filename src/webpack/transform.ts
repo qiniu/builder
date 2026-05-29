@@ -1,7 +1,6 @@
 import produce from 'immer'
-import { Configuration, RuleSetRule } from 'webpack'
+import type { rspack as Rspack, RspackOptions, RuleSetRule } from '@rspack/core'
 import postcssPresetEnv from 'postcss-preset-env'
-import MiniCssExtractPlugin from 'mini-css-extract-plugin'
 import { isEmpty } from 'lodash'
 import { Transform } from '../constants/transform'
 import { getSvgoConfigForSvgr } from '../utils/svgo'
@@ -21,11 +20,12 @@ export interface Condition {
 
 /** 添加资源转换逻辑（buildConfig.transforms） */
 export function addTransforms(
-  /** 当前 webpack 配置 */
-  config: Configuration,
+  /** 当前 rspack 配置 */
+  config: RspackOptions,
   /** 构建配置 build config */
-  buildConfig: BuildConfig
-): Configuration {
+  buildConfig: BuildConfig,
+  rspack: typeof Rspack
+): RspackOptions {
   const transformConfigs = Object.entries(buildConfig.transforms).map(([condition, transform]) => {
     const [extensionValue, contextValue = ''] = condition.split('@')
     const resource: Condition = { include: extensionValue, exclude: [] }
@@ -55,7 +55,7 @@ export function addTransforms(
   })
 
   transformConfigs.forEach(({ transform, resource, context }) => {
-    config = addTransform(config, buildConfig, transform, resource, context)
+    config = addTransform(config, buildConfig, transform, resource, context, rspack)
   })
 
   return config
@@ -77,8 +77,8 @@ function checkSwcEnabled(transform: TransformObject, optimization: Optimization)
 }
 
 function addTransform(
-  /** 当前 webpack 配置 */
-  config: Configuration,
+  /** 当前 rspack 配置 */
+  config: RspackOptions,
   /** 构建配置 build config */
   buildConfig: BuildConfig,
   /** transform 信息 */
@@ -86,7 +86,8 @@ function addTransform(
   /** 资源后缀名条件 */
   resource: Condition,
   /** 上下文资源（引入当前资源的资源）后缀名条件 */
-  context: Condition
+  context: Condition,
+  rspack: typeof Rspack
 ) {
   const { targets, optimization } = buildConfig
 
@@ -111,20 +112,20 @@ function addTransform(
     exclude: context.exclude.map(makeExtensionPattern)
   }
 
-  const appendRule = (previousConfig: Configuration, ruleBase: Partial<RuleSetRule>) => produce(previousConfig, (nextConfig: Configuration) => {
+  const appendRule = (previousConfig: RspackOptions, ruleBase: Partial<RuleSetRule>) => produce(previousConfig, (nextConfig: RspackOptions) => {
     const rule = makeRule(extension, resourcePattern, contextPattern, ruleBase)
     nextConfig.module!.rules!.push(rule)
   })
 
-  const appendRuleWithLoaders = (previousConfig: Configuration, ...loaders: LoaderInfo[]) => (
+  const appendRuleWithLoaders = (previousConfig: RspackOptions, ...loaders: LoaderInfo[]) => (
     appendRule(previousConfig, { use: loaders.map(adaptLoader) })
   )
 
-  const appendRuleWithAssetType = (previousConfig: Configuration, assetType: string) => (
+  const appendRuleWithAssetType = (previousConfig: RspackOptions, assetType: string) => (
     appendRule(previousConfig, { type: assetType })
   )
 
-  const markDefaultExtension = (previousConfig: Configuration) => {
+  const markDefaultExtension = (previousConfig: RspackOptions) => {
     return addDefaultExtension(previousConfig, extension)
   }
 
@@ -139,17 +140,24 @@ function addTransform(
       } else if (getEnv() === Env.Prod) {
         // dev 环境不能用 MiniCssExtractPlugin.loader
         // 已知 less with css-module 的项目，样式 hot reload 会有问题
-        loaders.push({ loader: MiniCssExtractPlugin.loader })
+        loaders.push({ loader: rspack.CssExtractRspackPlugin.loader })
       }
 
       loaders.push({
         loader: 'css-loader',
         options: {
           // https://github.com/webpack-contrib/css-loader/issues/228#issuecomment-312885975
-          importLoaders: transform.transformer === Transform.Css ? 1 : 0,
+          importLoaders: transform.transformer === Transform.Css ? 1 : 2,
           modules: (
             transformConfig.modules
-            ? { localIdentName: '[local]_[hash:base64:5]' }
+            ? {
+              localIdentName: '[local]_[hash:base64:5]',
+              // Node 17+ / OpenSSL 3 不再支持 MD4，需使用 xxhash64
+              localIdentHashDigest: 'xxhash64',
+              // css-loader v7 默认 namedExport: true，无 default export；
+              // 业务代码使用 `import style from '*.m.less'` 需保持 default export
+              namedExport: false
+            }
             : false
           )
         }
@@ -174,7 +182,10 @@ function addTransform(
         })
       }
 
-      return appendRuleWithLoaders(config, ...loaders)
+      return appendRule(config, {
+        type: 'javascript/auto',
+        use: loaders.map(adaptLoader)
+      })
     }
 
     case Transform.Babel: {

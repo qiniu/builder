@@ -1,13 +1,16 @@
 import { produce } from 'immer'
 import path from 'path'
-import { Configuration, WebpackPluginInstance, Chunk, RuleSetRule, RuleSetConditionAbsolute } from 'webpack'
+import type { RspackOptions, RspackPluginInstance, Chunk, RuleSetRule } from '@rspack/core'
+
+/** 兼容 webpack 社区 plugin 的 apply 签名 */
+type FecPlugin = RspackPluginInstance | { apply(compiler: unknown): void }
 import chunks from '../constants/chunks'
 import { Optimization } from './build-conf'
 import { getCachePath } from './paths'
 import logger from './logger'
 
 /** 向配置中追加 plugin */
-export function appendPlugins(config: Configuration, ...plugins: Array<WebpackPluginInstance | null | undefined>) {
+export function appendPlugins(config: RspackOptions, ...plugins: Array<FecPlugin | null | undefined>) {
   return produce(config, newConfig => {
     newConfig.plugins = newConfig.plugins || []
     for (const plugin of plugins) {
@@ -31,7 +34,7 @@ export function adaptLoader({ loader, options }: LoaderInfo): LoaderInfo {
   const resolvedLoader = require.resolve(loader)
   const loaderObj = { loader: resolvedLoader, options }
 
-  // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 webpack 乱报错
+  // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 rspack 乱报错
   // 比如 extract-style 处要根据 `__loaderName__ === 'style-loader'` 判断是否需处理
   Object.defineProperty(loaderObj, '__loaderName__', {
     value: loader,
@@ -45,8 +48,8 @@ export function adaptLoader({ loader, options }: LoaderInfo): LoaderInfo {
 const sourcemapParseFailedWarningPattern = /Failed to parse source map from/
 
 /** 配置 source map */
-export function processSourceMapForDevServer(config: Configuration, highQuality: boolean) {
-  config = produce(config, (newConfig: Configuration) => {
+export function processSourceMapForDevServer(config: RspackOptions, highQuality: boolean) {
+  config = produce(config, (newConfig: RspackOptions) => {
     // 使用 cheap-module-source-map 而不是 eval-cheap-module-source-map 或 eval-source-map
     // 具体原因见 https://github.com/Front-End-Engineering-Cloud/builder/pull/139#discussion_r676475522
     newConfig.devtool = highQuality ? 'cheap-module-source-map' : 'eval';
@@ -154,8 +157,8 @@ export function parseOptimizationConfig(optimization: Optimization): {
 
 /** 向配置中追加 cacheGroup 项 */
 export function appendCacheGroups(
-  config: Configuration, cacheGroups: SplitChunksCacheGroups
-): Configuration {
+  config: RspackOptions, cacheGroups: SplitChunksCacheGroups
+): RspackOptions {
   return produce(config, newConfig => {
     newConfig.optimization ||= {}
     newConfig.optimization.splitChunks ||= {}
@@ -174,18 +177,18 @@ export interface PatternCondition {
 
 /** 构造 rule */
 export function makeRule(extension: string, resource: PatternCondition, context: PatternCondition, base: Partial<RuleSetRule>): RuleSetRule {
-  const issuerConditions: RuleSetConditionAbsolute[] = []
+  const issuerConditions: Array<RegExp | { not: RegExp[] }> = []
   if (context.include != null) issuerConditions.push(context.include)
   if (context.exclude.length > 0) issuerConditions.push({ not: context.exclude })
 
-  const rule: RuleSetRule = {
+  const rule = {
     ...base,
     test: resource.include,
     exclude: resource.exclude,
     issuer: issuerConditions.length > 0 ? { and: issuerConditions } : undefined
-  }
+  } as RuleSetRule
 
-  // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 webpack 乱报错
+  // 添加 builder 后续处理需要的字段，`enumerable: false` 是为了防止 rspack 乱报错
   Object.defineProperty(rule, '__extension__', {
     value: extension,
     enumerable: false,
@@ -196,7 +199,7 @@ export function makeRule(extension: string, resource: PatternCondition, context:
 }
 
 /** 添加默认文件后缀名 */
-export function addDefaultExtension(config: Configuration, extension: string) {
+export function addDefaultExtension(config: RspackOptions, extension: string) {
   extension = extension && ('.' + extension)
   return produce(config, newConfig => {
     const resolve = newConfig.resolve = newConfig.resolve || {}
@@ -207,18 +210,27 @@ export function addDefaultExtension(config: Configuration, extension: string) {
   })
 }
 
-/** 开启文件缓存 */
-export function enableFilesystemCache(config: Configuration): Configuration {
+// 变更 style-loader / experiments.css 等配置时需 bump，避免持久化缓存沿用旧产物
+const RSPACK_CACHE_VERSION = 'fec-builder-2.7.3-style-javascript-auto'
+
+/** 开启持久化缓存（Rspack cache） */
+export function enableFilesystemCache(config: RspackOptions): RspackOptions {
   return produce(config, newConfig => {
+    newConfig.experiments = newConfig.experiments || {}
+    newConfig.experiments.css = false
     newConfig.cache = {
-      type: 'filesystem',
-      cacheDirectory: getCachePath()
+      type: 'persistent',
+      version: RSPACK_CACHE_VERSION,
+      storage: {
+        type: 'filesystem',
+        directory: getCachePath()
+      }
     }
   })
 }
 
 /** 指定 pattern 忽略 warning */
-export function ignoreWarning(config: Configuration, pattern: RegExp): Configuration {
+export function ignoreWarning(config: RspackOptions, pattern: RegExp): RspackOptions {
   return produce(config, newConfig => {
     newConfig.ignoreWarnings ??= []
     if (!newConfig.ignoreWarnings.includes(pattern)) {
